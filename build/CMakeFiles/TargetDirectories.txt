@@ -1,3 +1,0 @@
-D:/SenLucario/Documentos/patata-engine/build/CMakeFiles/Patata_Engine.dir
-D:/SenLucario/Documentos/patata-engine/build/CMakeFiles/edit_cache.dir
-D:/SenLucario/Documentos/patata-engine/build/CMakeFiles/rebuild_cache.dir
