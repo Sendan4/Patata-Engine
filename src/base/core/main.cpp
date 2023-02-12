@@ -1,18 +1,22 @@
-// inicializador
 #include "init.hpp"
-// Ventana
 #include "window.hpp"
+#include "GameMainLoop.hpp"
+#include "Events.hpp"
 
 int main(int argc, char **argv) {
     initSDL();
 
-	Window window;
+	Window MainWindow;
 
-	window.createWindowAndRender();
+	MainWindow.start();
 
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Patata Engine", "Este Mensaje Mantiene el programa abierto.", NULL);
+	do {
+		SDL_PollEvent(&Window_Event);
+		if (Window_Event.type == SDL_QUIT)
+			break;
+	} while (true);
 
-	window.deleteWindowAndRender();
+	MainWindow.finish();
 
 	SDL_Quit();
     return 0;

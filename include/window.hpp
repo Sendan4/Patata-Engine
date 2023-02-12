@@ -1,12 +1,14 @@
 #pragma once
 #include <SDL.h>
+#include <iostream>
 
 class Window {
     public:
-		void createWindowAndRender(void);
-		void deleteWindowAndRender(void);
+		void start(void);
+		void finish(void);
  
     private:
-		SDL_Window * WINDOW;
-		SDL_Renderer * RENDER;
+		SDL_Window * WINDOW = nullptr;
+		SDL_Surface * SURFACE = nullptr;
+		SDL_Renderer * RENDER = nullptr;
 };
