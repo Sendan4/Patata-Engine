@@ -29,3 +29,5 @@ void Window::finish(void) {
 	SDL_DestroyRenderer(RENDER);
 	SDL_DestroyWindow(WINDOW);
 }
+
+SDL_Renderer * Window::renderer_get(void) { return RENDER; }

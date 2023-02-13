@@ -1,7 +1,7 @@
 #include "init.hpp"
 #include "window.hpp"
-#include "GameMainLoop.hpp"
 #include "Events.hpp"
+#include <SDL.h>
 
 int main(int argc, char **argv) {
     initSDL();
@@ -14,6 +14,9 @@ int main(int argc, char **argv) {
 		SDL_PollEvent(&Window_Event);
 		if (Window_Event.type == SDL_QUIT)
 			break;
+
+		SDL_RenderClear(MainWindow.renderer_get());
+		SDL_RenderPresent(MainWindow.renderer_get());
 	} while (true);
 
 	MainWindow.finish();
