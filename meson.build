@@ -1,0 +1,61 @@
+project('Patata Engine',
+  'cpp', 'c',
+  default_options: ['buildtype=release', 'default_library=static', 'cpp_std=c++20'],
+  version : '0')
+
+# SDL2
+if meson.backend() == 'vs2022'
+  sdl2_dep = dependency('sdl2',
+    version : '>=2.24.1',
+    static : false,
+    modules : ['SDL2::SDL2', 'SDL2::SDL2main'],
+    required : true)
+
+  sdl2_image_dep = dependency('sdl2_image',
+    static : false,
+    modules : ['SDL2_image::SDL2_image'],
+    required : true)
+else
+  sdl2_dep = dependency('sdl2',
+    required : true,
+    static : false,
+    version : '>=2.24.1',
+    modules : ['SDL2::SDL2', 'SDL2::SDL2-static'])
+
+  sdl2_image_dep = dependency('sdl2_image',
+    static : false,
+    modules : ['SDL2_image::SDL2_image'],
+    required : true)
+endif
+
+# GLAD
+glad_dep = declare_dependency(
+  sources : 'libs/glad/src/glad.c',
+  include_directories : 'libs/glad/include/',
+  d_import_dirs : 'libs/glad/include/')
+
+# Archivos (Source y Include)
+include_main = include_directories('include')
+
+source = files([
+  'src/base/core/main.cpp',
+  'src/base/core/init_sdl.cpp',
+  'src/base/window/window.cpp',
+  'src/base/events/Main_events.cpp'])
+
+if target_machine.system() == 'windows'
+  windows = import('windows')
+
+  Patata_icon = windows.compile_resources('data/patata_icon.rc')
+
+  executable('Patata Engine',
+    source,
+    Patata_icon,
+    include_directories : [include_main],
+    dependencies : [sdl2_dep, sdl2_image_dep, glad_dep])
+else
+  executable('Patata Engine',
+    source,
+    include_directories : [include_main],
+    dependencies : [sdl2_dep, sdl2_image_dep, glad_dep])
+endif
