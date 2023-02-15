@@ -12,6 +12,6 @@ class Window {
  
     private:
 		SDL_Window * WINDOW = nullptr;
-		SDL_Surface * SURFACE = nullptr;
+		SDL_Surface * WINDOW_ICON = nullptr;
 		SDL_Renderer * RENDER = nullptr;
 };

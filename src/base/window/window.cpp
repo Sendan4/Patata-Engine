@@ -9,7 +9,7 @@ void Window::start(void) {
 
 	RENDER = SDL_CreateRenderer(WINDOW, -1, SDL_RENDERER_ACCELERATED);
 
-	SURFACE = SDL_GetWindowSurface(WINDOW);
+	//SURFACE = SDL_GetWindowSurface(WINDOW);
 
 	if (!WINDOW) {
 		std::cout << "SDL - Fallo la creacion de la ventana : " << SDL_GetError() << std::endl;
