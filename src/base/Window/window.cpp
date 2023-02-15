@@ -1,15 +1,13 @@
 #include "window.hpp"
 
-void Window::start(void) {
+void Game::Window::start(void) {
 	WINDOW = SDL_CreateWindow(
 			"Patata Engine",
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 			1280, 720,
-			SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
+			SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
 	RENDER = SDL_CreateRenderer(WINDOW, -1, SDL_RENDERER_ACCELERATED);
-
-	//SURFACE = SDL_GetWindowSurface(WINDOW);
 
 	if (!WINDOW) {
 		std::cout << "SDL - Fallo la creacion de la ventana : " << SDL_GetError() << std::endl;
@@ -25,9 +23,12 @@ void Window::start(void) {
 	SDL_RenderPresent(RENDER);
 }
 
-void Window::finish(void) {
+void Game::Window::finish(void) {
 	SDL_DestroyRenderer(RENDER);
 	SDL_DestroyWindow(WINDOW);
 }
 
-SDL_Renderer * Window::renderer_get(void) { return RENDER; }
+// Get
+SDL_Renderer * Game::Window::renderer_get(void) { return RENDER; }
+SDL_Window * Game::Window::window_get(void) { return WINDOW; }
+SDL_GLContext Game::Window::glcontext_get(void) { return OPENGL_CONTEXT; }

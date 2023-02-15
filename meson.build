@@ -1,6 +1,6 @@
 project('Patata Engine',
   'cpp', 'c',
-  default_options: ['buildtype=release', 'default_library=static', 'cpp_std=c++20'],
+  default_options: ['buildtype=release', 'cpp_std=c++20'],
   version : '0')
 
 # SDL2
@@ -38,10 +38,12 @@ glad_dep = declare_dependency(
 include_main = include_directories('include')
 
 source = files([
-  'src/base/core/main.cpp',
-  'src/base/core/init_sdl.cpp',
-  'src/base/window/window.cpp',
-  'src/base/events/Main_events.cpp'])
+  'src/base/Core/main.cpp',
+  'src/base/Core/init_sdl.cpp',
+  'src/base/Window/window.cpp',
+  'src/base/Events/Main_events.cpp',
+  'src/base/Core/init_graphics_switcher.cpp',
+  'src/base/Opengl/Opengl_context.cpp'])
 
 if target_machine.system() == 'windows'
   windows = import('windows')

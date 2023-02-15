@@ -8,7 +8,19 @@ else()
 	project("Patata_Engine" LANGUAGES CXX)
 endif()
 
-set(base_dir "src/base")
+set(MAIN_INCLUDE
+	"include/init.hpp"
+	"include/window.hpp"
+	"include/init_graphics_switcher.hpp"
+	"include/Events.hpp"
+	"include/Opengl_context.hpp")
+set(SOURCE
+	"src/base/Core/main.cpp"
+	"src/base/Core/init_sdl.cpp"
+	"src/base/Window/window.cpp"
+	"src/base/Core/init_graphics_switcher.cpp"
+	"src/base/Events/Main_events.cpp"
+	"src/base/Opengl/Opengl_context.cpp")
 
 set(icon "data/patata_icon.rc")
 
@@ -27,23 +39,13 @@ include_directories("include/")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	add_executable(${PROJECT_NAME}
-		"${base_dir}/core/main.cpp"
-		"include/init.hpp"
-		"${base_dir}/core/init_sdl.cpp"
-		"include/window.hpp"
-		"${base_dir}/window/window.cpp"
-		"include/Events.hpp"
-		"${base_dir}/events/Main_events.cpp"
+		${MAIN_INCLUDE}
+		${SOURCE}
 		"data/patata_icon.rc")
 else()
 	add_executable(${PROJECT_NAME}
-		"${base_dir}/core/main.cpp"
-		"include/init.hpp"
-		"${base_dir}/core/init_sdl.cpp"
-		"include/window.hpp"
-		"${base_dir}/window/window.cpp"
-		"include/Events.hpp"
-		"${base_dir}/events/Main_events.cpp")
+		${MAIN_INCLUDE}
+		${SOURCE})
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES} SDL2_image::SDL2_image glad)
