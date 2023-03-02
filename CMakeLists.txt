@@ -14,7 +14,8 @@ set(MAIN_INCLUDE
 	"include/window.hpp"
 	"include/API_Graphics_Switch.hpp"
 	"include/Events.hpp"
-	"include/Opengl_context.hpp")
+	"include/Opengl_context.hpp"
+	"include/Vulkan.hpp")
 set(SOURCE
 	"src/base/Core/main.cpp"
 	"src/base/Core/begin.cpp"
@@ -22,6 +23,7 @@ set(SOURCE
 	"src/base/Window/window.cpp"
 	"src/base/Core/API_Graphics_Switch.cpp"
 	"src/base/Events/Main_events.cpp"
+	"src/base/Vulkan/Start_Vulkan.cpp"
 	"src/base/Opengl/Opengl_context.cpp")
 
 set(icon "data/patata_icon.rc")
@@ -35,7 +37,8 @@ set(SHARED_BUILD on)
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
-add_subdirectory(libs/glad)
+find_package(Vulkan REQUIRED)
+add_subdirectory(externals/libs/glad)
 
 include_directories("include/")
 
@@ -50,4 +53,8 @@ else()
 		${SOURCE})
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES} SDL2_image::SDL2_image glad)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+	${SDL2_LIBRARIES}
+	SDL2_image::SDL2_image
+	glad
+	Vulkan::Vulkan)

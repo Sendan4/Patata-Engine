@@ -30,9 +30,9 @@ endif
 
 # GLAD
 glad_dep = declare_dependency(
-  sources : 'libs/glad/src/glad.c',
-  include_directories : 'libs/glad/include/',
-  d_import_dirs : 'libs/glad/include/')
+  sources : 'externals/libs/glad/src/glad.c',
+  include_directories : 'externals/libs/glad/include/',
+  d_import_dirs : 'externals/libs/glad/include/')
 
 # Archivos (Source y Include)
 include_main = include_directories('include')
@@ -44,6 +44,7 @@ source = files([
   'src/base/Events/Main_events.cpp',
   'src/base/Core/API_Graphics_Switch.cpp',
   'src/base/Opengl/Opengl_context.cpp',
+  'src/base/Vulkan/Start_Vulkan.cpp',
   'src/base/Core/finish.cpp',])
 
 if target_machine.system() == 'windows'

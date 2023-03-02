@@ -10,32 +10,37 @@ OpenGL 0.113f, 0.578f, 0.810f
 #include "Events.hpp"
 
 #include "API_Graphics_Switch.hpp"
+#include "Vulkan.hpp"
 #include "Opengl_context.hpp"
 
-#include <glad/glad.h>
+//#include <glad/glad.h>
 
 int main(int argc, char **argv) {
 	Game::begin();
 
-	Graphics::sdl_opengl_atributos();
-
+	// Vulkan
+	Graphics::Vulkan vulkan;
+	vulkan.CreateInstance();
+	
 	Game::Window MainWindow;
-	MainWindow.start();
+	MainWindow.Start("Patata Engine", 1280 ,720);
 
-	Graphics::start_opengl(MainWindow.window_get(), MainWindow.glcontext_get());
+	//SDL_Vulkan_GetInstanceExtensions(MainWindow.window_get(), &extensionCount, nullptr);
+	//SDL_Vulkan_CreateSurface(MainWindow.window_get(), Instancia, (VkSurfaceKHR*)&surface);
 
 	do {
 		SDL_PollEvent(&Window_Event);
 		if (Window_Event.type == SDL_QUIT)
 			break;
 
-		glClearColor(0.113f, 0.578f, 0.810f, 0.0f);
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		//glClearColor(0.113f, 0.578f, 0.810f, 0.0f);
+		//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-		SDL_GL_SwapWindow(MainWindow.window_get());
+		//SDL_GL_SwapWindow(MainWindow.window_get());
 	} while (true);
 
-	MainWindow.finish();
+	// Finish
+	MainWindow.Finish();
 	Game::finish();
 	return 0;
 }

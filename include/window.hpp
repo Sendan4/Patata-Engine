@@ -5,17 +5,17 @@
 namespace Game {
 	class Window {
 		public:
-			void start(void);
-			void finish(void);
+			void Start(const char *, int, int);
+			void Finish(void);
 		
 			// Get
-			SDL_Renderer * renderer_get(void);
-			SDL_Window * window_get(void);
-			SDL_GLContext glcontext_get(void);
+			SDL_Renderer * Renderer_get(void);
+			SDL_Window * Window_get(void);
+			//SDL_GLContext glcontext_get(void);
 
 		private:
 			SDL_Window * WINDOW = nullptr;
 			SDL_Renderer * RENDER = nullptr;
-			SDL_GLContext OPENGL_CONTEXT = NULL;
+			//SDL_GLContext OPENGL_CONTEXT = NULL;
 	};
 }

@@ -1,11 +1,11 @@
 #include "window.hpp"
 
-void Game::Window::start(void) {
+void Game::Window::Start(const char *Titulo, int Width, int Height) {
 	WINDOW = SDL_CreateWindow(
-			"Patata Engine",
+			Titulo,
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-			1280, 720,
-			SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+			Width, Height,
+			SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN | SDL_WINDOW_VULKAN);
 
 	RENDER = SDL_CreateRenderer(WINDOW, -1, SDL_RENDERER_ACCELERATED);
 
@@ -23,12 +23,12 @@ void Game::Window::start(void) {
 	SDL_RenderPresent(RENDER);
 }
 
-void Game::Window::finish(void) {
+void Game::Window::Finish(void) {
 	SDL_DestroyRenderer(RENDER);
 	SDL_DestroyWindow(WINDOW);
 }
 
 // Get
-SDL_Renderer * Game::Window::renderer_get(void) { return RENDER; }
-SDL_Window * Game::Window::window_get(void) { return WINDOW; }
-SDL_GLContext Game::Window::glcontext_get(void) { return OPENGL_CONTEXT; }
+SDL_Renderer * Game::Window::Renderer_get(void) { return RENDER; }
+SDL_Window * Game::Window::Window_get(void) { return WINDOW; }
+//SDL_GLContext Game::Window::glcontext_get(void) { return OPENGL_CONTEXT; }
