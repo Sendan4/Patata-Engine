@@ -21,6 +21,8 @@ int main(int argc, char **argv) {
 	// Vulkan
 	Graphics::Vulkan vulkan;
 	vulkan.CreateInstance();
+	vulkan.EnumeratePhysicalDevices();
+	vulkan.InitDevice();
 	
 	Game::Window MainWindow;
 	MainWindow.Start("Patata Engine", 1280 ,720);
@@ -40,6 +42,7 @@ int main(int argc, char **argv) {
 	} while (true);
 
 	// Finish
+	vulkan.Finish();
 	MainWindow.Finish();
 	Game::finish();
 	return 0;

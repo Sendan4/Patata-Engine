@@ -16,3 +16,19 @@ void Graphics::Vulkan::CreateInstance(void) {
 
 	VulkanInstance = vk::createInstance(VulkanInstanceInfo);
 }
+
+// Enumerar los dispositivos fisicos
+void Graphics::Vulkan::EnumeratePhysicalDevices(void) {
+	PhysicalDevice = VulkanInstance.enumeratePhysicalDevices().front();
+	PhysicalDeviceProperties = PhysicalDevice.getProperties();
+}
+
+void Graphics::Vulkan::InitDevice(void) {
+	QueueFamilyProperties = PhysicalDevice.getQueueFamilyProperties();
+	
+	Device = PhysicalDevice.createDevice(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), DeviceQueueCreateInfo));
+}
+
+void Graphics::Vulkan::Finish(void) {
+	VulkanInstance.destroy();
+}
