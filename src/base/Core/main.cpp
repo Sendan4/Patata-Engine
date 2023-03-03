@@ -21,7 +21,8 @@ int main(int argc, char **argv) {
 	// Vulkan
 	Graphics::Vulkan vulkan;
 	vulkan.CreateInstance();
-	vulkan.EnumeratePhysicalDevices();
+	vulkan.PhysicalDevices();
+	vulkan.CreateQueue();
 	vulkan.InitDevice();
 	
 	Game::Window MainWindow;

@@ -28,6 +28,10 @@ else
     required : true)
 endif
 
+Vulkan = dependency('Vulkan',
+  static : false,
+  required : true)
+
 # GLAD
 glad_dep = declare_dependency(
   sources : 'externals/libs/glad/src/glad.c',
@@ -44,7 +48,7 @@ source = files([
   'src/base/Events/Main_events.cpp',
   'src/base/Core/API_Graphics_Switch.cpp',
   'src/base/Opengl/Opengl_context.cpp',
-  'src/base/Vulkan/Start_Vulkan.cpp',
+  'src/base/Vulkan/Setup_Vulkan.cpp',
   'src/base/Core/finish.cpp',])
 
 if target_machine.system() == 'windows'
@@ -56,10 +60,10 @@ if target_machine.system() == 'windows'
     source,
     Patata_icon,
     include_directories : [include_main],
-    dependencies : [sdl2_dep, sdl2_image_dep, glad_dep])
+    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, glad_dep])
 else
   executable('Patata Engine',
     source,
     include_directories : [include_main],
-    dependencies : [sdl2_dep, sdl2_image_dep, glad_dep])
+    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, glad_dep])
 endif

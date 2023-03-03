@@ -23,7 +23,7 @@ set(SOURCE
 	"src/base/Window/window.cpp"
 	"src/base/Core/API_Graphics_Switch.cpp"
 	"src/base/Events/Main_events.cpp"
-	"src/base/Vulkan/Start_Vulkan.cpp"
+	"src/base/Vulkan/Setup_Vulkan.cpp"
 	"src/base/Opengl/Opengl_context.cpp")
 
 set(icon "data/patata_icon.rc")
