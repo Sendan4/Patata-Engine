@@ -24,9 +24,12 @@ int main(int argc, char **argv) {
 	vulkan.PhysicalDevices();
 	vulkan.CreateQueue();
 	vulkan.InitDevice();
+	vulkan.CreateCommandBuffer();
 	
 	Game::Window MainWindow;
 	MainWindow.Start("Patata Engine", 1280 ,720);
+
+	vulkan.CreateSurface(MainWindow.Window_get());
 
 	//SDL_Vulkan_GetInstanceExtensions(MainWindow.window_get(), &extensionCount, nullptr);
 	//SDL_Vulkan_CreateSurface(MainWindow.window_get(), Instancia, (VkSurfaceKHR*)&surface);

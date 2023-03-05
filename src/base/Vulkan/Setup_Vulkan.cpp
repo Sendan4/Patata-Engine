@@ -46,7 +46,27 @@ void Graphics::Vulkan::InitDevice(void) {
 	Device = PhysicalDevice.createDevice(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), DeviceQueueCreateInfo));
 }
 
+void Graphics::Vulkan::CreateCommandBuffer(void) {
+	CommandPool = Device.createCommandPool(vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), ComputeQueueFamilyIndex));
+	CommandBuffer = Device.allocateCommandBuffers(vk::CommandBufferAllocateInfo(CommandPool, vk::CommandBufferLevel::ePrimary, 1)).front();
+}
+
+void Graphics::Vulkan::CreateSurface(SDL_Window * WINDOW) {
+	VkSurfaceKHR _surface;
+	SDL_Vulkan_GetInstanceExtensions(WINDOW, extensionCountSDL, LayersSDL);
+	SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, &_surface);
+	Surface = vk::SurfaceKHR(_surface);
+	//SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
+}
+
+void Graphics::Vulkan::CreateSwapChain(void) {
+	Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
+	Format = (Formats[0].format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : Formats[0].format;
+}
+
 void Graphics::Vulkan::Finish(void) {
+	Device.freeCommandBuffers(CommandPool, CommandBuffer);
+	Device.destroyCommandPool(CommandPool);
 	Device.destroy();
 	VulkanInstance.destroy();
 }

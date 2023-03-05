@@ -11,20 +11,35 @@ namespace Graphics {
 			void PhysicalDevices(void);
 			uint32_t CreateQueue(void);
 			void InitDevice(void);
+			void CreateCommandBuffer(void);
+			void CreateSurface(SDL_Window *);
+			void CreateSwapChain(void);
 			void Finish(void);
 	
 		private:
 			uint32_t extensionCount = 0;
+			unsigned int * extensionCountSDL;
 			uint32_t ComputeQueueFamilyIndex = 0;
 			float QueuePriority = 0.0f;
 			// Instance
-			vk::Instance VulkanInstance;
-			const std::vector<const char*> Layers = { "VK_LAYER_KHRONOS_validation" };
+			vk::Instance VulkanInstance = nullptr;
+			// Extensiones
+			const char * Layers = {"VK_LAYER_KHRONOS_validation"};
+			const char ** LayersSDL;
 			// Device
-			vk::Device Device;
-			vk::PhysicalDevice PhysicalDevice;
+			vk::Device Device = nullptr;
+			vk::PhysicalDevice PhysicalDevice = nullptr;
 			vk::PhysicalDeviceProperties PhysicalDeviceProperties;
 			// Queue
 			std::vector<vk::QueueFamilyProperties> QueueFamilyProperties;
+			// Command Buffer
+			vk::CommandPool CommandPool = nullptr;
+			vk::CommandBuffer CommandBuffer = nullptr;
+			// SwapChain
+			std::vector<vk::SurfaceFormatKHR> Formats;
+			vk::Format Format;
+			// Surface
+			vk::SurfaceKHR Surface;
+			vk::SurfaceCapabilitiesKHR SurfaceCapabilities;
 	};
 }
