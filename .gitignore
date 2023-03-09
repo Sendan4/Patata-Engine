@@ -1,4 +1,7 @@
+# Build Dirs
 build/*
 bin/*
+
+# tmp
 .cache
 .vscode
