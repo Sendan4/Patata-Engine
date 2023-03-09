@@ -1,6 +1,6 @@
 #include "window.hpp"
 
-void Game::Window::Start(const char *Titulo, int Width, int Height) {
+Game::Window::Window(const char *Titulo, int Width, int Height) {
 	WINDOW = SDL_CreateWindow(
 			Titulo,
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -23,7 +23,7 @@ void Game::Window::Start(const char *Titulo, int Width, int Height) {
 	SDL_RenderPresent(RENDER);
 }
 
-void Game::Window::Finish(void) {
+Game::Window::~Window(void) {
 	SDL_DestroyRenderer(RENDER);
 	SDL_DestroyWindow(WINDOW);
 }

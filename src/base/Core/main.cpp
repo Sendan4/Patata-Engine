@@ -3,8 +3,7 @@ Vulkan 0.980f, 0.285f, 0.235f
 OpenGL 0.113f, 0.578f, 0.810f
 */
 
-#include "begin.hpp"
-#include "finish.hpp"
+#include "sdl.hpp"
 
 #include "window.hpp"
 #include "Events.hpp"
@@ -16,7 +15,7 @@ OpenGL 0.113f, 0.578f, 0.810f
 //#include <glad/glad.h>
 
 int main(int argc, char **argv) {
-	Game::begin();
+	Game::SDL sdl;
 
 	// Vulkan
 	Graphics::Vulkan vulkan;
@@ -25,8 +24,7 @@ int main(int argc, char **argv) {
 	vulkan.CreateQueue();
 	vulkan.InitDevice();
 	
-	Game::Window MainWindow;
-	MainWindow.Start("Patata Engine", 1280 ,720);
+	Game::Window MainWindow("Patata Engine", 1280 ,720);
 
 	//SDL_Vulkan_GetInstanceExtensions(MainWindow.window_get(), &extensionCount, nullptr);
 	//SDL_Vulkan_CreateSurface(MainWindow.window_get(), Instancia, (VkSurfaceKHR*)&surface);
@@ -44,7 +42,5 @@ int main(int argc, char **argv) {
 
 	// Finish
 	vulkan.Finish();
-	MainWindow.Finish();
-	Game::finish();
 	return 0;
 }

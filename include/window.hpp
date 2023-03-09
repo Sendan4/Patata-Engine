@@ -5,8 +5,8 @@
 namespace Game {
 	class Window {
 		public:
-			void Start(const char *, int, int);
-			void Finish(void);
+			Window(const char *, int, int);
+			~Window();
 		
 			// Get
 			SDL_Renderer * Renderer_get(void);

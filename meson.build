@@ -43,13 +43,12 @@ include_main = include_directories('include')
 
 source = files([
   'src/base/Core/main.cpp',
-  'src/base/Core/begin.cpp',
+  'src/base/Core/sdl.cpp',
   'src/base/Window/window.cpp',
   'src/base/Events/Main_events.cpp',
   'src/base/Core/API_Graphics_Switch.cpp',
   'src/base/Opengl/Opengl_context.cpp',
-  'src/base/Vulkan/Setup_Vulkan.cpp',
-  'src/base/Core/finish.cpp',])
+  'src/base/Vulkan/Setup_Vulkan.cpp',])
 
 if target_machine.system() == 'windows'
   windows = import('windows')

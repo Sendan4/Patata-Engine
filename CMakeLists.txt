@@ -9,8 +9,7 @@ else()
 endif()
 
 set(MAIN_INCLUDE
-	"include/begin.hpp"
-	"include/finish.hpp"
+	"include/sdl.hpp"
 	"include/window.hpp"
 	"include/API_Graphics_Switch.hpp"
 	"include/Events.hpp"
@@ -18,8 +17,7 @@ set(MAIN_INCLUDE
 	"include/Vulkan.hpp")
 set(SOURCE
 	"src/base/Core/main.cpp"
-	"src/base/Core/begin.cpp"
-	"src/base/Core/finish.cpp"
+	"src/base/Core/sdl.cpp"
 	"src/base/Window/window.cpp"
 	"src/base/Core/API_Graphics_Switch.cpp"
 	"src/base/Events/Main_events.cpp"
