@@ -17,22 +17,12 @@ OpenGL 0.113f, 0.578f, 0.810f
 
 int main(int argc, char **argv) {
 	Game::begin();
-
-	// Vulkan
-	Graphics::Vulkan vulkan;
-	vulkan.CreateInstance();
-	vulkan.PhysicalDevices();
-	vulkan.CreateQueue();
-	vulkan.InitDevice();
-	vulkan.CreateCommandBuffer();
 	
 	Game::Window MainWindow;
 	MainWindow.Start("Patata Engine", 1280 ,720);
 
-	vulkan.CreateSurface(MainWindow.Window_get());
-
-	//SDL_Vulkan_GetInstanceExtensions(MainWindow.window_get(), &extensionCount, nullptr);
-	//SDL_Vulkan_CreateSurface(MainWindow.window_get(), Instancia, (VkSurfaceKHR*)&surface);
+	// Vulkan
+	Graphics::Vulkan vulkan(MainWindow.Window_get());
 
 	do {
 		SDL_PollEvent(&Window_Event);

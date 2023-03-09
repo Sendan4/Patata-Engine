@@ -2,10 +2,13 @@
 
 void Game::Window::Start(const char *Titulo, int Width, int Height) {
 	WINDOW = SDL_CreateWindow(
-			Titulo,
-			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-			Width, Height,
-			SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN | SDL_WINDOW_VULKAN);
+		Titulo,
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		Width,
+		Height,
+		SDL_WINDOW_SHOWN | SDL_WINDOW_VULKAN
+	);
 
 	RENDER = SDL_CreateRenderer(WINDOW, -1, SDL_RENDERER_ACCELERATED);
 

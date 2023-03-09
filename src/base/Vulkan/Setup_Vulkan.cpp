@@ -1,7 +1,21 @@
 #include "Vulkan.hpp"
 
 // Instancia
-void Graphics::Vulkan::CreateInstance(void) {
+void Graphics::Vulkan::CreateInstance(SDL_Window * WINDOW) {
+    unsigned int extensionCount = 0;
+    if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionCount, nullptr))
+    {
+        // Error al obtener la lista de extensiones necesarias
+		std::cout << "Error al obtener la lista de extensiones necesarias: " << SDL_GetError() << std::endl;
+    }
+
+    std::vector<const char*> extensionNames(extensionCount);
+    if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionCount, extensionNames.data()))
+    {
+        // Error al obtener la lista de extensiones necesarias
+		std::cout << "Error al obtener la lista de extensiones necesarias: " << SDL_GetError() << std::endl;
+    }
+
 	// Informacion de la aplicacion
 	vk::ApplicationInfo PatataEngineInfo(
 		"Patata Engine",
@@ -13,8 +27,7 @@ void Graphics::Vulkan::CreateInstance(void) {
 	// Instancia
 	vk::InstanceCreateInfo VulkanInstanceInfo(
 		vk::InstanceCreateFlags(),
-		&PatataEngineInfo, Layers, nullptr);
-
+		&PatataEngineInfo, layer, nullptr);
 
 	VulkanInstance = vk::createInstance(VulkanInstanceInfo);
 }
@@ -53,15 +66,23 @@ void Graphics::Vulkan::CreateCommandBuffer(void) {
 
 void Graphics::Vulkan::CreateSurface(SDL_Window * WINDOW) {
 	VkSurfaceKHR _surface;
-	SDL_Vulkan_GetInstanceExtensions(WINDOW, extensionCountSDL, LayersSDL);
 	SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, &_surface);
 	Surface = vk::SurfaceKHR(_surface);
-	//SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
 }
 
 void Graphics::Vulkan::CreateSwapChain(void) {
-	Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
-	Format = (Formats[0].format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : Formats[0].format;
+	//Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
+	//assert(!Formats.empty());
+}
+
+Graphics::Vulkan::Vulkan(SDL_Window * WINDOW) {
+	CreateInstance(WINDOW);
+	PhysicalDevices();
+	ComputeQueueFamilyIndex = CreateQueue();
+	InitDevice();
+	CreateCommandBuffer();
+	CreateSurface(WINDOW);
+	CreateSwapChain();
 }
 
 void Graphics::Vulkan::Finish(void) {

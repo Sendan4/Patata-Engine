@@ -7,25 +7,25 @@
 namespace Graphics {
 	class Vulkan {
 		public:
-			void CreateInstance(void);
+			void CreateInstance(SDL_Window *);
 			void PhysicalDevices(void);
 			uint32_t CreateQueue(void);
 			void InitDevice(void);
 			void CreateCommandBuffer(void);
 			void CreateSurface(SDL_Window *);
-			void CreateSwapChain(void);
+			void CreateSwapChain();
+			Vulkan(SDL_Window *);
 			void Finish(void);
 	
 		private:
-			uint32_t extensionCount = 0;
-			unsigned int * extensionCountSDL;
+			unsigned int extensionCount = 0;
 			uint32_t ComputeQueueFamilyIndex = 0;
 			float QueuePriority = 0.0f;
 			// Instance
 			vk::Instance VulkanInstance = nullptr;
 			// Extensiones
-			const char * Layers = {"VK_LAYER_KHRONOS_validation"};
-			const char ** LayersSDL;
+			const char * layer = {"VK_LAYER_KHRONOS_validation"};
+			const char ** extensionsNames = nullptr;
 			// Device
 			vk::Device Device = nullptr;
 			vk::PhysicalDevice PhysicalDevice = nullptr;
@@ -39,7 +39,6 @@ namespace Graphics {
 			std::vector<vk::SurfaceFormatKHR> Formats;
 			vk::Format Format;
 			// Surface
-			vk::SurfaceKHR Surface;
-			vk::SurfaceCapabilitiesKHR SurfaceCapabilities;
+			vk::SurfaceKHR Surface = nullptr;
 	};
 }
