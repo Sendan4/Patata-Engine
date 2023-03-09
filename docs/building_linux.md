@@ -38,25 +38,25 @@ git clone https://gitlab.com/448L/patata-engine && cd "patata-engine"
 
 si la carpeta `build` no esta creela
 
-```
+```bash
 mkdir build
 ```
 
 configure el proyecto. `Release` es el seleccionado por defecto.
 
-```
+```bash
 meson setup build && cd build
 ```
 
 y compile con `ninja` usando varios nucleos
 
-```
+```bash
 ninja -j$(nproc)
 ```
 
 o usando un solo nucleo
 
-```
+```bash
 ninja
 ```
 
@@ -97,32 +97,33 @@ git clone https://gitlab.com/448L/patata-engine && cd "patata-engine"
 
 si la carpeta `build` no esta creela
 
-```
+```bash
 mkdir build && cd build
 ```
 
 configure el proyecto. `Release` es el seleccionado por defecto.
 
-```
+```bash
 cmake ..
 ```
 
-- Alternativamente usted puede usar ninja con cmake, asegurese de tener instalado `ninja-build`.
+Alternativamente usted puede usar ninja con cmake, asegurese de tener instalado `ninja-build`.
 
-- ```bash
+
+```bash
 cmake .. -G ninja
 ```
 
 
 y compile con `make` usando varios nucleos
 
-```
+```bash
 make -j$(nproc)
 ```
 
 o usando un solo nucleo
 
-```
+```bash
 make
 ```
 
