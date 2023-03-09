@@ -36,7 +36,6 @@ int main(int argc, char **argv) {
 	} while (true);
 
 	// Finish
-	vulkan.Finish();
 	MainWindow.Finish();
 	Game::finish();
 	return 0;

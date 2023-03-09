@@ -2,20 +2,6 @@
 
 // Instancia
 void Graphics::Vulkan::CreateInstance(SDL_Window * WINDOW) {
-    unsigned int extensionCount = 0;
-    if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionCount, nullptr))
-    {
-        // Error al obtener la lista de extensiones necesarias
-		std::cout << "Error al obtener la lista de extensiones necesarias: " << SDL_GetError() << std::endl;
-    }
-
-    std::vector<const char*> extensionNames(extensionCount);
-    if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionCount, extensionNames.data()))
-    {
-        // Error al obtener la lista de extensiones necesarias
-		std::cout << "Error al obtener la lista de extensiones necesarias: " << SDL_GetError() << std::endl;
-    }
-
 	// Informacion de la aplicacion
 	vk::ApplicationInfo PatataEngineInfo(
 		"Patata Engine",
@@ -85,7 +71,7 @@ Graphics::Vulkan::Vulkan(SDL_Window * WINDOW) {
 	CreateSwapChain();
 }
 
-void Graphics::Vulkan::Finish(void) {
+Graphics::Vulkan::~Vulkan(void) {
 	Device.freeCommandBuffers(CommandPool, CommandBuffer);
 	Device.destroyCommandPool(CommandPool);
 	Device.destroy();

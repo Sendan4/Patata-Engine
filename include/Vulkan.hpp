@@ -15,17 +15,15 @@ namespace Graphics {
 			void CreateSurface(SDL_Window *);
 			void CreateSwapChain();
 			Vulkan(SDL_Window *);
-			void Finish(void);
+			~Vulkan(void);
 	
 		private:
-			unsigned int extensionCount = 0;
 			uint32_t ComputeQueueFamilyIndex = 0;
 			float QueuePriority = 0.0f;
 			// Instance
 			vk::Instance VulkanInstance = nullptr;
 			// Extensiones
 			const char * layer = {"VK_LAYER_KHRONOS_validation"};
-			const char ** extensionsNames = nullptr;
 			// Device
 			vk::Device Device = nullptr;
 			vk::PhysicalDevice PhysicalDevice = nullptr;
