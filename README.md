@@ -1,9 +1,9 @@
 # <img draggable=false src = "assets/icon/patata_icon_16.webp" width=24 style="image-rendering: pixelated;"> Patata Engine
 
 <img draggable=false src = "assets/icon/patata_icon.svg" width=60 align=left style="mrgin:5px 3px;">
-<p style=""><span style="color:Orange; font-weight:bold;">Patata Engine</span> es un motor 2d sencillo con el enfoque en el desarrollo de videojuegos, aclaro no es un videojuego es solo un motor en el que se puede contruir uno.</p>
+<p style=""><b>Patata Engine</b> es un motor 2d sencillo con el enfoque en el desarrollo de videojuegos, aclaro no es un videojuego es solo un motor en el que se puede contruir uno.</p>
 
-<p>Soy novato en <span style="color:red; font-weight:bold;">C++</span>, estoy haciendo este proyecto para aprender y pasarmelo bien desarrollandolo, Asi que no esperes ver un codigo de profesional.</p>
+<p>Soy novato en <b>C++</b>, estoy haciendo este proyecto para aprender y pasarmelo bien desarrollandolo, Asi que no esperes ver un codigo de profesional.</p>
 
 <p>Otro de los objetivos es la <b>portabilidad</b>, quiero que este se pueda ejecutar en dispositivos antiguos (No tan antiguos) y en los modernos. En un futuro espero poder portear esto a <b>Android</b>, tambien pienso llevarlo a <b>iOS</b> y <b>Mac Os</b>, pero no puedo permitirme eso por ahora, asi que si alguien quiere portearlo para los sistemas de Apple, es bienvenido.</p>
 
