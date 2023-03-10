@@ -1,4 +1,8 @@
+# Build Dirs
 build/*
 bin/*
 externals/libs/*
 
+# tmp
+.cache
+.vscode
