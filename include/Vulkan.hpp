@@ -5,25 +5,30 @@
 #include <vector>
 
 namespace Graphics {
-	class Vulkan {
+	class VulkanRenderer {
 		public:
 			void CreateInstance(SDL_Window *);
 			void PhysicalDevices(void);
+			void CreateSurface(SDL_Window *);
 			uint32_t CreateQueue(void);
 			void InitDevice(void);
 			void CreateCommandBuffer(void);
-			void CreateSurface(SDL_Window *);
 			void CreateSwapChain();
-			Vulkan(SDL_Window *);
-			~Vulkan(void);
-	
+
+			VulkanRenderer(SDL_Window *);
+			~VulkanRenderer(void);
+
+			vk::Instance VulkanInstance = nullptr;
+			vk::SurfaceKHR Surface = nullptr;
 		private:
-			uint32_t ComputeQueueFamilyIndex = 0;
+			uint32_t GraphicsQueueFamilyIndex = 0;
 			float QueuePriority = 0.0f;
 			// Instance
-			vk::Instance VulkanInstance = nullptr;
 			// Extensiones
 			const char * layer = {"VK_LAYER_KHRONOS_validation"};
+			const std::vector <const char *> InstanceExtensions = {"VK_KHR_surface"};
+			const std::vector <const char *> DeviceExtensions = {"VK_KHR_swapchain"};
+			std::vector <vk::ExtensionProperties> ExtensionProperties;
 			// Device
 			vk::Device Device = nullptr;
 			vk::PhysicalDevice PhysicalDevice = nullptr;
@@ -33,10 +38,7 @@ namespace Graphics {
 			// Command Buffer
 			vk::CommandPool CommandPool = nullptr;
 			vk::CommandBuffer CommandBuffer = nullptr;
-			// SwapChain
-			std::vector<vk::SurfaceFormatKHR> Formats;
-			vk::Format Format;
 			// Surface
-			vk::SurfaceKHR Surface = nullptr;
+			vk::SurfaceCapabilitiesKHR SurfaceCapabilities;
 	};
 }

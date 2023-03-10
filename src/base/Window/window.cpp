@@ -11,8 +11,8 @@ void Game::Window::Start(const char * Titulo, int Width, int Height) {
 		Height,
 		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_VULKAN);
 
-	// Obtener las extensiones necesarias para vulkan
-	{
+	// Vulkan
+	// Obtener las extensiones
 		unsigned int extensionInstanceCount = 0;
 		if (!SDL_Vulkan_GetInstanceExtensions(Window, &extensionInstanceCount, nullptr))
 			std::cout << "Error al obtener la lista de extensiones necesarias: " << SDL_GetError() << std::endl;
@@ -20,11 +20,15 @@ void Game::Window::Start(const char * Titulo, int Width, int Height) {
 		std::vector<const char*> extensionInstanceNames(extensionInstanceCount);
 		if (!SDL_Vulkan_GetInstanceExtensions(Window, &extensionInstanceCount, extensionInstanceNames.data()))
 			std::cout << "Error al obtener la lista de extensiones necesarias: " << SDL_GetError() << std::endl;
-		else {
-			std::cout << "Vulkan Instance Extensions :" << std::endl;
+		else {1
+			std::cout << "| Vulkan Instance Extensions" << std::endl;
 			for (int c = 0; c < int(extensionInstanceNames.size()); c++)
-				std::cout << extensionInstanceNames[c] << std::endl;
+				std::cout << "|  · " << extensionInstanceNames[c] << std::endl;
+			std::cout << std::endl;
 		}
+
+		if (!SDL_Vulkan_CreateSurface(Window, VulkanInstance, (VkSurfaceKHR*)&Surface))
+			std::cout << " X No se pudo crear la Superficie" << std::endl;
 	}
 
 	SDL_Renderer * Render = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED);

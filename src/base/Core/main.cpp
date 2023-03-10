@@ -16,13 +16,14 @@ OpenGL 0.113f, 0.578f, 0.810f
 //#include <glad/glad.h>
 
 int main(int argc, char **argv) {
+	std::cout << "😺 🥔" << std::endl;
 	Game::begin();
 	
 	Game::Window MainWindow;
 	MainWindow.Start("Patata Engine", 1280 ,720);
 
 	// Vulkan
-	Graphics::Vulkan vulkan(MainWindow.Window_get());
+	Graphics::VulkanRenderer Vulkan(MainWindow.Window_get());
 
 	do {
 		SDL_PollEvent(&Window_Event);
