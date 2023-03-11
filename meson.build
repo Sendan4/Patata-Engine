@@ -34,7 +34,7 @@ Vulkan = dependency('Vulkan',
 
 # GLAD
 glad_dep = declare_dependency(
-  sources : 'externals/libs/glad/src/glad.c',
+  sources : 'externals/libs/glad/src/gl.c',
   include_directories : 'externals/libs/glad/include/',
   d_import_dirs : 'externals/libs/glad/include/')
 

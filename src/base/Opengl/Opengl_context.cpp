@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <iostream>
 
 namespace Graphics {
@@ -13,10 +13,15 @@ namespace Graphics {
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	}
 
-	void start_opengl(SDL_Window * WINDOW,SDL_GLContext GL_CONTEXT) {
+	void start_opengl(SDL_Window * WINDOW, SDL_GLContext GL_CONTEXT) {
 		GL_CONTEXT = SDL_GL_CreateContext(WINDOW);
+		if (!GL_CONTEXT)
+			std::cout << "No se pudo crear el contexto" << std::endl;
 
-		if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
+		GladGLContext gladContext;
+
+		GLADloadfunc load = (GLADloadfunc)SDL_GL_GetProcAddress;
+		if (!gladLoadGLContext(&gladContext, load))
 			std::cout << "No se pudo iniciar el contexto de OpenGL" << std::endl;
 	}
 }
