@@ -3,6 +3,7 @@
 #include <SDL_vulkan.h>
 #include <iostream>
 #include <vector>
+#include "terminal_colors.hpp"
 
 namespace Graphics {
 	class VulkanRenderer {
@@ -16,19 +17,18 @@ namespace Graphics {
 			void CreateSwapChain();
 
 			VulkanRenderer(SDL_Window *);
+			void Setup();
 			~VulkanRenderer(void);
-
-			vk::Instance VulkanInstance = nullptr;
-			vk::SurfaceKHR Surface = nullptr;
 		private:
 			uint32_t GraphicsQueueFamilyIndex = 0;
 			float QueuePriority = 0.0f;
-			// Instance
 			// Extensiones
 			const char * layer = {"VK_LAYER_KHRONOS_validation"};
 			const std::vector <const char *> InstanceExtensions = {"VK_KHR_surface"};
 			const std::vector <const char *> DeviceExtensions = {"VK_KHR_swapchain"};
 			std::vector <vk::ExtensionProperties> ExtensionProperties;
+			vk::Instance VulkanInstance = nullptr;
+			vk::SurfaceKHR Surface = nullptr;
 			// Device
 			vk::Device Device = nullptr;
 			vk::PhysicalDevice PhysicalDevice = nullptr;

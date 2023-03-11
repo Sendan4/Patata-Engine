@@ -15,24 +15,15 @@ OpenGL 0.113f, 0.578f, 0.810f
 //#include <glad/glad.h>
 
 int main(int argc, char **argv) {
-<<<<<<< HEAD
 	Game::SDL sdl;
 
-	// Vulkan
-	Graphics::Vulkan vulkan;
-	vulkan.CreateInstance();
-	vulkan.PhysicalDevices();
-	vulkan.CreateQueue();
-	vulkan.InitDevice();
-=======
 	std::cout << "😺 🥔" << std::endl;
-	Game::begin();
->>>>>>> Vulkan_setup
 	
-	Game::Window MainWindow("Patata Engine", 1280 ,720);
+	Game::Window MainWindow("Patata Engine", 1280 ,720, GraphicsApi::VULKAN);
 
-	// Vulkan
 	Graphics::VulkanRenderer Vulkan(MainWindow.Window_get());
+
+	MainWindow.WindowRendererStart();
 
 	do {
 		SDL_PollEvent(&Window_Event);
@@ -44,13 +35,5 @@ int main(int argc, char **argv) {
 
 		//SDL_GL_SwapWindow(MainWindow.window_get());
 	} while (true);
-
-	// Finish
-<<<<<<< HEAD
-	vulkan.Finish();
-=======
-	MainWindow.Finish();
-	Game::finish();
->>>>>>> Vulkan_setup
 	return 0;
 }
