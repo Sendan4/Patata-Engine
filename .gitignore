@@ -1,8 +1,3 @@
-# Build Dirs
-build/*
-bin/*
-externals/libs/*
-
-# tmp
-.cache
+ignorame.txt
+externals/libs/glad/*
 .vscode
