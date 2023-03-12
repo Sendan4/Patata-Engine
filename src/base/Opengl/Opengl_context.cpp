@@ -1,6 +1,7 @@
-#include <SDL.h>
 #include <glad/glad.h>
+#include <SDL.h>
 #include <iostream>
+#include "terminal_colors.hpp"
 
 namespace Graphics {
 	void sdl_opengl_atributos(void) {
@@ -13,10 +14,20 @@ namespace Graphics {
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	}
 
-	void start_opengl(SDL_Window * WINDOW,SDL_GLContext GL_CONTEXT) {
-		GL_CONTEXT = SDL_GL_CreateContext(WINDOW);
+	SDL_GLContext start_opengl(SDL_Window * WINDOW) {
+		SDL_GLContext context = SDL_GL_CreateContext(WINDOW);
 
-		if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
 			std::cout << "No se pudo iniciar el contexto de OpenGL" << std::endl;
+			return NULL;
+		}
+		else {
+			std::cout << FSteelBlue1 << Bold << "+ Informacion General de OpenGL :" << Reset << std::endl;
+			std::cout << FSteelBlue1 << Bold << "| · Hardware Vendor: \t" << Reset << glGetString(GL_VENDOR) << Reset << std::endl;
+			std::cout << FSteelBlue1 << Bold << "| · GPU / iGPU: \t" << Reset << glGetString(GL_RENDERER) << Reset << std::endl;
+			std::cout << FSteelBlue1 << Bold << "| · OpenGL Version: \t" << Reset << glGetString(GL_VERSION) << Reset << std::endl;
+			std::cout << FSteelBlue1 << Bold << "- · Shading Language Version: \t" << Reset << glGetString(GL_SHADING_LANGUAGE_VERSION) << Reset << std::endl;
+		}
+		return context;
 	}
 }

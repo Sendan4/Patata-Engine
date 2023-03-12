@@ -48,13 +48,6 @@ void Graphics::VulkanRenderer::PhysicalDevices(void) {
 	std::cout << FRojo1 << Bold << "| · " << Reset << Bold << "Vulkan Version:\t" << Reset << VK_VERSION_MAJOR(VulkanVersion) << '.' << VK_VERSION_MINOR(VulkanVersion) << '.' << VK_VERSION_PATCH(VulkanVersion) << '.' << VK_API_VERSION_VARIANT(VulkanVersion) << Reset << std::endl << std::endl;
 }
 
-void Graphics::VulkanRenderer::CreateSurface(SDL_Window * WINDOW) {
-	if (!SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, (VkSurfaceKHR*)&Surface))
-		std::cout << BLightGoldenRod1 << "X No se pudo crear la Superficie" << Reset << std::endl;
-
-	SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
-}
-
 void Graphics::VulkanRenderer::InitDevice(void) {
 	vk::DeviceQueueCreateInfo DeviceQueueCreateInfo(vk::DeviceQueueCreateFlags(), uint32_t(GraphicsQueueFamilyIndex), 1, &QueuePriority);
 
@@ -83,27 +76,30 @@ uint32_t Graphics::VulkanRenderer::CreateQueue(void) {
 	return GraphicsQueueFamilyIndex;
 }
 
-void Graphics::VulkanRenderer::CreateCommandBuffer(void) {
-	CommandPool = Device.createCommandPool(vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), GraphicsQueueFamilyIndex));
-	CommandBuffer = Device.allocateCommandBuffers(vk::CommandBufferAllocateInfo(CommandPool, vk::CommandBufferLevel::ePrimary, 1)).front();
+void Graphics::VulkanRenderer::CreateSurface(SDL_Window * WINDOW) {
+	if (!SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, (VkSurfaceKHR*)&Surface))
+		std::cout << BLightGoldenRod1 << "X No se pudo crear la Superficie" << Reset << std::endl;
+
+	SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
 }
 
 void Graphics::VulkanRenderer::CreateSwapChain(void) {
 
 }
 
+void Graphics::VulkanRenderer::CreateCommandBuffer(void) {
+	CommandPool = Device.createCommandPool(vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), GraphicsQueueFamilyIndex));
+	CommandBuffer = Device.allocateCommandBuffers(vk::CommandBufferAllocateInfo(CommandPool, vk::CommandBufferLevel::ePrimary, 1)).front();
+}
+
 Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW) {
 	CreateInstance(WINDOW);
 	PhysicalDevices();
-	CreateSurface(WINDOW);
 	InitDevice();
 	GraphicsQueueFamilyIndex = CreateQueue();
-	CreateCommandBuffer();
+	CreateSurface(WINDOW);
 	CreateSwapChain();
-}
-
-void Graphics::VulkanRenderer::Setup(void) {
-	//
+	CreateCommandBuffer();
 }
 
 Graphics::VulkanRenderer::~VulkanRenderer(void) {

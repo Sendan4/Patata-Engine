@@ -3,13 +3,19 @@
 #include <SDL_vulkan.h>
 
 Game::Window::Window(const char *Titulo, int Width, int Height, bool GraphicsApi) {
+	uint32_t flags = 0;
+	if (GraphicsApi)
+		flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_VULKAN;
+	else
+		flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
+
 	WINDOW = SDL_CreateWindow(
 		Titulo,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		Width,
 		Height,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_VULKAN);
+		flags);
 
 	if (!WINDOW) {
 		std::cout << "SDL - Fallo la creacion de la ventana : " << SDL_GetError() << std::endl;
