@@ -1,6 +1,8 @@
 project('Patata Engine',
   'cpp', 'c',
-  default_options: ['buildtype=release', 'cpp_std=c++20'],
+  default_options: [
+    'buildtype=release',
+    'cpp_std=c++20'],
   version : '0')
 
 branchCommand = run_command('git', 'branch', '--show-current', check: true)
@@ -17,7 +19,7 @@ sdl2_dep = dependency('sdl2',
   modules : ['SDL2::SDL2'])
 
 Vulkan = dependency('Vulkan',
-  static : false,
+  static : true,
   required : true)
 
 # GLAD
