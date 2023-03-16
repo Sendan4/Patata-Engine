@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.18)
-
 set(CMAKE_BUILD_TYPE Release)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -52,8 +51,8 @@ else()
 		${SOURCE})
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME} PUBLIC
 	${SDL2_LIBRARIES}
-	SDL2_image::SDL2_image
-	glad
-	Vulkan::Vulkan)
+	${SDL2_image_LIBRARIES}
+	${Vulkan_LIBRARIES}
+	glad)

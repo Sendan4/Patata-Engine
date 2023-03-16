@@ -1,7 +1,12 @@
 project('Patata Engine',
   'cpp', 'c',
-  default_options: ['buildtype=release', 'cpp_std=c++20'],
+  default_options: [
+    'buildtype=release',
+    'cpp_std=c++20'],
   version : '0')
+  
+prefix = meson.source_root() + 'bin/'
+bindir = meson.source_root() + 'bin/'
 
 # SDL2
 if meson.backend() == 'vs2022'
@@ -18,17 +23,17 @@ if meson.backend() == 'vs2022'
 else
   sdl2_dep = dependency('sdl2',
     required : true,
-    static : false,
+    static : true,
     version : '>=2.24.1',
     modules : ['SDL2::SDL2', 'SDL2::SDL2-static'])
 
   sdl2_image_dep = dependency('sdl2_image',
-    static : false,
+    static : true,
     required : true)
 endif
 
 Vulkan = dependency('Vulkan',
-  static : false,
+  static : true,
   required : true)
 
 # GLAD
