@@ -6,6 +6,7 @@ project('Patata Engine',
 branchCommand = run_command('git', 'branch', '--show-current', check: true)
 branchCOutput = branchCommand.stdout().strip()
 message('Branch:', branchCOutput)
+
 # Macros
 add_project_arguments('-DPatataVersion=0', '-DGIT_BRANCH="'+branchCOutput+'"', '-DBuildSys="Meson"', language : 'cpp') 
 

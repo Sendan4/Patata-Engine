@@ -120,8 +120,3 @@ else()
 			${Vulkan_LIBRARIES})
 	endif()
 endif()
-
-set_target_properties(
-	${PROJECT_NAME}
-	PROPERTIES
-	COMPILE_DEFINITIONS IO_TEST=1)
