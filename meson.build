@@ -24,7 +24,6 @@ else
 
   sdl2_image_dep = dependency('sdl2_image',
     static : false,
-    modules : ['SDL2_image::SDL2_image'],
     required : true)
 endif
 
@@ -48,7 +47,7 @@ source = files([
   'src/base/Events/Main_events.cpp',
   'src/base/Core/API_Graphics_Switch.cpp',
   'src/base/Opengl/Opengl_context.cpp',
-  'src/base/Vulkan/Setup_Vulkan.cpp',])
+  'src/base/Vulkan/Setup_Vulkan.cpp'])
 
 if target_machine.system() == 'windows'
   windows = import('windows')

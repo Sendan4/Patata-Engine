@@ -14,7 +14,8 @@ set(MAIN_INCLUDE
 	"include/API_Graphics_Switch.hpp"
 	"include/Events.hpp"
 	"include/Opengl_context.hpp"
-	"include/Vulkan.hpp")
+	"include/Vulkan.hpp"
+	"include/terminal_colors.hpp")
 set(SOURCE
 	"src/base/Core/main.cpp"
 	"src/base/Core/sdl.cpp"
