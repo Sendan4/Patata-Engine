@@ -10,3 +10,6 @@
 	path = externals/libs/SDL_ttf
 	url = https://github.com/libsdl-org/SDL_ttf.git
 	branch = SDL2
+[submodule "externals/libs/libconfig"]
+	path = externals/libs/libconfig
+	url = https://github.com/hyperrealm/libconfig.git
