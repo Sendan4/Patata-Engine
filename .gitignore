@@ -6,3 +6,4 @@ externals/libs/*
 # tmp
 .cache
 .vscode
+.vs
