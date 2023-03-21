@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-option(SHARED_BUILD ON)
+option(BUILD_TYPE ON)
 option(USE_SYSTEM_LIBS ON)
 
 set(CMAKE_BUILD_TYPE Release)
@@ -9,6 +9,12 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	project("Patata_Engine" LANGUAGES CXX RC)
 else()
 	project("Patata_Engine" LANGUAGES CXX)
+endif()
+
+if(NOT BUILD_TYPE)
+	if (NOT MSVC)
+		set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+	endif()
 endif()
 
 set(MAIN_INCLUDE
@@ -37,6 +43,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 find_package(Vulkan REQUIRED)
+add_subdirectory(externals/libs/glad)
 
 if (USE_SYSTEM_LIBS)
 	find_package(SDL2 REQUIRED)
@@ -47,10 +54,7 @@ else()
 	add_subdirectory(externals/libs/SDL_image)
 endif()
 
-add_subdirectory(externals/libs/glad)
-
 include_directories("include/")
-
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	add_executable(${PROJECT_NAME}
@@ -63,8 +67,14 @@ else()
 		${SOURCE})
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-	${SDL2_LIBRARIES}
-	${SDL2_image_LIBRARIES}
-	glad
-	Vulkan::Vulkan)
+if (BUILD_TYPE)
+	target_link_libraries(${PROJECT_NAME} PRIVATE
+		SDL2main SDL2::SDL2
+		${Vulkan_LIBRARIES}
+		glad)
+else()
+	target_link_libraries(${PROJECT_NAME} PRIVATE
+		SDL2main SDL2-static
+		${Vulkan_LIBRARIES}
+		glad)
+endif()
