@@ -1,2 +1,11 @@
+<<<<<<< HEAD
 ignorame.txt
+=======
+# Build Dirs
+build/*
+bin/*
+
+# tmp
+.cache
+>>>>>>> origin/build-config
 .vscode
