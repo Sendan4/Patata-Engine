@@ -39,7 +39,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 find_package(Vulkan REQUIRED)
-add_subdirectory(externals/libs/glad)
+add_subdirectory(externals/libs/Glad2)
 
 if (USE_SYSTEM_LIBS)
 	find_package(SDL2 REQUIRED)
@@ -67,10 +67,10 @@ if (BUILD_TYPE)
 	target_link_libraries(${PROJECT_NAME} PRIVATE
 		SDL2main SDL2::SDL2
 		${Vulkan_LIBRARIES}
-		glad)
+		glad2)
 else()
 	target_link_libraries(${PROJECT_NAME} PRIVATE
 		SDL2main SDL2-static
 		${Vulkan_LIBRARIES}
-		glad)
+		glad2)
 endif()

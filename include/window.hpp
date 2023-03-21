@@ -23,7 +23,7 @@ namespace Game {
 			SDL_GLContext glcontext_get(void);
 
 		private:
-			SDL_Window * Window;
+			SDL_Window * WINDOW;
 			SDL_Renderer * Render;
 			SDL_GLContext OPENGL_CONTEXT = NULL;
 	};
