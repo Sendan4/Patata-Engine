@@ -32,6 +32,4 @@ Aun no decido que licencia deberia tener este proyecto.
 
 <hr>
 
-## Acceso a la documentacion
-### [Building](docs/README.md)
-### [Funciones](docs/null)
+## [Acceso a la documentacion](https://gitlab.com/448L/patata-engine/-/wikis/Indice-%F0%9F%A5%94)
