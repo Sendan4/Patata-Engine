@@ -26,8 +26,10 @@ Aun no decido que licencia deberia tener este proyecto.
 <ul>
 	<li>SDL2</li>
 	<li>SDL2 Image</li>
+	<li>SDL2 TTF</li>
 	<li>Vulkan <i>(Vulkan.hpp)</i></li>
-	<li>Glad <i>(Multi-Loader used for OpenGL)</i></li>
+	<li>Glad 2 <i>(Multi-Loader used for OpenGL)</i></li>
+	<li>libconfig</li>
 </ul>
 
 <hr>
