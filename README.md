@@ -14,8 +14,6 @@
 
 
 ## Estado General del proyecto
-Aun no decido que licencia deberia tener este proyecto.
-
 - Por ahora estoy enfocado en hacer funcionar Vulkan, y esto es lo que vez, aun no puedo renderizar nada.
 
 <img src = "assets/state/Screenshot_20230309_161227.webp">
