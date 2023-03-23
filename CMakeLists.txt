@@ -39,15 +39,15 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 find_package(Vulkan REQUIRED)
-add_subdirectory(externals/libs/Glad2)
+add_subdirectory(externals/Glad2)
 
 if (USE_SYSTEM_LIBS)
 	find_package(SDL2 REQUIRED)
 	find_package(SDL2_image REQUIRED)
 else()
-	add_subdirectory(externals/libs/SDL)
+	add_subdirectory(externals/SDL)
 	include_directories("${CMAKE_SOURCE_DIR}/externals/libs/SDL/include")
-	add_subdirectory(externals/libs/SDL_image)
+	add_subdirectory(externals/SDL_image)
 endif()
 
 include_directories("include/")

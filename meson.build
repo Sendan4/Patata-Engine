@@ -33,10 +33,10 @@ Vulkan = dependency('Vulkan',
   required : true)
 
 # GLAD
-glad_dep = declare_dependency(
-  sources : 'externals/libs/glad/src/gl.c',
-  include_directories : 'externals/libs/glad/include/',
-  d_import_dirs : 'externals/libs/glad/include/')
+Glad2 = declare_dependency(
+  sources : 'externals/Glad2/src/gl.c',
+  include_directories : 'externals/Glad2/include/',
+  d_import_dirs : 'externals/Glad2/include/')
 
 # Archivos (Source y Include)
 include_main = include_directories('include')
@@ -48,7 +48,7 @@ source = files([
   'src/base/Events/Main_events.cpp',
   'src/base/Core/API_Graphics_Switch.cpp',
   'src/base/Opengl/Opengl_context.cpp',
-  'src/base/Vulkan/Setup_Vulkan.cpp',])
+  'src/base/Vulkan/Setup_Vulkan.cpp'])
 
 if target_machine.system() == 'windows'
   windows = import('windows')
@@ -59,10 +59,10 @@ if target_machine.system() == 'windows'
     source,
     Patata_icon,
     include_directories : [include_main],
-    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, glad_dep])
+    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, Glad2])
 else
   executable('Patata Engine',
     source,
     include_directories : [include_main],
-    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, glad_dep])
+    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, Glad2])
 endif

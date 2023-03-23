@@ -1,15 +1,16 @@
-[submodule "externals/libs/SDL_image"]
-	path = externals/libs/SDL_image
-	url = https://github.com/libsdl-org/SDL_image.git
-	branch = SDL2
-[submodule "externals/libs/SDL"]
-	path = externals/libs/SDL
+ 
+[submodule "externals/SDL"]
+	path = externals/SDL
 	url = https://github.com/libsdl-org/SDL.git
 	branch = SDL2
-[submodule "externals/libs/SDL_ttf"]
-	path = externals/libs/SDL_ttf
+[submodule "externals/SDL_image"]
+	path = externals/SDL_image
+	url = https://github.com/libsdl-org/SDL_image.git
+	branch = SDL2
+[submodule "externals/SDL_ttf"]
+	path = externals/SDL_ttf
 	url = https://github.com/libsdl-org/SDL_ttf.git
 	branch = SDL2
-[submodule "externals/libs/libconfig"]
-	path = externals/libs/libconfig
+[submodule "externals/libconfig"]
+	path = externals/libconfig
 	url = https://github.com/hyperrealm/libconfig.git
