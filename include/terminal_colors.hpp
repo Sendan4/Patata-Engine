@@ -1,5 +1,5 @@
 // Foreground
-#define FRojo1 "\033[38;5;196m"
+#define FindianRed1 "\033[38;5;203m"
 #define FRojo3 "\033[38;5;160m"
 #define FSteelBlue1 "\033[38;5;75m"
 
