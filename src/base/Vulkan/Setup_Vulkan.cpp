@@ -59,7 +59,7 @@ void Graphics::VulkanRenderer::InitDevice(void) {
 			uint32_t(GraphicsQueueFamilyIndex), 1,
 			&QueuePriority);
 
-	vk::DeviceCreateInfo DeviceCreateInfo;
+	vk::DeviceCreateInfo DeviceCreateInfo{};
 	DeviceCreateInfo.enabledExtensionCount = uint32_t(DeviceExtensions.size());
 	DeviceCreateInfo.ppEnabledExtensionNames = DeviceExtensions.data();
 	DeviceCreateInfo.pNext = {};
@@ -102,7 +102,7 @@ void Graphics::VulkanRenderer::CreateSwapChain(void) {
 
 	SurfaceFormat = SurfaceFormats[0];
 
-	vk::SwapchainCreateInfoKHR SwapChainCreateInfo;
+	vk::SwapchainCreateInfoKHR SwapChainCreateInfo{};
 	SwapChainCreateInfo.surface = Surface;
 	SwapChainCreateInfo.minImageCount = SurfaceCapabilities.minImageCount;
 	SwapChainCreateInfo.imageFormat = SurfaceFormat.format;
@@ -119,12 +119,21 @@ void Graphics::VulkanRenderer::CreateSwapChain(void) {
 
 	SwapChain = Device.createSwapchainKHR(SwapChainCreateInfo);
 
-	//std::vector<vk::Image> swapchainImages = PhysicalDevice.getSwapchainImagesKHR(SwapChain);
+	SwapChainImages = Device.getSwapchainImagesKHR(SwapChain);
 }
 
 void Graphics::VulkanRenderer::CreateCommandBuffer(void) {
-	/*CommandPool = Device.createCommandPool(vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), GraphicsQueueFamilyIndex));
-	CommandBuffer = Device.allocateCommandBuffers(vk::CommandBufferAllocateInfo(CommandPool, vk::CommandBufferLevel::ePrimary, 1)).front();*/
+	vk::CommandPoolCreateInfo CreateCommandPoolInfo(
+			vk::CommandPoolCreateFlags(), GraphicsQueueFamilyIndex);
+
+	CommandPool = Device.createCommandPool(CreateCommandPoolInfo);
+
+	vk::CommandBufferAllocateInfo CreateCommandBufferInfo{};
+	CreateCommandBufferInfo.commandPool = CommandPool;
+	CreateCommandBufferInfo.level = vk::CommandBufferLevel::ePrimary;
+	CreateCommandBufferInfo.commandBufferCount = 1;
+
+	CommandBuffer = Device.allocateCommandBuffers(CreateCommandBufferInfo);
 }
 
 void Graphics::VulkanRenderer::VulkanInfo(void) {
@@ -157,9 +166,8 @@ Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW) {
 }
 
 Graphics::VulkanRenderer::~VulkanRenderer(void) {
-	//Device.destroyCommandPool(CommandPool);
-	//Device.freeCommandBuffers(CommandPool, CommandBuffer);
-
+	Device.freeCommandBuffers(CommandPool, CommandBuffer);
+	Device.destroyCommandPool(CommandPool);
 	Device.destroySwapchainKHR(SwapChain);
 	VulkanInstance.destroySurfaceKHR(Surface);
 	Device.destroy();
