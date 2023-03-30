@@ -41,7 +41,7 @@ namespace Graphics {
 			std::vector <vk::QueueFamilyProperties> QueueFamilyProperties;
 
 			vk::CommandPool CommandPool = nullptr;
-			vk::CommandBuffer CommandBuffer = nullptr;
+			std::vector <vk::CommandBuffer> CommandBuffer;
 
 			std::vector <vk::SurfaceFormatKHR> Formats;
 			vk::Format Format;
@@ -53,5 +53,6 @@ namespace Graphics {
 			vk::SurfaceFormatKHR SurfaceFormat;
 
 			vk::SwapchainKHR SwapChain;
+			std::vector <vk::Image> SwapChainImages;
 	};
 }
