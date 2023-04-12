@@ -12,8 +12,8 @@ namespace Graphics {
 			void PhysicalDevices(void);
 			void InitDevice(void);
 			uint32_t CreateQueue(void);
-			void CreateSurface(SDL_Window *);
-			void CreateSwapChain();
+			void CreateSwapChain(void);
+			void CreateImageView(void);
 			void CreateCommandBuffer(void);
 			void VulkanInfo(void);
 
@@ -43,16 +43,16 @@ namespace Graphics {
 			vk::CommandPool CommandPool = nullptr;
 			std::vector <vk::CommandBuffer> CommandBuffer;
 
-			std::vector <vk::SurfaceFormatKHR> Formats;
 			vk::Format Format;
 			vk::SurfaceCapabilitiesKHR SurfaceCapabilities;
 			vk::Extent2D SwapChainExtent;
-			std::vector <vk::PresentModeKHR> PresentModes;
 			vk::PresentModeKHR PresentMode;
-			std::vector <vk::SurfaceFormatKHR> SurfaceFormats;
 			vk::SurfaceFormatKHR SurfaceFormat;
 
 			vk::SwapchainKHR SwapChain;
-			std::vector <vk::Image> SwapChainImages;
+			vk::Image Image;
+			vk::DeviceMemory ImageMemory;
+			vk::ImageView ImageView;
+			vk::DeviceMemory DeviceMemory;
 	};
 }

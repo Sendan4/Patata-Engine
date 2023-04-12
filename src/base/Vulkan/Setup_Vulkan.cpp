@@ -1,5 +1,5 @@
 #include "Vulkan.hpp"
-#include <vulkan/vulkan_enums.hpp>
+//#include <vulkan/vulkan_enums.hpp>
 
 void Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 	// Get Extensions
@@ -76,29 +76,19 @@ void Graphics::VulkanRenderer::InitDevice(void) {
 	Device = PhysicalDevice.createDevice(DeviceCreateInfo);
 }
 
-void Graphics::VulkanRenderer::CreateSurface(SDL_Window * WINDOW) {
-	if (!SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, (VkSurfaceKHR*)&Surface))
-		std::cout << BLightGoldenRod1 << "X No se pudo crear la Superficie" << Reset << std::endl;
-
-	SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
-}
-
 void Graphics::VulkanRenderer::CreateSwapChain(void) {
-	Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
+	std::vector <vk::SurfaceFormatKHR> Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
 	Format = (Formats[0].format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : Formats[0].format;
 
 	SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
-	PresentModes = PhysicalDevice.getSurfacePresentModesKHR(Surface);
-	SurfaceFormats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
+	std::vector <vk::PresentModeKHR> PresentModes = PhysicalDevice.getSurfacePresentModesKHR(Surface);
+	std::vector <vk::SurfaceFormatKHR> SurfaceFormats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
 
 	SwapChainExtent.width = 1280;
 	SwapChainExtent.height = 720;
 
 	for (auto Mode : PresentModes)
-		if (Mode == vk::PresentModeKHR::eFifo)
-			PresentMode = vk::PresentModeKHR::eFifo;
-		else
-			PresentMode = Mode;
+		Mode = (Mode == vk::PresentModeKHR::eFifo) ? PresentMode = vk::PresentModeKHR::eFifo : PresentMode = Mode;
 
 	SurfaceFormat = SurfaceFormats[0];
 
@@ -118,8 +108,47 @@ void Graphics::VulkanRenderer::CreateSwapChain(void) {
 	SwapChainCreateInfo.oldSwapchain = nullptr;
 
 	SwapChain = Device.createSwapchainKHR(SwapChainCreateInfo);
+}
 
-	SwapChainImages = Device.getSwapchainImagesKHR(SwapChain);
+void Graphics::VulkanRenderer::CreateImageView(void) {
+	vk::ImageCreateInfo CreateImageInfo{};
+	CreateImageInfo.setImageType(vk::ImageType::e2D);
+	CreateImageInfo.setExtent(vk::Extent3D {SwapChainExtent.width, SwapChainExtent.height, 1});
+	CreateImageInfo.setMipLevels(1);
+	CreateImageInfo.setArrayLayers(1);
+	CreateImageInfo.setFormat(Format);
+	CreateImageInfo.setTiling(vk::ImageTiling::eOptimal);
+	CreateImageInfo.setUsage(vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc);
+	CreateImageInfo.setInitialLayout(vk::ImageLayout::eUndefined);
+
+	Image = Device.createImage(CreateImageInfo);
+
+	vk::PhysicalDeviceMemoryProperties MemoryProperties = PhysicalDevice.getMemoryProperties();
+	vk::MemoryRequirements MemoryReq = Device.getImageMemoryRequirements(Image);
+	uint32_t MemoryHeapSize = MemoryProperties.memoryHeaps[0].size;
+	uint32_t MemoryTypeIndex = 0;
+
+	for (uint32_t i = 0; i < MemoryProperties.memoryTypeCount; i++)
+		if ((MemoryReq.memoryTypeBits & (1 << i)) && (MemoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal)) {
+			MemoryTypeIndex = i;
+			break;
+		}
+
+	vk::MemoryAllocateInfo CreateMemoryAllocateInfo{};
+	CreateMemoryAllocateInfo.allocationSize = MemoryReq.size;
+	CreateMemoryAllocateInfo.memoryTypeIndex = MemoryTypeIndex;
+
+	ImageMemory = Device.allocateMemory(CreateMemoryAllocateInfo);
+	Device.bindImageMemory(Image, ImageMemory, 0);
+
+	vk::ImageViewCreateInfo CreateImageViewInfo{};
+	CreateImageViewInfo.setImage(Image);
+	CreateImageViewInfo.setViewType(vk::ImageViewType::e2D);
+	CreateImageViewInfo.setFormat(Format);
+	CreateImageViewInfo.setSubresourceRange(vk::ImageSubresourceRange(
+    	vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+
+	ImageView = Device.createImageView(CreateImageViewInfo);
 }
 
 void Graphics::VulkanRenderer::CreateCommandBuffer(void) {
@@ -158,9 +187,13 @@ Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW) {
 	CreateInstance(WINDOW);
 	PhysicalDevices();
 	GraphicsQueueFamilyIndex = CreateQueue();
-	InitDevice();	
-	CreateSurface(WINDOW);	
+	InitDevice();
+
+	if (!SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, reinterpret_cast<VkSurfaceKHR*>(&Surface)))
+		std::cout << BLightGoldenRod1 << "X No se pudo crear la Superficie" << Reset << std::endl;
+
 	CreateSwapChain();
+	CreateImageView();
 	CreateCommandBuffer();
 	VulkanInfo();
 }
@@ -168,6 +201,10 @@ Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW) {
 Graphics::VulkanRenderer::~VulkanRenderer(void) {
 	Device.freeCommandBuffers(CommandPool, CommandBuffer);
 	Device.destroyCommandPool(CommandPool);
+
+	Device.freeMemory(ImageMemory);
+	Device.destroyImage(Image);
+	Device.destroyImageView(ImageView);
 	Device.destroySwapchainKHR(SwapChain);
 	VulkanInstance.destroySurfaceKHR(Surface);
 	Device.destroy();
