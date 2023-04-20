@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vulkan/vulkan.hpp>
 
-enum GraphicsApi { VULKAN = true, OPENGL = false };
+enum GraphicsAPI { VULKAN = true, OPENGL = false };
 
 namespace Game {
 	class Window {

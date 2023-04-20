@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 	std::cout << "😺 🥔" << std::endl;
 	Game::SDL sdl;
 	
-	Game::Window MainWindow("Patata Engine", 1280 ,720, GraphicsApi::VULKAN);
+	Game::Window MainWindow("Patata Engine", 1280 ,720, GraphicsAPI::VULKAN);
 
 	Graphics::VulkanRenderer Vulkan(MainWindow.Window_get());
 
