@@ -8,13 +8,13 @@
 namespace Graphics {
 	class VulkanRenderer {
 		public:
-			void CreateInstance(SDL_Window *);
-			void PhysicalDevices(void);
+			bool CreateInstance(SDL_Window *);
 			void InitDevice(void);
 			uint32_t CreateQueue(void);
 			void CreateSwapChain(void);
 			void CreateImageView(void);
 			void CreateCommandBuffer(void);
+			void CreateRenderPass(void);
 			void VulkanInfo(void);
 
 			VulkanRenderer(SDL_Window *);
@@ -32,12 +32,10 @@ namespace Graphics {
 			vk::SurfaceKHR Surface = nullptr;
 
 			vk::Device Device = nullptr;
-			vk::PhysicalDevice PhysicalDevice = nullptr;
-			vk::PhysicalDeviceProperties PhysicalDeviceProperties;
+			vk::PhysicalDevice PhysicalDevice = nullptr;	
 
 			uint32_t GraphicsQueueFamilyIndex = 0;
 			float QueuePriority = 0.0f;
-
 			std::vector <vk::QueueFamilyProperties> QueueFamilyProperties;
 
 			vk::CommandPool CommandPool = nullptr;
@@ -51,8 +49,13 @@ namespace Graphics {
 
 			vk::SwapchainKHR SwapChain;
 			vk::Image Image;
+			std::vector <vk::Image> SwapChainImages;
 			vk::DeviceMemory ImageMemory;
 			vk::ImageView ImageView;
 			vk::DeviceMemory DeviceMemory;
+
+			vk::RenderPass RenderPass;
+			vk::Semaphore Semaphore;
+			vk::Semaphore RenderCompleteSemaphore;
 	};
 }

@@ -11,6 +11,28 @@ else()
 	project("Patata_Engine" LANGUAGES CXX)
 endif()
 
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORTS_CXX20)
+
+if (NOT MSVC)
+	check_cxx_compiler_flag("-Wextra" COMPILER_SUPPORTS_WEXTRA)
+	check_cxx_compiler_flag("-Wall" COMPILER_SUPPORTS_WALL)
+
+	if (COMPILER_SUPPORTS_CXX20)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+	else()
+    	message(FATAL_ERROR "El compilador no admite el estándar C++20")
+	endif()
+
+	if (COMPILER_SUPPORTS_WEXTRA AND COMPILER_SUPPORTS_WALL)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_CLAGS} -Wall -Wextra")
+	elseif (COMPILER_SUPPORTS_WALL AND NOT COMPILER_SUPPORTS_WEXTRA)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_CLAGS} -Wall")
+	endif ()
+endif()
+	
+set(CXX_STANDARD_REQUIRED true)
+
 execute_process(
 	COMMAND git branch --show-current
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -54,8 +76,6 @@ set(SOURCE
 
 set(icon "src/Core/patata.rc")
 
-set(CXX_STANDARD_REQUIRED true)
-set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 

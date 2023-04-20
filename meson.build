@@ -1,9 +1,20 @@
 project('Patata Engine',
   'cpp', 'c',
   default_options: [
-    'buildtype=release',
-    'cpp_std=c++20'],
+    'buildtype=release'],
   version : '0')
+
+if meson.get_compiler('cpp').get_id() == 'gcc' or meson.get_compiler('cpp').get_id() == 'clang'
+  if (meson.get_compiler('cpp').has_argument('-Wall') and meson.get_compiler('cpp').has_argument('-Wextra'))
+    warning_level = 3
+  elif meson.get_compiler('cpp').has_argument('-Wall') and not meson.get_compiler('cpp').has_argument('-Wextra')
+    warning_level = 3
+  endif
+endif
+
+if (meson.get_compiler('cpp').has_argument('-std=c++20'))
+  cpp_std = 'c++20'
+endif
 
 branchCommand = run_command('git', 'branch', '--show-current', check: true)
 branchCOutput = branchCommand.stdout().strip()
@@ -19,7 +30,7 @@ sdl2_dep = dependency('sdl2',
   modules : ['SDL2::SDL2'])
 
 Vulkan = dependency('Vulkan',
-  static : true,
+  static : false,
   required : true)
 
 # GLAD

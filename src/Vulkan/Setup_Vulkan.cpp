@@ -1,17 +1,17 @@
 #include "Graphics/Vulkan.hpp"
 #include "Core/terminal_colors.hpp"
 
-void Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
+bool Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 	// Get Extensions
 	unsigned int extensionInstanceCount = 0;
 	if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, nullptr))
-		std::cout << "X Error al obtener la lista de extensiones necesarias : " << SDL_GetError() << std::endl;
+		std::cout << Bold << " ❌ Error al obtener la lista de extensiones necesarias : " << Reset << SDL_GetError() << std::endl;
 
 	std::vector<const char*> extensionInstanceNames(extensionInstanceCount);
 	extensionInstanceNames.push_back("VK_KHR_get_physical_device_properties2");
 
 	if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, extensionInstanceNames.data()))
-		std::cout << "X Error al obtener la lista de extensiones necesarias : " << SDL_GetError() << std::endl;
+		std::cout << Bold << " ❌ Error al obtener la lista de extensiones necesarias : " << Reset << SDL_GetError() << std::endl;
 	else {
 		std::cout << FRojo3 << Bold << "+ Vulkan Instance Extensions :" << Reset << std::endl;
 		for (int c = 0; c < int(extensionInstanceNames.size()); c++)
@@ -19,18 +19,17 @@ void Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 		std::cout << Reset << std::endl;
 	}
 
-	vk::ApplicationInfo PatataEngineInfo(
-		"Patata Engine",
-		VK_MAKE_VERSION(1,0,0),
-		"Patata Engine",
-		VK_MAKE_VERSION(1,0,0),
-		VK_API_VERSION_1_3);
+	vk::ApplicationInfo PatataEngineInfo {};
+	PatataEngineInfo.pApplicationName = "Patata Engine";
+	PatataEngineInfo.applicationVersion = 1;
+	PatataEngineInfo.pEngineName = "Patata Engine";
+	PatataEngineInfo.engineVersion = 1;
+	PatataEngineInfo.apiVersion = VK_API_VERSION_1_3;
 
-	std::vector <vk::ExtensionProperties> extensiones = vk::enumerateInstanceExtensionProperties();
-
-	vk::InstanceCreateInfo VulkanInstanceInfo(
-		vk::InstanceCreateFlags(),
-		&PatataEngineInfo, layer, nullptr);
+	vk::InstanceCreateInfo VulkanInstanceInfo {};
+	VulkanInstanceInfo.enabledLayerCount = 1;
+	VulkanInstanceInfo.ppEnabledLayerNames = &layer;
+	VulkanInstanceInfo.pApplicationInfo = &PatataEngineInfo;
 	VulkanInstanceInfo.enabledExtensionCount = uint32_t(extensionInstanceCount);
 	VulkanInstanceInfo.ppEnabledExtensionNames = extensionInstanceNames.data();
 
@@ -70,14 +69,16 @@ uint32_t Graphics::VulkanRenderer::CreateQueue(void) {
 			GraphicsQueueFamilyIndex = i;
 			break;
 		}
+
 	return GraphicsQueueFamilyIndex;
 }
 
 void Graphics::VulkanRenderer::InitDevice(void) {
-	vk::DeviceQueueCreateInfo DeviceQueueCreateInfo(
-			vk::DeviceQueueCreateFlags(),
-			uint32_t(GraphicsQueueFamilyIndex), 1,
-			&QueuePriority);
+	vk::DeviceQueueCreateInfo DeviceQueueCreateInfo {};
+	DeviceQueueCreateInfo.flags = vk::DeviceQueueCreateFlagBits();
+	DeviceQueueCreateInfo.queueFamilyIndex = uint32_t(GraphicsQueueFamilyIndex);
+	DeviceQueueCreateInfo.queueCount = 1;
+	DeviceQueueCreateInfo.pQueuePriorities = &QueuePriority;
 
 	vk::DeviceCreateInfo DeviceCreateInfo{};
 	DeviceCreateInfo.enabledExtensionCount = uint32_t(DeviceExtensions.size());
@@ -132,12 +133,12 @@ void Graphics::VulkanRenderer::CreateSwapChain(void) {
 
 void Graphics::VulkanRenderer::CreateImageView(void) {
 	vk::ImageCreateInfo CreateImageInfo{};
-	CreateImageInfo.setImageType(vk::ImageType::e2D);
+	CreateImageInfo.imageType = vk::ImageType::e2D;
 	CreateImageInfo.setExtent(vk::Extent3D {SwapChainExtent.width, SwapChainExtent.height, 1});
 	CreateImageInfo.setMipLevels(1);
 	CreateImageInfo.setArrayLayers(1);
-	CreateImageInfo.setFormat(Format);
-	CreateImageInfo.setTiling(vk::ImageTiling::eOptimal);
+	CreateImageInfo.format = Format;
+	CreateImageInfo.tiling = vk::ImageTiling::eOptimal;
 	CreateImageInfo.setUsage(vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc);
 	CreateImageInfo.setInitialLayout(vk::ImageLayout::eUndefined);
 
@@ -145,7 +146,7 @@ void Graphics::VulkanRenderer::CreateImageView(void) {
 
 	vk::PhysicalDeviceMemoryProperties MemoryProperties = PhysicalDevice.getMemoryProperties();
 	vk::MemoryRequirements MemoryReq = Device.getImageMemoryRequirements(Image);
-	uint32_t MemoryHeapSize = MemoryProperties.memoryHeaps[0].size;
+
 	uint32_t MemoryTypeIndex = 0;
 
 	for (uint32_t i = 0; i < MemoryProperties.memoryTypeCount; i++)
@@ -162,18 +163,21 @@ void Graphics::VulkanRenderer::CreateImageView(void) {
 	Device.bindImageMemory(Image, ImageMemory, 0);
 
 	vk::ImageViewCreateInfo CreateImageViewInfo{};
-	CreateImageViewInfo.setImage(Image);
+	CreateImageViewInfo.image = Image;
 	CreateImageViewInfo.setViewType(vk::ImageViewType::e2D);
-	CreateImageViewInfo.setFormat(Format);
+	CreateImageViewInfo.format = Format;
 	CreateImageViewInfo.setSubresourceRange(vk::ImageSubresourceRange(
     	vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
 
 	ImageView = Device.createImageView(CreateImageViewInfo);
+
+	SwapChainImages = Device.getSwapchainImagesKHR(SwapChain);
 }
 
 void Graphics::VulkanRenderer::CreateCommandBuffer(void) {
-	vk::CommandPoolCreateInfo CreateCommandPoolInfo(
-			vk::CommandPoolCreateFlags(), GraphicsQueueFamilyIndex);
+	vk::CommandPoolCreateInfo CreateCommandPoolInfo {};
+	CreateCommandPoolInfo.flags = vk::CommandPoolCreateFlagBits::eTransient;
+	CreateCommandPoolInfo.queueFamilyIndex = GraphicsQueueFamilyIndex;
 
 	CommandPool = Device.createCommandPool(CreateCommandPoolInfo);
 
@@ -185,17 +189,58 @@ void Graphics::VulkanRenderer::CreateCommandBuffer(void) {
 	CommandBuffer = Device.allocateCommandBuffers(CreateCommandBufferInfo);
 }
 
+void Graphics::VulkanRenderer::CreateRenderPass(void) {
+	vk::AttachmentDescription CreateAttachmentDescription {};
+	CreateAttachmentDescription.format = Format;
+	CreateAttachmentDescription.loadOp = vk::AttachmentLoadOp::eClear;
+	CreateAttachmentDescription.storeOp = vk::AttachmentStoreOp::eStore;
+	CreateAttachmentDescription.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+	CreateAttachmentDescription.initialLayout = vk::ImageLayout::eColorAttachmentOptimal;
+	CreateAttachmentDescription.finalLayout = vk::ImageLayout::eGeneral;
+
+	vk::AttachmentReference CreateAttachmentReference (0, vk::ImageLayout::eGeneral);
+
+	vk::SubpassDescription CreateSubpassDescription {};
+	CreateSubpassDescription.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
+	CreateSubpassDescription.inputAttachmentCount = 1;
+	CreateSubpassDescription.pInputAttachments = &CreateAttachmentReference;
+	CreateSubpassDescription.colorAttachmentCount = 1;
+	CreateSubpassDescription.pColorAttachments = &CreateAttachmentReference;
+
+	vk::SubpassDependency Dep(
+		/* srcSubpass */ 0, 
+		/* dstSubpass */ VK_SUBPASS_EXTERNAL, 
+		/* srcStageMask */ vk::PipelineStageFlagBits::eColorAttachmentOutput, 
+		/* dstStageMask */ vk::PipelineStageFlagBits::eColorAttachmentOutput, 
+		/* srcAccessMask */ vk::AccessFlagBits::eColorAttachmentWrite, 
+		/* dstAccessMask */ vk::AccessFlagBits::eColorAttachmentWrite, 
+		/* dependencyFlags */ vk::DependencyFlagBits::eByRegion);	
+
+	vk::RenderPassCreateInfo CreateRenderPassInfo {};
+	CreateRenderPassInfo.attachmentCount = 1;
+	CreateRenderPassInfo.pAttachments = &CreateAttachmentDescription;
+	CreateRenderPassInfo.subpassCount = 1;
+	CreateRenderPassInfo.pSubpasses = &CreateSubpassDescription;
+	CreateRenderPassInfo.dependencyCount = 1;
+	CreateRenderPassInfo.pDependencies = &Dep;
+
+	RenderPass = Device.createRenderPass(CreateRenderPassInfo);
+}
+
 void Graphics::VulkanRenderer::VulkanInfo(void) {
+	vk::PhysicalDeviceProperties PhysicalDeviceProperties = PhysicalDevice.getProperties();
 	const uint32_t VulkanVersion = PhysicalDeviceProperties.apiVersion;
 
 	std::string vsync;
-	if (PresentMode == vk::PresentModeKHR::eFifo)
-		vsync = "Yes | Using eFifo";
+	if (PresentMode == vk::PresentModeKHR::eFifo) {
+		std::string tmp = Dim;
+		vsync = "Yes" + tmp + " | Using eFifo" + Reset;
+	}
 	else
 		vsync = "No";
 
 	std::cout <<  FindianRed1 << Bold << "+ Informacion general de Vulkan :" << Reset << std::endl;	
-	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << vk::to_string(PhysicalDeviceProperties.deviceType) << ":\t" << Reset << PhysicalDeviceProperties.deviceName << " " << PhysicalDeviceProperties.vendorID << Reset << std::endl;
+	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << vk::to_string(PhysicalDeviceProperties.deviceType) << ":\t" << Reset << PhysicalDeviceProperties.deviceName << Dim << " " << PhysicalDeviceProperties.vendorID << Reset << std::endl;
 	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << "Vulkan Version:\t" << Reset << VK_VERSION_MAJOR(VulkanVersion) << '.' << VK_VERSION_MINOR(VulkanVersion) << '.' << VK_VERSION_PATCH(VulkanVersion) << '.' << VK_API_VERSION_VARIANT(VulkanVersion) << Reset << std::endl;
 	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << "Driver Version:\t" << Reset << PhysicalDeviceProperties.driverVersion << std::endl;
 	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << "Vsync:\t" << Reset << vsync << std::endl;
@@ -205,23 +250,28 @@ void Graphics::VulkanRenderer::VulkanInfo(void) {
 
 Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW) {
 	CreateInstance(WINDOW);
-	PhysicalDevices();
+	PhysicalDevice = VulkanInstance.enumeratePhysicalDevices().front();
 	GraphicsQueueFamilyIndex = CreateQueue();
 	InitDevice();
 
 	if (!SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, reinterpret_cast<VkSurfaceKHR*>(&Surface)))
-		std::cout << BLightGoldenRod1 << "X No se pudo crear la Superficie" << Reset << std::endl;
+		std::cout << BLightGoldenRod1 << " ❌ Error: No se pudo crear la Superficie" << Reset << std::endl;
 
 	CreateSwapChain();
 	CreateImageView();
 	CreateCommandBuffer();
+	CreateRenderPass();
+
+	Semaphore = Device.createSemaphore(vk::SemaphoreCreateInfo());
+
 	VulkanInfo();
 }
 
 Graphics::VulkanRenderer::~VulkanRenderer(void) {
+	Device.destroySemaphore(Semaphore);
+	Device.destroyRenderPass(RenderPass);
 	Device.freeCommandBuffers(CommandPool, CommandBuffer);
 	Device.destroyCommandPool(CommandPool);
-
 	Device.freeMemory(ImageMemory);
 	Device.destroyImage(Image);
 	Device.destroyImageView(ImageView);
