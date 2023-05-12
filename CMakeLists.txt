@@ -5,6 +5,8 @@ option(USE_EXTERNAL_LIBS ON)
 
 set(CMAKE_BUILD_TYPE Release)
 
+message("  - Patata Engine -")
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	project("Patata_Engine" LANGUAGES CXX RC)
 else()

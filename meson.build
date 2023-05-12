@@ -1,8 +1,7 @@
 project('Patata Engine',
   'cpp', 'c',
   default_options: [
-    'buildtype=release'],
-  version : '0')
+    'buildtype=release'])
 
 if meson.get_compiler('cpp').get_id() == 'gcc' or meson.get_compiler('cpp').get_id() == 'clang'
   if (meson.get_compiler('cpp').has_argument('-Wall') and meson.get_compiler('cpp').has_argument('-Wextra'))
@@ -54,6 +53,17 @@ source = files([
   'src/Vulkan/Setup_Vulkan.cpp',
   'src/Log/Mapache.cpp',
   'src/Log/Start_Patata_Log_Info.cpp'])
+
+features = {
+    'Vulkan' : Vulkan.found(),
+    'OpenGL' : glad_dep.found(),
+    'SDL2' : sdl2_dep.found()
+}
+
+summary({'OpenGL': features['OpenGL'],
+         'Vulkan': features['Vulkan'],
+          'SDL2' : features['SDL2']},
+         bool_yn : true)
 
 if target_machine.system() == 'windows'
   windows = import('windows')
