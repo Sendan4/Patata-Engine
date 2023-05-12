@@ -15,7 +15,7 @@ OpenGL 0.113f, 0.578f, 0.810f
 
 
 int main(int argc, char **argv) {
-	std::cout << "😺 🥔" << std::endl;
+	std::cout << "🦊 🥔" << "\n";
 	Game::SDL sdl;
 	
 	Game::Window MainWindow("Patata Engine", 1280 ,720, GraphicsAPI::VULKAN);
@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
 		if (Window_Event.type == SDL_QUIT)
 			break;
 
+		//Vulkan.TestColor();
 		//glClearColor(0.113f, 0.578f, 0.810f, 0.0f);
 		//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 

@@ -3,59 +3,63 @@
 #include <SDL_vulkan.h>
 #include <iostream>
 #include <vector>
+#include <array>
+
 #include "terminal_colors.hpp"
 
 namespace Graphics {
 	class VulkanRenderer {
 		public:
 			bool CreateInstance(SDL_Window *);
-			void InitDevice(void);
-			uint32_t CreateQueue(void);
-			void CreateSwapChain(void);
-			void CreateImageView(void);
-			void CreateCommandBuffer(void);
+			uint32_t CreateLogicalDeviceAndCreateQueue(void);
+			void CreateSwapChain(uint32_t &);
+			void CreateImageView(uint32_t &);
+			void CreateCommandBuffer(uint32_t &);
 			void CreateRenderPass(void);
+			void CreatePipeline(void);
 			void VulkanInfo(void);
+			void TestColor(void);
 
 			VulkanRenderer(SDL_Window *);
 			~VulkanRenderer(void);
 
 		private:
-			const char * layer = {"VK_LAYER_KHRONOS_validation"};
-			const std::vector <const char *> DeviceExtensions = {
-				"VK_KHR_swapchain",
-				"VK_EXT_multi_draw",
-				"VK_KHR_maintenance4"};
-			std::vector <vk::ExtensionProperties> ExtensionProperties;
-
 			vk::Instance VulkanInstance = nullptr;
 			vk::SurfaceKHR Surface = nullptr;
 
+			vk::Queue Queue;
 			vk::Device Device = nullptr;
-			vk::PhysicalDevice PhysicalDevice = nullptr;	
-
-			uint32_t GraphicsQueueFamilyIndex = 0;
-			float QueuePriority = 0.0f;
-			std::vector <vk::QueueFamilyProperties> QueueFamilyProperties;
+			vk::PhysicalDevice PhysicalDevice = nullptr;
 
 			vk::CommandPool CommandPool = nullptr;
-			std::vector <vk::CommandBuffer> CommandBuffer;
+			std::vector <vk::CommandBuffer> CommandBuffers;
 
-			vk::Format Format;
+			vk::Format ColorFormat;
 			vk::SurfaceCapabilitiesKHR SurfaceCapabilities;
 			vk::Extent2D SwapChainExtent;
 			vk::PresentModeKHR PresentMode;
 			vk::SurfaceFormatKHR SurfaceFormat;
 
+			vk::Image DepthImage;
+
 			vk::SwapchainKHR SwapChain;
-			vk::Image Image;
+			struct SwapChainBuffer {
+				vk::Image Image;
+				std::array <vk::ImageView, 2> Views;
+				vk::Framebuffer FrameBuffer;
+			};
+			std::vector <SwapChainBuffer> SwapChainBuffers;
+
 			std::vector <vk::Image> SwapChainImages;
-			vk::DeviceMemory ImageMemory;
 			vk::ImageView ImageView;
-			vk::DeviceMemory DeviceMemory;
+			vk::DeviceMemory ImageMemory;
 
 			vk::RenderPass RenderPass;
 			vk::Semaphore Semaphore;
 			vk::Semaphore RenderCompleteSemaphore;
+
+			vk::Pipeline PipeLine;
+			vk::PipelineLayout PipeLineLayout;
+			vk::PipelineCache PipeLineCache;			
 	};
 }

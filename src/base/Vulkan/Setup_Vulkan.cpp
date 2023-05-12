@@ -4,18 +4,17 @@ bool Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 	// Get Extensions
 	unsigned int extensionInstanceCount = 0;
 	if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, nullptr))
-		std::cout << Bold << " ❌ Error al obtener la lista de extensiones necesarias : " << Reset << SDL_GetError() << std::endl;
+		std::cout << Bold << " X Error al obtener la lista de extensiones necesarias : " << Reset << SDL_GetError() << "\n";
 
 	std::vector<const char*> extensionInstanceNames(extensionInstanceCount);
 	extensionInstanceNames.push_back("VK_KHR_get_physical_device_properties2");
 
 	if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, extensionInstanceNames.data()))
-		std::cout << Bold << " ❌ Error al obtener la lista de extensiones necesarias : " << Reset << SDL_GetError() << std::endl;
+		std::cout << Bold << " X Error al obtener la lista de extensiones necesarias : " << Reset << SDL_GetError() << "\n";
 	else {
-		std::cout << FindianRed1 << Bold << "+ Vulkan Instance Extensions :" << Reset << std::endl;
+		std::cout << FindianRed1 << Bold << "+ Vulkan Instance Extensions :" << Reset << "\n";
 		for (auto extension : extensionInstanceNames)
-			std::cout << Bold << FindianRed1 << "| · " << Reset << extension << Reset << std::endl;
-		std::cout << Reset << std::endl;
+			std::cout << Bold << FindianRed1 << "| · " << Reset << extension << Reset << "\n";
 	}
 
 	vk::ApplicationInfo PatataEngineInfo {};
@@ -25,35 +24,49 @@ bool Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 	PatataEngineInfo.engineVersion = 1;
 	PatataEngineInfo.apiVersion = VK_API_VERSION_1_3;
 
+	const char * layer = {"VK_LAYER_KHRONOS_validation"};
+
 	vk::InstanceCreateInfo VulkanInstanceInfo {};
 	VulkanInstanceInfo.enabledLayerCount = 1;
 	VulkanInstanceInfo.ppEnabledLayerNames = &layer;
 	VulkanInstanceInfo.pApplicationInfo = &PatataEngineInfo;
 	VulkanInstanceInfo.enabledExtensionCount = uint32_t(extensionInstanceCount);
 	VulkanInstanceInfo.ppEnabledExtensionNames = extensionInstanceNames.data();
+	
+	vk::Result resultado;
+	resultado = vk::createInstance(&VulkanInstanceInfo, nullptr, &VulkanInstance);
+	if (resultado != vk::Result::eSuccess) {
+		std::cout << FindianRed1 << "Vulkan Instance Result :\t" << Reset << BLightGoldenRod1 << vk::to_string(resultado) << Reset << "\n";
+		return false;
+	}
+	std::cout << FindianRed1 << "Vulkan Instance Result :\t" << Reset << Chartreuse1 << vk::to_string(resultado) << Reset << "\n";
 
-	VulkanInstance = vk::createInstance(VulkanInstanceInfo);
 	return true;
 }
 
-uint32_t Graphics::VulkanRenderer::CreateQueue(void) {
+uint32_t Graphics::VulkanRenderer::CreateLogicalDeviceAndCreateQueue(void) {
+	uint32_t GraphicsQueueFamilyIndex = 0;
+	float QueuePriority = 1.0f;
+	std::vector <vk::QueueFamilyProperties> QueueFamilyProperties;
+
 	QueueFamilyProperties = PhysicalDevice.getQueueFamilyProperties();
 
-	for (uint32_t i = 0; i < QueueFamilyProperties.size(); i++)
-		if ((QueueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics) == vk::QueueFlagBits::eGraphics) {
-			GraphicsQueueFamilyIndex = i;
+	for (uint32_t indexFlag = 0; indexFlag < QueueFamilyProperties.size(); indexFlag++)
+		if ((QueueFamilyProperties[indexFlag].queueFlags & vk::QueueFlagBits::eGraphics) == vk::QueueFlagBits::eGraphics) {
+			GraphicsQueueFamilyIndex = indexFlag;
 			break;
 		}
 
-	return GraphicsQueueFamilyIndex;
-}
-
-void Graphics::VulkanRenderer::InitDevice(void) {
 	vk::DeviceQueueCreateInfo DeviceQueueCreateInfo {};
 	DeviceQueueCreateInfo.flags = vk::DeviceQueueCreateFlagBits();
 	DeviceQueueCreateInfo.queueFamilyIndex = uint32_t(GraphicsQueueFamilyIndex);
 	DeviceQueueCreateInfo.queueCount = 1;
 	DeviceQueueCreateInfo.pQueuePriorities = &QueuePriority;
+
+	const std::vector <const char *> DeviceExtensions = {
+		"VK_KHR_swapchain",
+		"VK_EXT_multi_draw",
+		"VK_KHR_maintenance4"};
 
 	vk::DeviceCreateInfo DeviceCreateInfo{};
 	DeviceCreateInfo.enabledExtensionCount = uint32_t(DeviceExtensions.size());
@@ -63,18 +76,30 @@ void Graphics::VulkanRenderer::InitDevice(void) {
 	DeviceCreateInfo.pQueueCreateInfos = &DeviceQueueCreateInfo;
 
 	if (DeviceExtensions.size() >= 1) {
-		std::cout << Bold << FindianRed1 << "+ Vulkan Device Extensions :" << Reset << std::endl;
+		std::cout << Bold << FindianRed1 << "+ Vulkan Device Extensions :" << Reset << "\n";
 		for (auto Extensions : DeviceExtensions)
-			std::cout << Bold << FindianRed1 << "| · " << Reset << Extensions << Reset << std::endl;
-		std::cout << std::endl;
+			std::cout << Bold << FindianRed1 << "| · " << Reset << Extensions << Reset << "\n";
 	}
 
-	Device = PhysicalDevice.createDevice(DeviceCreateInfo);
+	vk::Result resultado = PhysicalDevice.createDevice(&DeviceCreateInfo, nullptr, &Device);
+	if (resultado != vk::Result::eSuccess) {
+		std::cout << FindianRed1 << "Vulkan Logical Device Result :\t" << Reset << BLightGoldenRod1 << vk::to_string(resultado) << Reset << "\n";
+		return 0;
+	}
+	else std::cout << FindianRed1 << "Vulkan Logical Device Result :\t" << Reset << Chartreuse1 << vk::to_string(resultado) << Reset << "\n";
+
+	Queue = Device.getQueue(GraphicsQueueFamilyIndex, 0); 
+	return GraphicsQueueFamilyIndex;
 }
 
-void Graphics::VulkanRenderer::CreateSwapChain(void) {
+void Graphics::VulkanRenderer::CreateSwapChain(uint32_t &GraphicsQueueFamilyIndex) {
 	std::vector <vk::SurfaceFormatKHR> Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
-	Format = (Formats[0].format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : Formats[0].format;
+
+	for (uint16_t i = 0; i < Formats.size(); i++)
+		if (Formats[i].format == vk::Format::eB8G8R8A8Unorm)
+			ColorFormat = vk::Format::eB8G8R8A8Unorm;
+		else if (Formats[i].format == vk::Format::eUndefined)
+			ColorFormat = vk::Format::eB8G8R8A8Unorm;
 
 	SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
 	std::vector <vk::PresentModeKHR> PresentModes = PhysicalDevice.getSurfacePresentModesKHR(Surface);
@@ -84,9 +109,11 @@ void Graphics::VulkanRenderer::CreateSwapChain(void) {
 	SwapChainExtent.height = 720;
 
 	for (auto Mode : PresentModes)
-		Mode = (Mode == vk::PresentModeKHR::eFifo) ? PresentMode = vk::PresentModeKHR::eFifo : PresentMode = Mode;
+		(Mode == vk::PresentModeKHR::eFifo) ? PresentMode = vk::PresentModeKHR::eFifo : PresentMode = Mode;
 
 	SurfaceFormat = SurfaceFormats[0];
+
+	//vk::Viewport Viewport = vk::Viewport(0.0f, 0.0f, static_cast<float>(SurfaceCapabilities.currentExtent.width), static_cast<float>(SurfaceCapabilities.currentExtent.height), 0, 1.0f);
 
 	vk::SwapchainCreateInfoKHR SwapChainCreateInfo{};
 	SwapChainCreateInfo.surface = Surface;
@@ -102,139 +129,216 @@ void Graphics::VulkanRenderer::CreateSwapChain(void) {
 	SwapChainCreateInfo.clipped = VK_TRUE;
 	SwapChainCreateInfo.queueFamilyIndexCount = GraphicsQueueFamilyIndex;
 	SwapChainCreateInfo.oldSwapchain = nullptr;
-
-	SwapChain = Device.createSwapchainKHR(SwapChainCreateInfo);
+	
+	vk::Result Result;
+	Result = Device.createSwapchainKHR(&SwapChainCreateInfo, nullptr, &SwapChain);
+	if (Result != vk::Result::eSuccess)
+		std::cout << FindianRed1 << "SwapChain Result :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n";
+	else
+		std::cout << FindianRed1 << "SwapChain Result :\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n";
 }
 
-void Graphics::VulkanRenderer::CreateImageView(void) {
+void Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFamilyIndex) {
 	vk::ImageCreateInfo CreateImageInfo{};
 	CreateImageInfo.imageType = vk::ImageType::e2D;
 	CreateImageInfo.setExtent(vk::Extent3D {SwapChainExtent.width, SwapChainExtent.height, 1});
-	CreateImageInfo.setMipLevels(1);
-	CreateImageInfo.setArrayLayers(1);
-	CreateImageInfo.format = Format;
+	CreateImageInfo.mipLevels = 1;
+	CreateImageInfo.arrayLayers = 1;
+	CreateImageInfo.format = vk::Format::eD32SfloatS8Uint;
 	CreateImageInfo.tiling = vk::ImageTiling::eOptimal;
-	CreateImageInfo.setUsage(vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc);
+	CreateImageInfo.usage = vk::ImageUsageFlagBits::eDepthStencilAttachment | vk::ImageUsageFlagBits::eTransferSrc;
+	//CreateImageInfo.usage = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc;
 	CreateImageInfo.setInitialLayout(vk::ImageLayout::eUndefined);
+	CreateImageInfo.samples = vk::SampleCountFlagBits::e1;
+	CreateImageInfo.queueFamilyIndexCount = 1;
+	CreateImageInfo.pQueueFamilyIndices = &GraphicsQueueFamilyIndex;
 
-	Image = Device.createImage(CreateImageInfo);
+	vk::Result Result;
+	Result = Device.createImage(&CreateImageInfo, nullptr, &DepthImage);
+	if (Result != vk::Result::eSuccess)
+		std::cout << FindianRed1 << "DepthImage For BindImageMemory -> Result :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n";
+	else
+		std::cout << FindianRed1 << "DepthImage For BindImageMemory -> Result :\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n";
+
+	// create Depht and color Image
 
 	vk::PhysicalDeviceMemoryProperties MemoryProperties = PhysicalDevice.getMemoryProperties();
-	vk::MemoryRequirements MemoryReq = Device.getImageMemoryRequirements(Image);
+	vk::MemoryRequirements MemoryReq;
+
+	MemoryReq = Device.getImageMemoryRequirements(DepthImage);
 
 	uint32_t MemoryTypeIndex = 0;
-
+	
 	for (uint32_t i = 0; i < MemoryProperties.memoryTypeCount; i++)
 		if ((MemoryReq.memoryTypeBits & (1 << i)) && (MemoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal)) {
 			MemoryTypeIndex = i;
 			break;
 		}
-
-	vk::MemoryAllocateInfo CreateMemoryAllocateInfo{};
+	
+	vk::MemoryAllocateInfo CreateMemoryAllocateInfo {};
 	CreateMemoryAllocateInfo.allocationSize = MemoryReq.size;
 	CreateMemoryAllocateInfo.memoryTypeIndex = MemoryTypeIndex;
 
 	ImageMemory = Device.allocateMemory(CreateMemoryAllocateInfo);
-	Device.bindImageMemory(Image, ImageMemory, 0);
+	Device.bindImageMemory(DepthImage, ImageMemory, 0);
 
 	vk::ImageViewCreateInfo CreateImageViewInfo{};
-	CreateImageViewInfo.image = Image;
+	CreateImageViewInfo.image = DepthImage;
 	CreateImageViewInfo.setViewType(vk::ImageViewType::e2D);
-	CreateImageViewInfo.format = Format;
+	CreateImageViewInfo.format = vk::Format::eD32SfloatS8Uint;
 	CreateImageViewInfo.setSubresourceRange(vk::ImageSubresourceRange(
-    	vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+		vk::ImageAspectFlagBits::eStencil, 0, 1, 0, 1));	
 
-	ImageView = Device.createImageView(CreateImageViewInfo);
+	std::vector <vk::Image> SwapChainImages = Device.getSwapchainImagesKHR(SwapChain);
+	SwapChainBuffers.resize(SwapChainImages.size());
 
-	SwapChainImages = Device.getSwapchainImagesKHR(SwapChain);
+	std::cout << Bold << "\nCreating SwapChainBuffer\n" << Reset;
+	std::cout << "SwapChainImages -> NumberOfImages :\t" << SwapChainImages.size() << "\n";
+	for (uint32_t i = 0; i < SwapChainBuffers.size(); i++) {
+		SwapChainBuffers[i].Image = SwapChainImages[i];
+
+		//Result = Device.createImageView(&CreateImageViewInfo, nullptr, &ImageView);
+		//if (Result != vk::Result::eSuccess)
+		//	std::cout << FindianRed1 << Bold << "SwapChainBuffer -> ImageView Result " << i << " :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n";
+		//else
+		//	std::cout << FindianRed1 << Bold << "SwapChainBuffer -> ImageView Result " << i << ":\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n";
+		//SwapChainBuffers[i].Views[0] = ColorImageView;
+		
+		Result = Device.createImageView(&CreateImageViewInfo, nullptr, &ImageView);
+		if (Result != vk::Result::eSuccess)
+			std::cout << FindianRed1 << "SwapChainBuffer -> ImageView Result " << i << " :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n";
+		else
+			std::cout << FindianRed1 << "SwapChainBuffer -> ImageView Result " << i << ":\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n";
+
+		SwapChainBuffers[i].Views[1] = ImageView;
+
+		Device.destroyImageView(ImageView);
+
+		//SwapChainBuffers[i].FrameBuffer = ;
+	}
+	std::cout << "\n";
 }
 
-void Graphics::VulkanRenderer::CreateCommandBuffer(void) {
+void Graphics::VulkanRenderer::CreateCommandBuffer(uint32_t &GraphicsQueueFamilyIndex) {
 	vk::CommandPoolCreateInfo CreateCommandPoolInfo {};
 	CreateCommandPoolInfo.flags = vk::CommandPoolCreateFlagBits::eTransient;
 	CreateCommandPoolInfo.queueFamilyIndex = GraphicsQueueFamilyIndex;
 
-	CommandPool = Device.createCommandPool(CreateCommandPoolInfo);
+	vk::Result Result;
+	Result = Device.createCommandPool(&CreateCommandPoolInfo, nullptr, &CommandPool);
+	if (Result != vk::Result::eSuccess)
+		std::cout << FindianRed1 << "CommandPool Result :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n";
+	else
+		std::cout << FindianRed1 << "CommandPool Result :\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n";
+
+	std::vector <vk::Image> SwapChainImages = Device.getSwapchainImagesKHR(SwapChain);
 
 	vk::CommandBufferAllocateInfo CreateCommandBufferInfo{};
 	CreateCommandBufferInfo.commandPool = CommandPool;
 	CreateCommandBufferInfo.level = vk::CommandBufferLevel::ePrimary;
-	CreateCommandBufferInfo.commandBufferCount = 1;
-
-	CommandBuffer = Device.allocateCommandBuffers(CreateCommandBufferInfo);
+	CreateCommandBufferInfo.commandBufferCount = SwapChainImages.size();
+	
+	CommandBuffers = Device.allocateCommandBuffers(CreateCommandBufferInfo);
 }
 
 void Graphics::VulkanRenderer::CreateRenderPass(void) {
-	vk::AttachmentDescription CreateAttachmentDescription {};
-	CreateAttachmentDescription.format = Format;
-	CreateAttachmentDescription.loadOp = vk::AttachmentLoadOp::eClear;
-	CreateAttachmentDescription.storeOp = vk::AttachmentStoreOp::eStore;
-	CreateAttachmentDescription.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
-	CreateAttachmentDescription.initialLayout = vk::ImageLayout::eColorAttachmentOptimal;
-	CreateAttachmentDescription.finalLayout = vk::ImageLayout::eGeneral;
+	// Color
+	vk::AttachmentDescription CreateColorAttachmentDescription {};
+	CreateColorAttachmentDescription.format = ColorFormat;
+	CreateColorAttachmentDescription.loadOp = vk::AttachmentLoadOp::eClear;
+	CreateColorAttachmentDescription.storeOp = vk::AttachmentStoreOp::eStore;
+	CreateColorAttachmentDescription.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+	CreateColorAttachmentDescription.initialLayout = vk::ImageLayout::eUndefined;
+	CreateColorAttachmentDescription.finalLayout = vk::ImageLayout::ePresentSrcKHR;
+	// Depth
+	vk::AttachmentDescription CreateDepthAttachmentDescription {};
+	CreateDepthAttachmentDescription.format = vk::Format::eD32SfloatS8Uint;
+	CreateDepthAttachmentDescription.loadOp = vk::AttachmentLoadOp::eClear;
+	CreateDepthAttachmentDescription.storeOp = vk::AttachmentStoreOp::eDontCare;
+	CreateDepthAttachmentDescription.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+	CreateDepthAttachmentDescription.initialLayout = vk::ImageLayout::eUndefined;
+	CreateDepthAttachmentDescription.finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
 
-	vk::AttachmentReference CreateAttachmentReference (0, vk::ImageLayout::eGeneral);
+	std::vector <vk::AttachmentDescription> Attachments;
+	Attachments.push_back(CreateColorAttachmentDescription);
+	Attachments.push_back(CreateDepthAttachmentDescription);
+
+	// Color
+	vk::AttachmentReference CreateColorAttachmentReference (0, vk::ImageLayout::eColorAttachmentOptimal);
+	// Depth
+	vk::AttachmentReference CreateDepthAttachmentReference (1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
 	vk::SubpassDescription CreateSubpassDescription {};
 	CreateSubpassDescription.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
-	CreateSubpassDescription.inputAttachmentCount = 1;
-	CreateSubpassDescription.pInputAttachments = &CreateAttachmentReference;
+	CreateSubpassDescription.inputAttachmentCount = 0;
+	CreateSubpassDescription.pInputAttachments = nullptr;
 	CreateSubpassDescription.colorAttachmentCount = 1;
-	CreateSubpassDescription.pColorAttachments = &CreateAttachmentReference;
+	CreateSubpassDescription.pColorAttachments = &CreateColorAttachmentReference;
+	CreateSubpassDescription.pDepthStencilAttachment = &CreateDepthAttachmentReference;
 
-	vk::SubpassDependency Dep(
-		/* srcSubpass */ 0, 
-		/* dstSubpass */ VK_SUBPASS_EXTERNAL, 
-		/* srcStageMask */ vk::PipelineStageFlagBits::eColorAttachmentOutput, 
-		/* dstStageMask */ vk::PipelineStageFlagBits::eColorAttachmentOutput, 
-		/* srcAccessMask */ vk::AccessFlagBits::eColorAttachmentWrite, 
-		/* dstAccessMask */ vk::AccessFlagBits::eColorAttachmentWrite, 
-		/* dependencyFlags */ vk::DependencyFlagBits::eByRegion);	
+	std::vector <vk::SubpassDependency> Dep = {
+		vk::SubpassDependency(
+			~0U,
+			0,
+			vk::PipelineStageFlagBits::eBottomOfPipe,
+			vk::PipelineStageFlagBits::eColorAttachmentOutput,
+			vk::AccessFlagBits::eMemoryRead,
+			vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite,
+			vk::DependencyFlagBits::eByRegion
+		),
+		vk::SubpassDependency(
+			0,
+			~0U,
+			vk::PipelineStageFlagBits::eColorAttachmentOutput,
+			vk::PipelineStageFlagBits::eBottomOfPipe,
+			vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite,
+			vk::AccessFlagBits::eMemoryRead,
+			vk::DependencyFlagBits::eByRegion
+	)};	
 
 	vk::RenderPassCreateInfo CreateRenderPassInfo {};
-	CreateRenderPassInfo.attachmentCount = 1;
-	CreateRenderPassInfo.pAttachments = &CreateAttachmentDescription;
+	CreateRenderPassInfo.attachmentCount = Attachments.size();
+	CreateRenderPassInfo.pAttachments = Attachments.data();
 	CreateRenderPassInfo.subpassCount = 1;
 	CreateRenderPassInfo.pSubpasses = &CreateSubpassDescription;
-	CreateRenderPassInfo.dependencyCount = 1;
-	CreateRenderPassInfo.pDependencies = &Dep;
-
-	RenderPass = Device.createRenderPass(CreateRenderPassInfo);
+	CreateRenderPassInfo.dependencyCount = static_cast<uint32_t>(Dep.size());
+	CreateRenderPassInfo.pDependencies = Dep.data();
+	
+	vk::Result Result;
+	Result = Device.createRenderPass(&CreateRenderPassInfo, nullptr, &RenderPass);
+	if (Result != vk::Result::eSuccess)
+		std::cout << FindianRed1 << "RenderPass Result :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n";
+	else
+		std::cout << FindianRed1 << "RenderPass Result :\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n";
 }
 
-void Graphics::VulkanRenderer::VulkanInfo(void) {
-	vk::PhysicalDeviceProperties PhysicalDeviceProperties = PhysicalDevice.getProperties();
-	const uint32_t VulkanVersion = PhysicalDeviceProperties.apiVersion;
+void Graphics::VulkanRenderer::CreatePipeline(void) {
+	/*vk::RenderPassCreateInfo RenderPassCreateInfo {};
+	RenderPassCreateInfo.attachmentCount = 0;
+	RenderPassCreateInfo.subpassCount = 0;
+	RenderPassCreateInfo.pAttachments = NULL;
+	RenderPassCreateInfo.pSubpasses = NULL;
+	RenderPassCreateInfo.dependencyCount = 0;
+	RenderPassCreateInfo.pDependencies = NULL;
+	//RenderPassCreateInfo.pClearValues = 
 
-	std::string vsync;
-	if (PresentMode == vk::PresentModeKHR::eFifo) {
-		std::string tmp = Dim;
-		vsync = "Yes" + tmp + " | Using eFifo" + Reset;
-	}
-	else
-		vsync = "No";
-
-	std::cout <<  FindianRed1 << Bold << "+ Informacion general de Vulkan :" << Reset << std::endl;	
-	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << vk::to_string(PhysicalDeviceProperties.deviceType) << ":\t" << Reset << PhysicalDeviceProperties.deviceName << Dim << " " << PhysicalDeviceProperties.vendorID << Reset << std::endl;
-	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << "Vulkan Version:\t" << Reset << VK_VERSION_MAJOR(VulkanVersion) << '.' << VK_VERSION_MINOR(VulkanVersion) << '.' << VK_VERSION_PATCH(VulkanVersion) << '.' << VK_API_VERSION_VARIANT(VulkanVersion) << Reset << std::endl;
-	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << "Driver Version:\t" << Reset << PhysicalDeviceProperties.driverVersion << std::endl;
-	std::cout << FindianRed1 << Bold << "| · " << Reset << Bold << "Vsync:\t" << Reset << vsync << std::endl;
-
-	std::cout << std::endl;
+	RenderPass = Device.createRenderPass(RenderPassCreateInfo);*/
 }
 
 Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW) {
 	CreateInstance(WINDOW);
+
 	PhysicalDevice = VulkanInstance.enumeratePhysicalDevices().front();
-	GraphicsQueueFamilyIndex = CreateQueue();
-	InitDevice();
+	uint32_t GraphicsQueueFamilyIndex = CreateLogicalDeviceAndCreateQueue();
 
-	if (!SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, reinterpret_cast<VkSurfaceKHR*>(&Surface)))
-		std::cout << BLightGoldenRod1 << " ❌ Error: No se pudo crear la Superficie" << Reset << std::endl;
-
-	CreateSwapChain();
-	CreateImageView();
-	CreateCommandBuffer();
+	if (!SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, reinterpret_cast<VkSurfaceKHR *>(&Surface)))
+		std::cout << "SDL Surface :\t" << Reset << BLightGoldenRod1 << "No" << Reset << "\n";
+	else
+		std::cout << "SDL Surface :\t" << Reset << Chartreuse1 << "Yes" << Reset << "\n";
+	
+	CreateSwapChain(GraphicsQueueFamilyIndex);
+	CreateImageView(GraphicsQueueFamilyIndex);
+	CreateCommandBuffer(GraphicsQueueFamilyIndex);
 	CreateRenderPass();
 
 	Semaphore = Device.createSemaphore(vk::SemaphoreCreateInfo());
@@ -245,13 +349,19 @@ Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW) {
 Graphics::VulkanRenderer::~VulkanRenderer(void) {
 	Device.destroySemaphore(Semaphore);
 	Device.destroyRenderPass(RenderPass);
-	Device.freeCommandBuffers(CommandPool, CommandBuffer);
+	Device.freeCommandBuffers(CommandPool, CommandBuffers);
 	Device.destroyCommandPool(CommandPool);
 	Device.freeMemory(ImageMemory);
-	Device.destroyImage(Image);
-	Device.destroyImageView(ImageView);
+	Device.destroyImage(DepthImage);
+	//Device.destroyImageView(ImageView);
 	Device.destroySwapchainKHR(SwapChain);
 	VulkanInstance.destroySurfaceKHR(Surface);
 	Device.destroy();
 	VulkanInstance.destroy();
+}
+
+
+void Graphics::VulkanRenderer::TestColor(void) {
+	//vk::ClearColorValue ClearColor = {1.0f, 0.0f, 0.0f, 1.0f};
+	
 }

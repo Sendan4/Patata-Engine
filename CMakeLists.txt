@@ -1,6 +1,19 @@
 cmake_minimum_required(VERSION 3.18)
 set(CMAKE_BUILD_TYPE Release)
 
+message("  - Patata Engine -")
+
+#execute_process(
+#	COMMAND git describe --tags --abbrev=0
+#	OUTPUT_VARIABLE TAG
+#	OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+#execute_process(
+#	COMMAND git log --format="%ad" --date=format:"%Y.%m.%d" -1 ${TAG}
+#    OUTPUT_VARIABLE VERSION_DATE
+#    OUTPUT_STRIP_TRAILING_WHITESPACE
+#)
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	project("Patata_Engine" LANGUAGES CXX RC)
 else()
@@ -29,6 +42,8 @@ endif()
 	
 set(CXX_STANDARD_REQUIRED true)
 
+#message("La fecha de la versión más reciente es: ${VERSION_DATE}")
+
 set(MAIN_INCLUDE
 	"include/sdl.hpp"
 	"include/window.hpp"
@@ -44,6 +59,7 @@ set(SOURCE
 	"src/base/Core/API_Graphics_Switch.cpp"
 	"src/base/Events/Main_events.cpp"
 	"src/base/Vulkan/Setup_Vulkan.cpp"
+	"src/base/Vulkan/Vulkan_info.cpp"
 	"src/base/Opengl/Opengl_context.cpp")
 
 set(icon "data/patata_icon.rc")

@@ -1,8 +1,10 @@
 project('Patata Engine',
   'cpp', 'c',
   default_options: [
-    'buildtype=release'],
-  version : '0')
+    'buildtype=release'])
+
+#current_date = meson.current_date()
+#message('La fecha actual es', current_date)
 
 if meson.get_compiler('cpp').get_id() == 'gcc' or meson.get_compiler('cpp').get_id() == 'clang'
   if (meson.get_compiler('cpp').has_argument('-Wall') and meson.get_compiler('cpp').has_argument('-Wextra'))
@@ -15,9 +17,6 @@ endif
 if (meson.get_compiler('cpp').has_argument('-std=c++20'))
   cpp_std = 'c++20'
 endif
-  
-prefix = meson.source_root() + 'bin/'
-bindir = meson.source_root() + 'bin/'
 
 # SDL2
 if meson.backend() == 'vs2022'
@@ -63,7 +62,21 @@ source = files([
   'src/base/Events/Main_events.cpp',
   'src/base/Core/API_Graphics_Switch.cpp',
   'src/base/Opengl/Opengl_context.cpp',
-  'src/base/Vulkan/Setup_Vulkan.cpp'])
+  'src/base/Vulkan/Setup_Vulkan.cpp',
+  'src/base/Vulkan/Vulkan_info.cpp'])
+
+features = {
+    'Vulkan' : Vulkan.found(),
+    'OpenGL' : glad_dep.found(),
+    'SDL2' : sdl2_dep.found(),
+    'SDL2-image' : sdl2_image_dep.found()
+}
+
+summary({'OpenGL': features['OpenGL'],
+         'Vulkan': features['Vulkan'],
+          'SDL2' : features['SDL2'],
+          'SDL2-Image': features['SDL2-image']},
+         bool_yn : true)
 
 if target_machine.system() == 'windows'
   windows = import('windows')
