@@ -99,7 +99,7 @@ void Graphics::VulkanRenderer::CreateSwapChain(uint32_t &GraphicsQueueFamilyInde
 		if (Formats[i].format == vk::Format::eB8G8R8A8Unorm)
 			ColorFormat = vk::Format::eB8G8R8A8Unorm;
 		else if (Formats[i].format == vk::Format::eUndefined)
-			ColorFormat = vk::Format::eB8G8R8A8Unorm;
+			ColorFormat = Formats[i].format;
 
 	SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
 	std::vector <vk::PresentModeKHR> PresentModes = PhysicalDevice.getSurfacePresentModesKHR(Surface);

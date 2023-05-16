@@ -33,7 +33,7 @@ if meson.backend() == 'vs2022'
 else
   sdl2_dep = dependency('sdl2',
     required : true,
-    static : true,
+    static : false,
     version : '>=2.24.1',
     modules : ['SDL2::SDL2', 'SDL2::SDL2-static'])
 
@@ -47,10 +47,13 @@ Vulkan = dependency('Vulkan',
   required : true)
 
 # GLAD
+glad = shared_library('glad',
+	sources : 'externals/libs/glad/src/glad.c',
+	include_directories : 'externals/libs/glad/include/')
+
 glad_dep = declare_dependency(
-  sources : 'externals/libs/glad/src/glad.c',
   include_directories : 'externals/libs/glad/include/',
-  d_import_dirs : 'externals/libs/glad/include/')
+  link_with : glad)
 
 # Archivos (Source y Include)
 include_main = include_directories('include')
