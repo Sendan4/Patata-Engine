@@ -73,6 +73,7 @@ if target_machine.system() == 'windows'
   executable('Patata Engine',
     source,
     Patata_icon,
+    win_subsystem : 'console',
     include_directories : [include_main],
     dependencies : [sdl2_dep, Vulkan, Glad2])
 else
