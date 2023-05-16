@@ -53,7 +53,7 @@ source = files([
 if target_machine.system() == 'windows'
   windows = import('windows')
 
-  Patata_icon = windows.compile_resources('data/patata_icon.rc')
+  Patata_icon = windows.compile_resources('src/base/Core/patata.rc')
 
   executable('Patata Engine',
     source,

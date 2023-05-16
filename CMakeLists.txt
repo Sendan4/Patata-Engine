@@ -31,7 +31,7 @@ set(SOURCE
 	"src/base/Vulkan/Setup_Vulkan.cpp"
 	"src/base/Opengl/Opengl_context.cpp")
 
-set(icon "data/patata_icon.rc")
+set(icon "src/base/Core/patata.rc")
 
 set(CXX_STANDARD_REQUIRED true)
 set(CMAKE_CXX_STANDARD 20)
