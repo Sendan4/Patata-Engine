@@ -15,7 +15,11 @@ OpenGL 0.113f, 0.578f, 0.810f
 
 
 int main(int argc, char **argv) {
+	#if !defined(_WIN64)
 	std::cout << "🦊 🥔" << "\n";
+	#endif
+	std::cout << FindianRed1 << "FindianRed\t" << Bold << "FindianRed\n";
+
 	Game::SDL sdl;
 	
 	Game::Window MainWindow("Patata Engine", 1280 ,720, GraphicsAPI::VULKAN);
