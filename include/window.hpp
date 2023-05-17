@@ -8,7 +8,7 @@ enum GraphicsApi { VULKAN = true, OPENGL = false };
 namespace Game {
 	class Window {
 		public:
-			Window(const char *, int, int, bool);
+			Window(std::string, int, int, bool);
 			bool WindowRendererStart(void);
 			~Window();
 		

@@ -3,14 +3,14 @@ Vulkan 0.980f, 0.285f, 0.235f
 OpenGL 0.113f, 0.578f, 0.810f
 */
 
-#include "sdl.hpp"
+#include "Core/sdl.hpp"
 
 #include "window.hpp"
-#include "Events.hpp"
+#include "Core/Events.hpp"
 
-#include "API_Graphics_Switch.hpp"
-#include "Vulkan.hpp"
-#include "Opengl_context.hpp"
+#include "Graphics/API_Graphics_Switch.hpp"
+#include "Graphics/Vulkan.hpp"
+#include "Graphics/Opengl_context.hpp"
 
 //#include <glad/glad.h>
 
@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 
 	std::cout << "😺 🥔" << std::endl;
 	
-	Game::Window MainWindow("Patata Engine", 1280 ,720, GraphicsApi::VULKAN);
+	Game::Window MainWindow("", 1280 ,720, GraphicsApi::VULKAN);
 
 	Graphics::VulkanRenderer Vulkan(MainWindow.Window_get());
 

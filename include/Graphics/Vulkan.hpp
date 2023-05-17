@@ -3,7 +3,7 @@
 #include <SDL_vulkan.h>
 #include <iostream>
 #include <vector>
-#include "terminal_colors.hpp"
+#include "Core/terminal_colors.hpp"
 
 namespace Graphics {
 	class VulkanRenderer {
