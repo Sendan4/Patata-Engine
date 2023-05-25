@@ -27,10 +27,8 @@ Game::Window::~Window(void) {
 }
 
 // Get
-SDL_Renderer * Game::Window::Renderer_get(void) { return Render; }
 SDL_Window * Game::Window::Window_get(void) { return WINDOW; }
 
 // Set
 void Game::Window::Window_set(SDL_Window * Set) { WINDOW = Set; }
-void Game::Window::Renderer_set(SDL_Renderer * Set) {Render = Set; }
 //SDL_GLContext Game::Window::glcontext_get(void) { return OPENGL_CONTEXT; }
