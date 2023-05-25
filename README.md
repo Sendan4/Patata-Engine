@@ -26,6 +26,7 @@
 - [ ] Renderizador con Vulkan
 - [ ] Renderizador con OpenGL
 - [ ] Crear una Mascota
+- [ ] HaikuOS Port
 - [X] Crear un logo o simbolo
 
 ## Librerias de terceros usadas en este proyecto
