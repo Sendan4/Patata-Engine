@@ -23,8 +23,10 @@
 - [ ] Menu Propio de ejemplo
 - [ ] Gestion de la Configuracion
 - [ ] Salida del Audio
-- [ ] Renderizador de Vulkan
-- [x] Renderizador de OpenGL
+- [ ] Renderizador con Vulkan
+- [ ] Renderizador con OpenGL
+- [ ] Crear una Mascota
+- [X] Crear un logo o simbolo
 
 ## Librerias de terceros usadas en este proyecto
 <ul>
