@@ -8,7 +8,7 @@
 
 <p>Soy novato en <b>C++</b>, estoy haciendo este proyecto para aprender y pasarmelo bien desarrollandolo, Asi que no esperes ver un codigo de profesional.</p>
 
-<p>Otro de los objetivos es la <b>portabilidad</b>, quiero que este se pueda ejecutar en dispositivos antiguos (No tan antiguos) y en los modernos.</p>
+<p>Otro de los objetivos es la <b>portabilidad</b>, quiero que este se pueda ejecutar en dispositivos antiguos (No tan antiguos), en los modernos y en varios sistemas operativos.</p>
 
 # Sistemas Operativos disponibles
 
