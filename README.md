@@ -12,9 +12,9 @@
 
 # Sistemas Operativos disponibles
 
-| Windows | GNU/Linux |
-| :-----: | :-----: |
-|<b>[x86_64]()</b> | <b>[x86_64]()</b> |
+| Windows | GNU/Linux | HaikuOS |
+| :-----: | :-----: | :-----: |
+|<b>[x86_64]()</b> | <b>[x86_64]()</b> | |
 
 # Metas
 
