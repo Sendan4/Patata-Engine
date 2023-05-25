@@ -1,9 +1,9 @@
 | [Español]() | [English]() |
 | :--: | :--: |
 
-# <img draggable=false src = "../assets/icon/patata.webp" width=24 style="image-rendering: pixelated;"> Potato Engine
+# <img draggable=false src = "assets/icon/patata.webp" width=24 style="image-rendering: pixelated;">Potato Engine
 
-<img draggable=false src = "../assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
+<img draggable=false src = "assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
 
 <p><b>Potato Engine</b> is a simple and light 2d engine with a focus on video game development.</p>
 
@@ -24,7 +24,9 @@
 - [ ] Configuration Management
 - [ ] Audio Output
 - [ ] Vulkan Renderer
-- [x] OpenGL Renderer
+- [ ] OpenGL Renderer
+- [ ] Create a Mascot
+- [X] Create a logo or symbol
 
 ## Third-party libraries used in this project
 <ul>
