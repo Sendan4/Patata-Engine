@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL.h>
 #include <iostream>
-#include <vulkan/vulkan.hpp>
 
 enum GraphicsApi { VULKAN = true, OPENGL = false };
 
@@ -17,7 +16,7 @@ namespace Game {
 			// Set
 			void Window_set(SDL_Window *);
 
-			SDL_GLContext glcontext_get(void);
+			void SetIcon(SDL_Window *);
 
 		private:
 			SDL_Window * WINDOW;

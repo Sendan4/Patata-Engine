@@ -45,6 +45,7 @@ source = files([
   'src/base/Core/main.cpp',
   'src/base/Core/sdl.cpp',
   'src/base/Window/window.cpp',
+  'src/base/Window/window_icon.cpp',
   'src/base/Events/Main_events.cpp',
   'src/base/Core/API_Graphics_Switch.cpp',
   'src/base/Opengl/Opengl_context.cpp',

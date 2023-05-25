@@ -1,7 +1,7 @@
-#include "Core/window.hpp"
+#include <iostream>
+#include <SDL.h>
 
-#include <vector>
-#include <SDL_vulkan.h>
+#include "Core/window.hpp"
 
 Game::Window::Window(std::string Titulo, int Width, int Height, bool GraphicsApi) {
 	if (Titulo.empty())
@@ -19,10 +19,10 @@ Game::Window::Window(std::string Titulo, int Width, int Height, bool GraphicsApi
 		std::cout << "SDL - Fallo la creacion de la ventana :\t" << SDL_GetError() << "\n";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "SDL - Fallo la creacion de la ventana", NULL);
 	}
+	else SetIcon(WINDOW);
 }
 
 Game::Window::~Window(void) {
-	SDL_DestroyRenderer(Render);
 	SDL_DestroyWindow(WINDOW);
 }
 

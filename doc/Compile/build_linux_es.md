@@ -147,7 +147,7 @@ cd build
 configure el proyecto con cmake.
 
 ```bash
-cmake -DUSE_SYSTEM_LIBS=OFF ..
+cmake ..
 ```
 
 le tocara satisfacer las dependencias para compilar librerias como `SDL2`, `SDL2_Image`, `SDL2_TTF`, `libconfig`.
@@ -156,3 +156,13 @@ le tocara satisfacer las dependencias para compilar librerias como `SDL2`, `SDL2
 Por defecto se enlaza dinamicamente, puede usar `-DBUILD_TYPE=OFF` para tratar de enlazar las librerias que lo permitan de forma estatica.
 
 Esto no va a enlazar todas las bibliotecas de forma estatica, debido a que hay librerias que no lo soportan, como `libvulkan`.
+
+```-DUSE_EXTERNAL_LIBS=ON``` Para usar las librerias externas provenientes de los submodulos de git, esto compilara y enlazara las librerias externas y no las del sistema.
+
+### Construyendo
+```bash
+git clone --recurse-submodules https://gitlab.com/448L/patata-engine.git && cd patata-engine
+mkdir build && mkdir bin && cd build
+cmake .. -DUSE_EXTERNAL_LIBS=ON
+make -j$(nproc)
+```

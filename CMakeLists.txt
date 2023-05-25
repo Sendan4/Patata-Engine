@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 option(SHARED_BUILD ON)
-option(USE_SYSTEM_LIBS ON)
+option(USE_EXTERNAL_LIBS ON)
 
 set(CMAKE_BUILD_TYPE Release)
 
@@ -27,6 +27,7 @@ set(SOURCE
 	"src/base/Core/main.cpp"
 	"src/base/Core/sdl.cpp"
 	"src/base/Window/window.cpp"
+	"src/base/Window/window_icon.cpp"
 	"src/base/Core/API_Graphics_Switch.cpp"
 	"src/base/Events/Main_events.cpp"
 	"src/base/Vulkan/Setup_Vulkan.cpp"
@@ -43,9 +44,9 @@ find_package(Vulkan REQUIRED)
 
 add_subdirectory(externals/Glad2)
 include_directories("externals/Glad2/include/")
-if (USE_SYSTEM_LIBS)
+if (NOT USE_EXTERNAL_LIBS)
 	find_package(SDL2 REQUIRED)
-	find_package(SDL2_image REQUIRED)
+	#find_package(SDL2_image REQUIRED)
 else()
 	if (SHARED_BUILD)
 		set(SDL_SHARED_ENABLED_BY_DEFAULT ON)
@@ -78,13 +79,27 @@ else()
 endif()
 
 if (SHARED_BUILD)
-	target_link_libraries(${PROJECT_NAME} PRIVATE
-		glad2
-		SDL2main SDL2::SDL2
-		${Vulkan_LIBRARIES})
+	if (USE_EXTERNAL_LIBS)
+		target_link_libraries(${PROJECT_NAME} PRIVATE
+			glad2
+			SDL2main SDL2::SDL2
+			${Vulkan_LIBRARIES})
+	else()
+		target_link_libraries(${PROJECT_NAME} PRIVATE
+			glad2
+			${SDL2_LIBRARIES}
+			${Vulkan_LIBRARIES})
+	endif()
 else()
-	target_link_libraries(${PROJECT_NAME} PRIVATE
-		glad2
-		SDL2main SDL2-static
-		${Vulkan_LIBRARIES})
+	if (USE_EXTERNAL_LIBS)
+		target_link_libraries(${PROJECT_NAME} PRIVATE
+			glad2
+			SDL2main SDL2-static
+			${Vulkan_LIBRARIES})
+	else()
+		target_link_libraries(${PROJECT_NAME} PRIVATE
+			glad2
+			${SDL2_LIBRARIES}
+			${Vulkan_LIBRARIES})
+	endif()
 endif()
