@@ -9,7 +9,6 @@ namespace Game {
 	class Window {
 		public:
 			Window(std::string, int, int, bool);
-			bool WindowRendererStart(void);
 			~Window();
 
 			// Get

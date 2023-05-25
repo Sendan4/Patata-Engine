@@ -25,8 +25,6 @@ int main(int argc, char **argv) {
 	SDL_GLContext gl = nullptr;
 	Graphics::start_opengl(MainWindow.Window_get(), gl);
 
-	MainWindow.WindowRendererStart();
-
 	do {
 		SDL_PollEvent(&Window_Event);
 		if (Window_Event.type == SDL_QUIT)

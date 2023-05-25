@@ -21,22 +21,6 @@ Game::Window::Window(std::string Titulo, int Width, int Height, bool GraphicsApi
 	}
 }
 
-bool Game::Window::WindowRendererStart(void) {
-	if (!WINDOW) return false;
-
-	SDL_Renderer * Render = SDL_CreateRenderer(WINDOW, -1, SDL_RENDERER_ACCELERATED);
-
-	if (!Render) {
-		std::cout << "SDL - El contexto de renderizado no es valido :" << SDL_GetError() << std::endl;
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "SDL - Fallo la creacion de la ventana\nSDL - El contexto de renderizado no es valido", NULL);
-		return false;
-	}
-
-	SDL_RenderClear(Render);
-	SDL_RenderPresent(Render);
-	return true;
-}
-
 Game::Window::~Window(void) {
 	SDL_DestroyRenderer(Render);
 	SDL_DestroyWindow(WINDOW);
