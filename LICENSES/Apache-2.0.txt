@@ -202,12 +202,3 @@ Vulkan License
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
-DISCLAIMER
-----------
-
-This program uses Vulkan and the LunarG Vulkan SDK to compile and link against libvulkan. The use of Vulkan and the LunarG Vulkan SDK is provided "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF VULKAN AND THE LUNARG VULKAN SDK.
-
-By using this program, you acknowledge that you have read this disclaimer, understand it, and agree to be bound by its terms and conditions.
-
-The source code and documentation of this project include material from Vulkan® and Vulkan-Hpp© Khronos Group. Copyright © Khronos Group. All rights reserved.

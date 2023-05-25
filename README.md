@@ -1,7 +1,7 @@
 | [Español](README.md) | [English](doc/README_en.md) |
 | :--: | :--: |
 
-# <img draggable=false src = "assets/icon/patata_icon_16.webp" width=24 style="image-rendering: pixelated;"> Motor Patata
+# <img draggable=false src = "assets/icon/patata.webp" width=24 style="image-rendering: pixelated;"> Motor Patata
 
 <img draggable=false src = "assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
 <p style=""><b>Motor Patata</b> es un motor 2d sencillo y ligero con el enfoque en el desarrollo de videojuegos.</p>

@@ -11,7 +11,7 @@ namespace Game {
 			Window(std::string, int, int, bool);
 			bool WindowRendererStart(void);
 			~Window();
-		
+
 			// Get
 			SDL_Renderer * Renderer_get(void);
 			SDL_Window * Window_get(void);

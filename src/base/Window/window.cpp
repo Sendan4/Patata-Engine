@@ -1,4 +1,4 @@
-#include "window.hpp"
+#include "Core/window.hpp"
 
 #include <vector>
 #include <SDL_vulkan.h>
@@ -6,14 +6,14 @@
 Game::Window::Window(std::string Titulo, int Width, int Height, bool GraphicsApi) {
 	if (Titulo.empty())
 		Titulo = "Patata Engine";
-		
+
 	WINDOW = SDL_CreateWindow(
 		Titulo.data(),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		Width,
 		Height,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_VULKAN);
+		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
 	if (!WINDOW) {
 		std::cout << "SDL - Fallo la creacion de la ventana :\t" << SDL_GetError() << "\n";
@@ -35,7 +35,7 @@ bool Game::Window::WindowRendererStart(void) {
 	SDL_RenderClear(Render);
 	SDL_RenderPresent(Render);
 	return true;
-} 
+}
 
 Game::Window::~Window(void) {
 	SDL_DestroyRenderer(Render);

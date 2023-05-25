@@ -18,10 +18,6 @@ namespace Graphics {
 		if (!GL_CONTEXT)
 			std::cout << "No se pudo crear el contexto" << std::endl;
 
-		GladGLContext gladContext;
-
-		GLADloadfunc load = (GLADloadfunc)SDL_GL_GetProcAddress;
-		if (!gladLoadGLContext(&gladContext, load))
-			std::cout << "No se pudo iniciar el contexto de OpenGL" << std::endl;
+		gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress);
 	}
 }

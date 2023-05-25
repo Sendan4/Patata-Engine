@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-option(BUILD_TYPE ON)
+option(SHARED_BUILD ON)
 option(USE_SYSTEM_LIBS ON)
 
 set(CMAKE_BUILD_TYPE Release)
@@ -11,17 +11,18 @@ else()
 	project("Patata_Engine" LANGUAGES CXX)
 endif()
 
-if(NOT BUILD_TYPE AND NOT MSVC)
+if(NOT SHARED_BUILD AND NOT MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
 
 set(MAIN_INCLUDE
-	"include/sdl.hpp"
-	"include/window.hpp"
-	"include/API_Graphics_Switch.hpp"
-	"include/Events.hpp"
-	"include/Opengl_context.hpp"
-	"include/Vulkan.hpp")
+	"include/Core/sdl.hpp"
+	"include/Core/window.hpp"
+	"include/Core/Events.hpp"
+	"include/Graphics/Opengl_context.hpp"
+	"include/Graphics/Vulkan.hpp"
+	"include/Graphics/API_Graphics_Switch.hpp"
+	"include/EngineInfo.hpp")
 set(SOURCE
 	"src/base/Core/main.cpp"
 	"src/base/Core/sdl.cpp"
@@ -39,15 +40,28 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 find_package(Vulkan REQUIRED)
-add_subdirectory(externals/Glad2)
 
+add_subdirectory(externals/Glad2)
+include_directories("externals/Glad2/include/")
 if (USE_SYSTEM_LIBS)
 	find_package(SDL2 REQUIRED)
 	find_package(SDL2_image REQUIRED)
 else()
+	if (SHARED_BUILD)
+		set(SDL_SHARED_ENABLED_BY_DEFAULT ON)
+		set(SDL_STATIC_ENABLED_BY_DEFAULT OFF)
+	else ()
+		set(SDL_SHARED_ENABLED_BY_DEFAULT OFF)
+		set(SDL_STATIC_ENABLED_BY_DEFAULT ON)
+	endif ()
+	
 	add_subdirectory(externals/SDL)
-	include_directories("${CMAKE_SOURCE_DIR}/externals/libs/SDL/include")
-	add_subdirectory(externals/SDL_image)
+	include_directories("${CMAKE_SOURCE_DIR}/externals/SDL/include")
+	
+	if (MSVC)
+		include_directories("C:/VulkanSDK/1.3.231.1/Include")
+	endif()
+	#add_subdirectory(externals/SDL_image)
 endif()
 
 include_directories("include/")
@@ -56,21 +70,21 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	add_executable(${PROJECT_NAME}
 		${MAIN_INCLUDE}
 		${SOURCE}
-		"data/patata_icon.rc")
+		"src/base/Core/patata.rc")
 else()
 	add_executable(${PROJECT_NAME}
 		${MAIN_INCLUDE}
 		${SOURCE})
 endif()
 
-if (BUILD_TYPE)
+if (SHARED_BUILD)
 	target_link_libraries(${PROJECT_NAME} PRIVATE
+		glad2
 		SDL2main SDL2::SDL2
-		${Vulkan_LIBRARIES}
-		glad2)
+		${Vulkan_LIBRARIES})
 else()
 	target_link_libraries(${PROJECT_NAME} PRIVATE
+		glad2
 		SDL2main SDL2-static
-		${Vulkan_LIBRARIES}
-		glad2)
+		${Vulkan_LIBRARIES})
 endif()

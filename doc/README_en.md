@@ -1,7 +1,7 @@
 | [Español]() | [English]() |
 | :--: | :--: |
 
-# <img draggable=false src = "../assets/icon/patata_icon_16.webp" width=24 style="image-rendering: pixelated;"> Potato Engine
+# <img draggable=false src = "../assets/icon/patata.webp" width=24 style="image-rendering: pixelated;"> Potato Engine
 
 <img draggable=false src = "../assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
 

@@ -504,12 +504,3 @@ necessary.  Here is a sample; alter the names:
   Ty Coon, President of Vice
 
 That's all there is to it!
-
-DISCLAIMER
-----------
-
-I, 448envio, hereby declare that I accept no responsibility for any damages,
-errors, or other issues that may arise from the use of the Patata Engine project,
-including its source code, documentation, or any third-party libraries or dependencies
-used by it. Users of this project acknowledge that they use it at their own risk and
-that no warranties of any kind, express or implied, are made.

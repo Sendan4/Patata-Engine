@@ -1,4 +1,4 @@
- 
+
 Este proyecto usa Cmake y Meson para compilarse
 
 # Linux
