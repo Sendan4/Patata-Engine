@@ -13,9 +13,9 @@
 
 # Available Operating Systems
 
-| Windows | GNU/Linux |
-| :-----: | :-----: |
-|<b>[x86_64]()</b> | <b>[x86_64]()</b> |
+| Windows | GNU/Linux | HaikuOS |
+| :-----: | :-----: | :-----: |
+|<b>[x86_64]()</b> | <b>[x86_64]()</b> | |
 
 # targets
 - [ ] Portability of binary distribution *(Linux distros)*
@@ -26,6 +26,7 @@
 - [ ] Vulkan Renderer
 - [ ] OpenGL Renderer
 - [ ] Create a Mascot
+- [ ] HaikuOS Port
 - [X] Create a logo or symbol
 
 ## Third-party libraries used in this project
