@@ -29,6 +29,7 @@
 - [ ] HaikuOS Port
 - [ ] Decodificar, Cargar y Renderizar imagenes ([AVIF](https://aomediacodec.github.io/av1-avif/))
 - [ ] Reproducir secuencialmente animaciones de sprites
+- [ ] Soporte Apropiado de Wayland (Linux)
 - [X] Crear un logo o simbolo
 
 ## Librerias de terceros usadas en este proyecto
