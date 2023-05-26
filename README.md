@@ -27,6 +27,8 @@
 - [ ] Renderizador con OpenGL
 - [ ] Crear una Mascota
 - [ ] HaikuOS Port
+- [ ] Decodificar, Cargar y Renderizar imagenes ([AVIF](https://aomediacodec.github.io/av1-avif/))
+- [ ] Reproducir secuencialmente animaciones de sprites
 - [X] Crear un logo o simbolo
 
 ## Librerias de terceros usadas en este proyecto
