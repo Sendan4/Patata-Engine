@@ -35,7 +35,7 @@
 ## Librerias de terceros usadas en este proyecto
 <ul>
 	<li><a href = "http://www.libsdl.org/">SDL2</a></li>
-	<li><a href = "https://www.vulkan.org/">Vulkan</a> <i>(<a href = "https://github.com/KhronosGroup/Vulkan-Hpp.git">Vulkan headers</a>)</i></li>
+	<li><a href = "https://www.vulkan.org/">Vulkan</a> <i>(<a href = "https://github.com/KhronosGroup/Vulkan-Headers">Vulkan headers</a>)</i></li>
 	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a> <i>(Multi-Cargador Usado para OpenGL)</i></li>
 	<li><a href = "https://github.com/hyperrealm/libconfig">libconfig</a></li>
 </ul>
