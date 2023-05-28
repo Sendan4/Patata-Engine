@@ -3,30 +3,11 @@ project('Patata Engine',
   default_options: ['buildtype=release', 'cpp_std=c++20'],
   version : '0')
 
-# SDL2
-if meson.backend() == 'vs2022'
-  sdl2_dep = dependency('sdl2',
-    version : '>=2.24.1',
-    static : false,
-    modules : ['SDL2::SDL2', 'SDL2::SDL2main'],
-    required : true)
-
-  sdl2_image_dep = dependency('sdl2_image',
-    static : false,
-    modules : ['SDL2_image::SDL2_image'],
-    required : true)
-else
-  sdl2_dep = dependency('sdl2',
-    required : true,
-    static : false,
-    version : '>=2.24.1',
-    modules : ['SDL2::SDL2', 'SDL2::SDL2-static'])
-
-  sdl2_image_dep = dependency('sdl2_image',
-    static : false,
-    modules : ['SDL2_image::SDL2_image'],
-    required : true)
-endif
+sdl2_dep = dependency('sdl2',
+  required : true,
+  static : false,
+  version : '>=2.24.1',
+  modules : ['SDL2::SDL2'])
 
 Vulkan = dependency('Vulkan',
   static : false,
