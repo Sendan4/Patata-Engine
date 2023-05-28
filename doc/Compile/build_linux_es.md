@@ -1,4 +1,3 @@
-
 Este proyecto usa Cmake y Meson para compilarse
 
 # Linux
@@ -153,7 +152,7 @@ cmake ..
 le tocara satisfacer las dependencias para compilar librerias como `SDL2`, `SDL2_Image`, `SDL2_TTF`, `libconfig`.
 
 ### Enlazado Estatico o Enlazado dinamico
-Por defecto se enlaza dinamicamente, puede usar `-DBUILD_TYPE=OFF` para tratar de enlazar las librerias que lo permitan de forma estatica.
+Por defecto se enlaza dinamicamente, puede usar `-DSHARED_BUILD=OFF` para tratar de enlazar las librerias que lo permitan de forma estatica.
 
 Esto no va a enlazar todas las bibliotecas de forma estatica, debido a que hay librerias que no lo soportan, como `libvulkan`.
 
