@@ -1,4 +1,4 @@
-| [Español](README.md) | [English](doc/README_en.md) |
+| Español | [English](doc/README_en.md) |
 | :--: | :--: |
 
 # <img draggable=false src = "assets/icon/patata.webp" width=24 style="image-rendering: pixelated;"> Motor Patata
