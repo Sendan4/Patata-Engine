@@ -1,4 +1,4 @@
-| [Español]() | [English]() |
+| [Español](README.md) | English |
 | :--: | :--: |
 
 # <img draggable=false src = "assets/icon/patata.webp" width=24 style="image-rendering: pixelated;">Potato Engine
