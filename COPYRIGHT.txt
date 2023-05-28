@@ -1,0 +1,15 @@
+Files: ./externals/SDL
+Copyright: 1997-2023 Sam Lantinga
+License: Zlib
+
+Files: ./externals/libconfig
+Author: hyperrealm
+License: Lgpl v2.1
+
+Files: ./externals/Vulkan-Headers
+Copyright: Khronos Group
+License: Apache 2.0
+
+Files: ./externals/Glad2
+Copyright: 2013-2022, David Herberth
+License: MIT

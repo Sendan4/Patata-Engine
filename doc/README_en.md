@@ -18,6 +18,7 @@
 |<b>[x86_64]()</b> | <b>[x86_64]()</b> | |
 
 # targets
+
 - [ ] Portability of binary distribution *(Linux distros)*
 - [ ] Make the engine portable
 - [ ] Example Menu
@@ -27,6 +28,9 @@
 - [ ] OpenGL Renderer
 - [ ] Create a Mascot
 - [ ] HaikuOS Port
+- [ ] Decode, Load and Render images ([AVIF](https://aomediacodec.github.io/av1-avif/))
+- [ ] Sequential playback of sprite animations
+- [ ] Appropriate Wayland (Linux) Support
 - [X] Create a logo or symbol
 
 ## Third-party libraries used in this project

@@ -1,4 +1,4 @@
-Vulkan License
+Vulkan-Headers License
 --------------
 
                                  Apache License
