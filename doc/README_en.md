@@ -36,9 +36,7 @@
 ## Third-party libraries used in this project
 <ul>
 	<li><a href = "http://www.libsdl.org/">SDL2</a></li>
-	<li><a href = "https://github.com/libsdl-org/SDL_image">SDL2 Image</a></li>
-	<li><a href = "https://github.com/libsdl-org/SDL_ttf.git">SDL2 TTF</a></li>
-	<li><a href = "https://www.vulkan.org/">Vulkan</a> <i>(<a href = "https://github.com/KhronosGroup/Vulkan-Hpp.git">Vulkan.hpp</a>)</i></li>
+	<li><a href = "https://www.vulkan.org/">Vulkan</a> <i>(<a href = "https://github.com/KhronosGroup/Vulkan-Headers">Vulkan-Headers</a>)</i></li>
 	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a> <i>(Multi-Loader used for OpenGL)</i></li>
 	<li><a href = "https://github.com/hyperrealm/libconfig">libconfig</a></li>
 </ul>
@@ -48,4 +46,4 @@ Potato Engine is under the license [MIT](../LICENSE)
 
 <hr>
 
-## [Access to the documentation](https://gitlab.com/448L/patata-engine/-/wikis/Indice-%F0%9F%A5%94)
+## [Access to the documentation](doc/README.md)
