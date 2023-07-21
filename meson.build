@@ -25,21 +25,11 @@ if meson.backend() == 'vs2022'
     static : false,
     modules : ['SDL2::SDL2', 'SDL2::SDL2main'],
     required : true)
-
-  sdl2_image_dep = dependency('sdl2_image',
-    static : false,
-    modules : ['SDL2_image::SDL2_image'],
-    required : true)
 else
   sdl2_dep = dependency('sdl2',
     required : true,
     static : false,
-    version : '>=2.24.1',
-    modules : ['SDL2::SDL2', 'SDL2::SDL2-static'])
-
-  sdl2_image_dep = dependency('sdl2_image',
-    static : true,
-    required : true)
+    version : '>=2.24.1')
 endif
 
 Vulkan = dependency('Vulkan',
@@ -71,14 +61,12 @@ source = files([
 features = {
     'Vulkan' : Vulkan.found(),
     'OpenGL' : glad_dep.found(),
-    'SDL2' : sdl2_dep.found(),
-    'SDL2-image' : sdl2_image_dep.found()
+    'SDL2' : sdl2_dep.found()
 }
 
 summary({'OpenGL': features['OpenGL'],
          'Vulkan': features['Vulkan'],
-          'SDL2' : features['SDL2'],
-          'SDL2-Image': features['SDL2-image']},
+          'SDL2' : features['SDL2']},
          bool_yn : true)
 
 if target_machine.system() == 'windows'
@@ -91,10 +79,10 @@ if target_machine.system() == 'windows'
     Patata_icon,
     win_subsystem : 'console',
     include_directories : [include_main],
-    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, glad_dep])
+    dependencies : [sdl2_dep, Vulkan, glad_dep])
 else
   executable('Patata Engine',
     source,
     include_directories : [include_main],
-    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, glad_dep])
+    dependencies : [sdl2_dep, Vulkan, glad_dep])
 endif
