@@ -50,13 +50,13 @@ source = files([
   'src/Core/API_Graphics_Switch.cpp',
   'src/Opengl/Opengl_Context.cpp',
   'src/Log/OpenGL_Info.cpp',
-  'src/Vulkan/Setup_Vulkan.cpp',
+  #'src/Vulkan/Setup_Vulkan.cpp',
   'src/Log/Mapache.cpp',
   'src/Log/Start_Patata_Log_Info.cpp'])
 
 features = {
     'Vulkan' : Vulkan.found(),
-    'OpenGL' : glad_dep.found(),
+    'OpenGL' : Glad2.found(),
     'SDL2' : sdl2_dep.found()
 }
 
