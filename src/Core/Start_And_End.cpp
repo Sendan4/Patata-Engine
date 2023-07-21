@@ -11,17 +11,17 @@ Patata::Graphics::OpenGLContext * pOpenGLContext = nullptr;
 Patata::Window * pWindow = nullptr;
 
 Patata::PatataEngine::PatataEngine(
-		std::string WINDOW_NAME = "Patata Engine",
-		uint32_t WINDOW_INITIAL_WIDTH = 1280,
-		uint32_t WINDOW_INITIAL_HEIGHT = 720,
-		bool API_INITIAL = true) {
+		std::string WINDOW_NAME,
+		uint32_t WINDOW_INITIAL_WIDTH,
+		uint32_t WINDOW_INITIAL_HEIGHT,
+		bool API_INITIAL) {
 	Patata::Log::StartMapache();
 	Patata::Log::StartPatataLogInfo();
 
 	// SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
-		std::cout << "SDL - SubSistema de video no se ha podido iniciar :" << SDL_GetError() << "\n";
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Problemas al iniciar", "SDL Fallo al iniciar los subsistemas", NULL);
+		std::cout << "SDL - Video SubSystem failed to start : " << SDL_GetError() << "\n";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Problems starting", "SDL Failed to start subsystems", NULL);
 	}
 
 	// Create Window
