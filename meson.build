@@ -9,19 +9,11 @@ message('Branch:', branchCOutput)
 # Macros
 add_project_arguments('-DPatataVersion=0', '-DGIT_BRANCH="'+branchCOutput+'"', '-DBuildSys="Meson"', language : 'cpp') 
 
-# SDL2
-if meson.backend() == 'vs2022' or meson.backend() == 'vs2019'
-  sdl2_dep = dependency('sdl2',
-    version : '>=2.24.1',
-    static : false,
-    modules : ['SDL2::SDL2', 'SDL2::SDL2main'],
-    required : true)
-else
-  sdl2_dep = dependency('sdl2',
-    required : true,
-    static : false,
-    version : '>=2.24.1')
-endif
+sdl2_dep = dependency('sdl2',
+  required : true,
+  static : false,
+  version : '>=2.24.1',
+  modules : ['SDL2::SDL2'])
 
 Vulkan = dependency('Vulkan',
   static : false,

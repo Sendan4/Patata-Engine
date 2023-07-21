@@ -149,10 +149,10 @@ configure the project with cmake.
 cmake ..
 ```
 
-you will have to satisfy the dependencies to compile libraries such as `SDL2`, `SDL2_Image`, `SDL2_TTF`, `libconfig`.
+you will have to satisfy the dependencies to compile libraries such as `SDL2`, `libconfig`, `Vulkan-Headers`.
 
 ### Static or Dynamic Linking
-By default it is dynamically linked, you can use `-DBUILD_TYPE=OFF` to try to link the libraries that allow it statically.
+By default it is dynamically linked, you can use `-DSHARED_BUILD=OFF` to try to link the libraries that allow it statically.
 
 This will not link all libraries statically, because there are libraries that do not support it, such as `libvulkan`.
 
