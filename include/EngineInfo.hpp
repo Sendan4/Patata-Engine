@@ -1,5 +1,4 @@
 #pragma once
 
-#define GameName ""
-#define GameVersion ""
-#define PatataVersion ""
+#define GameName "Undefined"
+#define GameVersion "Undefined"

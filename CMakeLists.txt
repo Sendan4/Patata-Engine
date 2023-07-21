@@ -11,29 +11,48 @@ else()
 	project("Patata_Engine" LANGUAGES CXX)
 endif()
 
+execute_process(
+	COMMAND git branch --show-current
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	OUTPUT_VARIABLE GIT_BRANCH
+	OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+message(STATUS "Git Branch: ${GIT_BRANCH}")
+
+# Macros
+add_definitions(
+	-DBuildSys="CMake"
+	-DPatataVersion="0"
+	-DGIT_BRANCH="${GIT_BRANCH}"
+)
+
 if(NOT SHARED_BUILD AND NOT MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
 
 set(MAIN_INCLUDE
-	"include/Core/sdl.hpp"
-	"include/Core/window.hpp"
-	"include/Core/Events.hpp"
-	"include/Graphics/Opengl_context.hpp"
+	"include/Core/Patata_Engine.hpp"
+	"include/Core/Log.hpp"
+	"include/Core/Window.hpp"
+	"include/Core/terminal_colors.hpp"
+	"include/Graphics/OpenGL.hpp"
 	"include/Graphics/Vulkan.hpp"
 	"include/Graphics/API_Graphics_Switch.hpp"
 	"include/EngineInfo.hpp")
 set(SOURCE
-	"src/base/Core/main.cpp"
-	"src/base/Core/sdl.cpp"
-	"src/base/Window/window.cpp"
-	"src/base/Window/window_icon.cpp"
-	"src/base/Core/API_Graphics_Switch.cpp"
-	"src/base/Events/Main_events.cpp"
-	"src/base/Vulkan/Setup_Vulkan.cpp"
-	"src/base/Opengl/Opengl_context.cpp")
+	"src/Core/main.cpp"
+	"src/Core/Start_And_End.cpp"
+	"src/Core/Main_Loop.cpp"
+	"src/Core/API_Graphics_Switch.cpp"
+	"src/Window/Window.cpp"
+	"src/Window/Window_Icon.cpp"
+	"src/Vulkan/Setup_Vulkan.cpp"
+	"src/Opengl/Opengl_Context.cpp"
+	"src/Log/OpenGL_Info.cpp"
+	"src/Log/Mapache.cpp"
+	"src/Log/Start_Patata_Log_Info.cpp")
 
-set(icon "src/base/Core/patata.rc")
+set(icon "src/Core/patata.rc")
 
 set(CXX_STANDARD_REQUIRED true)
 set(CMAKE_CXX_STANDARD 20)
@@ -71,7 +90,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	add_executable(${PROJECT_NAME}
 		${MAIN_INCLUDE}
 		${SOURCE}
-		"src/base/Core/patata.rc")
+		"src/Core/patata.rc")
 else()
 	add_executable(${PROJECT_NAME}
 		${MAIN_INCLUDE}
@@ -103,3 +122,8 @@ else()
 			${Vulkan_LIBRARIES})
 	endif()
 endif()
+
+set_target_properties(
+	${PROJECT_NAME}
+	PROPERTIES
+	COMPILE_DEFINITIONS IO_TEST=1)

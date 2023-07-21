@@ -3,29 +3,24 @@ project('Patata Engine',
   default_options: ['buildtype=release', 'cpp_std=c++20'],
   version : '0')
 
+branchCommand = run_command('git', 'branch', '--show-current', check: true)
+branchCOutput = branchCommand.stdout().strip()
+message('Branch:', branchCOutput)
+# Macros
+add_project_arguments('-DPatataVersion=0', '-DGIT_BRANCH="'+branchCOutput+'"', '-DBuildSys="Meson"', language : 'cpp') 
+
 # SDL2
-if meson.backend() == 'vs2022'
+if meson.backend() == 'vs2022' or meson.backend() == 'vs2019'
   sdl2_dep = dependency('sdl2',
     version : '>=2.24.1',
     static : false,
     modules : ['SDL2::SDL2', 'SDL2::SDL2main'],
     required : true)
-
-  sdl2_image_dep = dependency('sdl2_image',
-    static : false,
-    modules : ['SDL2_image::SDL2_image'],
-    required : true)
 else
   sdl2_dep = dependency('sdl2',
     required : true,
     static : false,
-    version : '>=2.24.1',
-    modules : ['SDL2::SDL2', 'SDL2::SDL2-static'])
-
-  sdl2_image_dep = dependency('sdl2_image',
-    static : false,
-    modules : ['SDL2_image::SDL2_image'],
-    required : true)
+    version : '>=2.24.1')
 endif
 
 Vulkan = dependency('Vulkan',
@@ -42,28 +37,31 @@ Glad2 = declare_dependency(
 include_main = include_directories('include')
 
 source = files([
-  'src/base/Core/main.cpp',
-  'src/base/Core/sdl.cpp',
-  'src/base/Window/window.cpp',
-  'src/base/Window/window_icon.cpp',
-  'src/base/Events/Main_events.cpp',
-  'src/base/Core/API_Graphics_Switch.cpp',
-  'src/base/Opengl/Opengl_context.cpp',
-  'src/base/Vulkan/Setup_Vulkan.cpp'])
+  'src/Core/main.cpp',
+  'src/Core/Main_Loop.cpp',
+  'src/Core/Start_And_End.cpp',
+  'src/Window/Window.cpp',
+  'src/Window/Window_Icon.cpp',
+  'src/Core/API_Graphics_Switch.cpp',
+  'src/Opengl/Opengl_Context.cpp',
+  'src/Log/OpenGL_Info.cpp',
+  'src/Vulkan/Setup_Vulkan.cpp',
+  'src/Log/Mapache.cpp',
+  'src/Log/Start_Patata_Log_Info.cpp'])
 
 if target_machine.system() == 'windows'
   windows = import('windows')
 
-  Patata_icon = windows.compile_resources('src/base/Core/patata.rc')
+  Patata_icon = windows.compile_resources('src/Core/patata.rc')
 
   executable('Patata Engine',
     source,
     Patata_icon,
     include_directories : [include_main],
-    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, Glad2])
+    dependencies : [sdl2_dep, Vulkan, Glad2])
 else
   executable('Patata Engine',
     source,
     include_directories : [include_main],
-    dependencies : [sdl2_dep, sdl2_image_dep, Vulkan, Glad2])
+    dependencies : [sdl2_dep, Vulkan, Glad2])
 endif

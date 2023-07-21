@@ -1,4 +1,5 @@
 #include "Graphics/Vulkan.hpp"
+#include "Core/terminal_colors.hpp"
 
 // Instancia
 void Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
@@ -11,7 +12,7 @@ void Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 	if (!SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, extensionInstanceNames.data()))
 		std::cout << "X Error al obtener la lista de extensiones necesarias: " << SDL_GetError() << std::endl;
 	else {
-		std::cout << FRojo1 << Bold << "+ Vulkan Instance Extensions :" << Reset << std::endl;
+		std::cout << FRojo3 << Bold << "+ Vulkan Instance Extensions :" << Reset << std::endl;
 		for (int c = 0; c < int(extensionInstanceNames.size()); c++)
 			std::cout << Bold << FRojo3 << "| · " << Reset << extensionInstanceNames[c] << Reset << std::endl;
 		std::cout << Reset << std::endl;
@@ -42,10 +43,10 @@ void Graphics::VulkanRenderer::PhysicalDevices(void) {
 	PhysicalDevice = VulkanInstance.enumeratePhysicalDevices().front();
 	PhysicalDeviceProperties = PhysicalDevice.getProperties();
 
-	std::cout << FRojo1 << Bold << "+ Informacion general de Vulkan :" << Reset << std::endl;
+	std::cout << FRojo3 << Bold << "+ Informacion general de Vulkan :" << Reset << std::endl;
 	const uint32_t VulkanVersion = PhysicalDeviceProperties.apiVersion;
-	std::cout << FRojo1 << Bold << "| · " << Reset << Bold << "GPU / iGPU: \t" << Reset << PhysicalDeviceProperties.deviceName << Reset << std::endl;
-	std::cout << FRojo1 << Bold << "| · " << Reset << Bold << "Vulkan Version:\t" << Reset << VK_VERSION_MAJOR(VulkanVersion) << '.' << VK_VERSION_MINOR(VulkanVersion) << '.' << VK_VERSION_PATCH(VulkanVersion) << '.' << VK_API_VERSION_VARIANT(VulkanVersion) << Reset << std::endl << std::endl;
+	std::cout << FRojo3 << Bold << "| · " << Reset << Bold << "GPU / iGPU: \t" << Reset << PhysicalDeviceProperties.deviceName << Reset << std::endl;
+	std::cout << FRojo3 << Bold << "| · " << Reset << Bold << "Vulkan Version:\t" << Reset << VK_VERSION_MAJOR(VulkanVersion) << '.' << VK_VERSION_MINOR(VulkanVersion) << '.' << VK_VERSION_PATCH(VulkanVersion) << '.' << VK_API_VERSION_VARIANT(VulkanVersion) << Reset << std::endl << std::endl;
 }
 
 void Graphics::VulkanRenderer::CreateSurface(SDL_Window * WINDOW) {
@@ -62,9 +63,9 @@ void Graphics::VulkanRenderer::InitDevice(void) {
 	DeviceCreateInfo.enabledExtensionCount = uint32_t(DeviceExtensions.size());
 	DeviceCreateInfo.ppEnabledExtensionNames = DeviceExtensions.data();
 
-	std::cout << Bold << FRojo1 << "+ Vulkan Device Extensions :" << Reset << std::endl;
+	std::cout << Bold << FRojo3 << "+ Vulkan Device Extensions :" << Reset << std::endl;
 	for (int c = 0; c <= int(DeviceExtensions.size()); c++)
-		std::cout << Bold << FRojo1 << "| · " << Reset << DeviceExtensions[c] << Reset << std::endl;
+		std::cout << Bold << FRojo3 << "| · " << Reset << DeviceExtensions[c] << Reset << std::endl;
 	std::cout << std::endl;
 
 	Device = PhysicalDevice.createDevice(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), DeviceQueueCreateInfo));
