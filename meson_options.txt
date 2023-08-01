@@ -1,2 +1,1 @@
-option('Vulkan', type : 'feature', value : 'enabled')
-option('OpenGL', type : 'feature', value : 'enabled')
+

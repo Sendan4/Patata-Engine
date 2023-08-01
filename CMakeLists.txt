@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 3.18)
 option(SHARED_BUILD ON)
 option(USE_EXTERNAL_LIBS ON)
 
-set(CMAKE_BUILD_TYPE Release)
+if (NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Release)
+endif()
 
 message("  - Patata Engine -")
 
@@ -13,10 +15,10 @@ else()
 	project("Patata_Engine" LANGUAGES CXX)
 endif()
 
-include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORTS_CXX20)
-
 if (NOT MSVC)
+	include(CheckCXXCompilerFlag)
+	check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORTS_CXX20)
+
 	check_cxx_compiler_flag("-Wextra" COMPILER_SUPPORTS_WEXTRA)
 	check_cxx_compiler_flag("-Wall" COMPILER_SUPPORTS_WALL)
 
@@ -35,6 +37,7 @@ endif()
 	
 set(CXX_STANDARD_REQUIRED true)
 
+# Git Macros
 execute_process(
 	COMMAND git branch --show-current
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -43,12 +46,40 @@ execute_process(
 
 message(STATUS "Git Branch: ${GIT_BRANCH}")
 
+execute_process(
+	COMMAND git rev-parse HEAD
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	OUTPUT_VARIABLE GIT_HASH_LONG
+	OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+execute_process(
+	COMMAND git rev-parse --short HEAD
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	OUTPUT_VARIABLE GIT_HASH_SHORT
+	OUTPUT_STRIP_TRAILING_WHITESPACE)
+
 # Macros
 add_definitions(
-	-DBuildSys="CMake"
-	-DPatataVersion="0"
+	-DBUILDSYS="CMake"
+	-DPATATAVERSION="0"
 	-DGIT_BRANCH="${GIT_BRANCH}"
+	-DGIT_HASH_LONG="${GIT_HASH_LONG}"
+	-DGIT_HASH_SHORT="${GIT_HASH_SHORT}"
 )
+
+if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+	add_definitions(-DBUILD_TYPE="Release")
+elseif(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+	add_definitions(
+		-DBUILD_TYPE="Debug"
+		-DDEBUG=1)
+elseif(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+	add_definitions(
+		-DBUILD_TYPE="Debug Optimized"
+		-DDEBUG=1)
+elseif(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
+	add_definitions(-DBUILD_TYPE="Minimal Size Release")
+endif()
 
 if(NOT SHARED_BUILD AND NOT MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
@@ -74,7 +105,8 @@ set(SOURCE
 	"src/Opengl/Opengl_Context.cpp"
 	"src/Log/OpenGL_Info.cpp"
 	"src/Log/Mapache.cpp"
-	"src/Log/Start_Patata_Log_Info.cpp")
+	"src/Log/Start_Patata_Log_Info.cpp"
+	"src/Log/Vulkan_Info.cpp")
 
 set(icon "src/Core/patata.rc")
 

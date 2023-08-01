@@ -5,9 +5,11 @@
 #include "Core/Patata_Engine.hpp"
 #include "Core/Window.hpp"
 #include "Core/Log.hpp"
-#include "Graphics/OpenGL.hpp"
+#include "Graphics/Vulkan.hpp"
+//#include "Graphics/OpenGL.hpp"
 
-Patata::Graphics::OpenGLContext * pOpenGLContext = nullptr;
+Patata::Graphics::VulkanRenderer * pVulkanRenderer = nullptr;
+//Patata::Graphics::OpenGLContext * pOpenGLContext = nullptr;
 Patata::Window * pWindow = nullptr;
 
 Patata::PatataEngine::PatataEngine(
@@ -28,7 +30,10 @@ Patata::PatataEngine::PatataEngine(
 	pWindow = new Patata::Window(WINDOW_NAME, WINDOW_INITIAL_WIDTH, WINDOW_INITIAL_HEIGHT, API_INITIAL);
 
 	// OpenGL
-	pOpenGLContext = new Patata::Graphics::OpenGLContext(pWindow->WindowGet());
+	//pOpenGLContext = new Patata::Graphics::OpenGLContext(pWindow->WindowGet());
+	
+	// Vulkan
+	pVulkanRenderer = new Patata::Graphics::VulkanRenderer(pWindow->WindowGet());
 }
 
 void Patata::PatataEngine::GLSwapMainLoopWrapper(void) {
@@ -36,13 +41,17 @@ void Patata::PatataEngine::GLSwapMainLoopWrapper(void) {
 };
 
 Patata::PatataEngine::~PatataEngine(void) {
+	// Vulkan
+	delete pVulkanRenderer;
+	pVulkanRenderer = nullptr;
+
+	// OpenGL
+	//delete pOpenGLContext;
+	//pOpenGLContext = nullptr;
+	
 	// Window
 	delete pWindow;
 	pWindow = nullptr;
-
-	// OpenGL
-	delete pOpenGLContext;
-	pOpenGLContext = nullptr;
 
 	// SDL
 	SDL_Quit(); 

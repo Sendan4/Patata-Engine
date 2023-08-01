@@ -1,5 +1,6 @@
 project('Patata Engine',
   'cpp', 'c',
+  version: '0',
   default_options: [
     'buildtype=release'])
 
@@ -15,12 +16,39 @@ if (meson.get_compiler('cpp').has_argument('-std=c++20'))
   cpp_std = 'c++20'
 endif
 
+# commit macro
+get_commit_hash_long = run_command('git', 'rev-parse', 'HEAD', check: true)
+git_commit_long_hash = get_commit_hash_long.stdout().strip()
+
+get_commit_hash_short = run_command('git', 'rev-parse', '--short', 'HEAD', check: true)
+git_commit_short_hash = get_commit_hash_short.stdout().strip()
+
+add_project_arguments('-DGIT_HASH_LONG="'+git_commit_long_hash+'"', language : 'cpp')
+add_project_arguments('-DGIT_HASH_SHORT="'+git_commit_short_hash+'"', language : 'cpp')
+
+# Build Type macro
+if (get_option('buildtype') == 'release')
+  add_project_arguments('-DBUILD_TYPE="Release"', language : 'cpp')
+elif (get_option('buildtype') == 'debug')
+  add_project_arguments(
+    '-DBUILD_TYPE="Debug"',
+    '-DDEBUG=1',
+    language : 'cpp')
+elif (get_option('buildtype') == 'debugoptimized')
+  add_project_arguments(
+    '-DBUILD_TYPE="Debug Optimized"',
+    '-DDEBUG=1',
+    language : 'cpp')
+elif (get_option('buildtype') == 'minsize')
+  add_project_arguments('-DBUILD_TYPE="Minimal Size Release"', language : 'cpp')
+endif
+
 branchCommand = run_command('git', 'branch', '--show-current', check: true)
 branchCOutput = branchCommand.stdout().strip()
 message('Branch:', branchCOutput)
 
 # Macros
-add_project_arguments('-DPatataVersion=0', '-DGIT_BRANCH="'+branchCOutput+'"', '-DBuildSys="Meson"', language : 'cpp') 
+add_project_arguments('-DPATATAVERSION=0', '-DGIT_BRANCH="'+branchCOutput+'"', '-DBUILDSYS="Meson"', language : 'cpp') 
 
 sdl2_dep = dependency('sdl2',
   required : true,
@@ -50,7 +78,8 @@ source = files([
   'src/Core/API_Graphics_Switch.cpp',
   'src/Opengl/Opengl_Context.cpp',
   'src/Log/OpenGL_Info.cpp',
-  #'src/Vulkan/Setup_Vulkan.cpp',
+  'src/Vulkan/Setup_Vulkan.cpp',
+  'src/Log/Vulkan_Info.cpp',
   'src/Log/Mapache.cpp',
   'src/Log/Start_Patata_Log_Info.cpp'])
 

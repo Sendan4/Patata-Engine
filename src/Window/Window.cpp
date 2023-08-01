@@ -17,10 +17,10 @@ Patata::Window::Window(
 		SDL_WINDOWPOS_CENTERED,
 		WINDOW_INITIAL_WIDTH,
 		WINDOW_INITIAL_HEIGHT,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_VULKAN);
 
 	if (!WINDOW) {
-		std::cout << "SDL - Window creation failed:\t" << SDL_GetError() << "\n";
+		std::cout << "SDL - Window creation failed : " << SDL_GetError() << "\n";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "SDL - Window creation failed", NULL);
 	}
 	else SetIcon(WINDOW);
