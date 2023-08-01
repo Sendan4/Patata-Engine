@@ -1,6 +1,6 @@
 # Build Dirs
-build/*
-bin/*
+build/
+bin/
 
 # tmp
 .cache
