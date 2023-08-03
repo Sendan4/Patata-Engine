@@ -1,6 +1,6 @@
 #pragma once
 #include <vulkan/vulkan.hpp>
-#include <SDL_vulkan.h>
+#include <SDL2/SDL_vulkan.h>
 #include <iostream>
 #include <vector>
 #include "Core/terminal_colors.hpp"

@@ -7,4 +7,7 @@
 	url = https://github.com/hyperrealm/libconfig.git
 [submodule "externals/Vulkan-Headers"]
 	path = externals/Vulkan-Headers
-	url = https://github.com/KhronosGroup/Vulkan-Headers
+	url = https://github.com/KhronosGroup/Vulkan-Headers.git
+[submodule "externals/Vulkan-Loader"]
+	path = externals/Vulkan-Loader
+	url = https://github.com/KhronosGroup/Vulkan-Loader.git

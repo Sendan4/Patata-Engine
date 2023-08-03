@@ -1,28 +1,18 @@
-# LIB_SHARED ON or OFF in Main CMakeLists
+cmake_minimum_required(VERSION 3.5)
+project(Glad2)
 
-cmake_minimum_required(VERSION 3.24.2)
-project(glad2 VERSION 2)
-
-message(STATUS "Configurando Glad 2 - CMakeList Personalizado")
-
-include_directories("include/")
+message ("  - Glad2 -")
 
 if (SHARED_BUILD)
-    if (MSVC)
-        set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
-        add_library(${PROJECT_NAME} "src/gl.c")
-    else ()
-        add_library(${PROJECT_NAME} SHARED "src/gl.c")
-        message(STATUS "Glad 2 - Shared Build")
+	message(STATUS "Shared Build")
+	if (MSVC)
+		add_library(${PROJECT_NAME} STATIC include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
+	else()
+		add_library(${PROJECT_NAME} SHARED include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
 	endif()
 else()
-    set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded)
-    add_library(${PROJECT_NAME} STATIC "src/gl.c")
-	message(STATUS "Glad 2 - Static Build")
+	message(STATUS "Static Build")
+	add_library(${PROJECT_NAME} STATIC include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE include/)
-
-if (MSVC)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE WINDOWS_EXPORT_ALL_SYMBOLS)
-endif()
+target_include_directories(${PROJECT_NAME} PUBLIC include/)
