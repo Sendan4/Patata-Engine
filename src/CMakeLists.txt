@@ -24,6 +24,11 @@ else()
 		${PATATA_SOURCE})
 endif()
 
+if (NOT MSVC AND LINUX AND ${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+	target_link_libraries(${PROJECT_NAME} PRIVATE
+		VkLayer_khronos_validation)
+endif()
+
 if (SHARED_BUILD)
 	# Attempt Shared
 	if (USE_EXTERNAL_LIBS)
@@ -36,7 +41,13 @@ if (SHARED_BUILD)
 			# Windows MSYS2
 			target_link_libraries(${PROJECT_NAME} PRIVATE
 				-lvulkan-1
-				-L/${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/)
+				-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+
+			if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo") 
+				target_link_libraries(${PROJECT_NAME} PRIVATE
+					-lVkLayer_khronos_validation
+					-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+			endif()
 
 			target_link_libraries(${PROJECT_NAME} PRIVATE
 				Glad2
@@ -67,6 +78,12 @@ else()
 			target_link_libraries(${PROJECT_NAME} PRIVATE
 				-lvulkan-1
 				-L/${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/)
+
+			if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+				target_link_libraries(${PROJECT_NAME} PRIVATE
+					-lVkLayer_khronos_validation
+					-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+			endif()
 
 			target_link_libraries(${PROJECT_NAME} PRIVATE
 				Glad2

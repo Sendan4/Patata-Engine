@@ -1,6 +1,6 @@
 #include <cstring>
 #include <iostream>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include "Core/Window.hpp"
 

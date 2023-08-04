@@ -11,6 +11,8 @@
 
 <p>Another goal is <b>portability</b>, I want it to be able to run on old (not so old) and modern devices.</p>
 
+⚠️ Not ready for use yet
+
 # Available Operating Systems
 
 | Windows | GNU/Linux | HaikuOS |
@@ -36,7 +38,12 @@
 ## Third-party libraries used in this project
 <ul>
 	<li><a href = "http://www.libsdl.org/">SDL2</a></li>
-	<li><a href = "https://www.vulkan.org/">Vulkan</a> <i>(<a href = "https://github.com/KhronosGroup/Vulkan-Headers">Vulkan-Headers</a>)</i></li>
+	<li><a href = "https://www.vulkan.org/">Vulkan</a></li>
+	<ul>
+		(<a href = "https://github.com/KhronosGroup/Vulkan-Headers">Vulkan-Headers</a>)
+		(<a href = "https://github.com/KhronosGroup/Vulkan-ValidationLayers/tree/main">Vulkan-ValidationLayers</a>)
+		(<a href = "https://github.com/KhronosGroup/Vulkan-Loader">Vulkan-Loader</a>)
+	</ul>
 	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a> <i>(Multi-Loader used for OpenGL)</i></li>
 	<li><a href = "https://github.com/hyperrealm/libconfig">libconfig</a></li>
 </ul>
