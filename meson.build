@@ -48,15 +48,17 @@ branchCOutput = branchCommand.stdout().strip()
 message('Branch:', branchCOutput)
 
 # Macros
-add_project_arguments('-DPATATAVERSION=0', '-DGIT_BRANCH="'+branchCOutput+'"', '-DBUILDSYS="Meson"', language : 'cpp') 
+add_project_arguments(
+  '-DPATATAVERSION=0',
+  '-DGIT_BRANCH="'+branchCOutput+'"',
+  '-DBUILDSYS="Meson"',
+  language : 'cpp') 
 
 sdl2_dep = dependency('sdl2',
   required : true,
   static : false,
   version : '>=2.24.1',
   modules : ['SDL2::SDL2'])
-
-sdl2 = subproject('sdl2')
 
 Vulkan = dependency('Vulkan',
   static : false,
@@ -75,15 +77,15 @@ source = files([
   'src/Core/main.cpp',
   'src/Core/Main_Loop.cpp',
   'src/Core/Start_And_End.cpp',
+  'src/Core/API_Graphics_Switch.cpp',
   'src/Window/Window.cpp',
   'src/Window/Window_Icon.cpp',
-  'src/Core/API_Graphics_Switch.cpp',
   'src/Opengl/Opengl_Context.cpp',
-  'src/Log/OpenGL_Info.cpp',
   'src/Vulkan/Setup_Vulkan.cpp',
-  'src/Log/Vulkan_Info.cpp',
+  'src/Log/OpenGL_Info.cpp',
   'src/Log/Mapache.cpp',
-  'src/Log/Start_Patata_Log_Info.cpp'])
+  'src/Log/Start_Patata_Log_Info.cpp',
+  'src/Log/Vulkan_Info.cpp'])
 
 features = {
     'Vulkan' : Vulkan.found(),

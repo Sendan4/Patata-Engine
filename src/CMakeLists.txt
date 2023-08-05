@@ -9,6 +9,7 @@ set(PATATA_SOURCE
 	"Window/Window_Icon.cpp"
 	"Vulkan/Setup_Vulkan.cpp"
 	"Opengl/Opengl_Context.cpp"
+	"Log/Vulkan_Info.cpp"
 	"Log/OpenGL_Info.cpp"
 	"Log/Mapache.cpp"
 	"Log/Start_Patata_Log_Info.cpp")
