@@ -56,6 +56,8 @@ sdl2_dep = dependency('sdl2',
   version : '>=2.24.1',
   modules : ['SDL2::SDL2'])
 
+sdl2 = subproject('sdl2')
+
 Vulkan = dependency('Vulkan',
   static : false,
   required : true)
