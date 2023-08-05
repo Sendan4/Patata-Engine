@@ -8,10 +8,12 @@ if (MSVC OR LINUX)
 endif()
 
 # Vulkan Validation Layer
-if (NOT MSVC AND LINUX AND ${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-	message("  - Vulkan ValidationLayers -")
-	set (UPDATE_DEPS ON)
-	add_subdirectory(Vulkan-ValidationLayers)
+if (MSVC OR LINUX)
+	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+		message("  - Vulkan ValidationLayers -")
+		set (UPDATE_DEPS ON)
+		add_subdirectory(Vulkan-ValidationLayers)
+	endif()
 endif()
 
 
