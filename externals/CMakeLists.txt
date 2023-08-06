@@ -1,14 +1,12 @@
 # Externals / Thrid Party Libraries
 
-# Vulkan
 if (MSVC OR LINUX)
+	# Vulkan
 	message("  - Vulkan Loader -")
 	set (UPDATE_DEPS ON)
 	add_subdirectory(Vulkan-Loader)
-endif()
 
-# Vulkan Validation Layer
-if (MSVC OR LINUX)
+	# Vulkan Validation Layer
 	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 		message("  - Vulkan ValidationLayers -")
 		set (UPDATE_DEPS ON)

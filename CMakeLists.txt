@@ -65,6 +65,9 @@ add_compile_definitions(
 	GIT_HASH_SHORT="${GIT_HASH_SHORT}"
 )
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
 if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
 	add_compile_definitions(BUILD_TYPE="Release")
 elseif(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -78,9 +81,6 @@ elseif(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 elseif(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
 	add_compile_definitions(BUILD_TYPE="Minimal Size Release")
 endif()
-
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 if (NOT USE_EXTERNAL_LIBS)
 	find_package(Vulkan REQUIRED)

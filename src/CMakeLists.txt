@@ -31,7 +31,12 @@ if (USE_EXTERNAL_LIBS)
 	# Linux
 	if (LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
 		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-			target_link_libraries(${PROJECT_NAME} PRIVATE VkLayer_khronos_validation)
+			target_link_libraries(${PROJECT_NAME} PRIVATE
+			VkLayer_khronos_validation
+			-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+
+			file(COPY "${CMAKE_SOURCE_DIR}/scripts/debug_run_patata_engine.sh"
+				DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 		endif()
 	endif()
 
