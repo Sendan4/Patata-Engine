@@ -64,45 +64,30 @@ Vulkan = dependency('Vulkan',
   static : false,
   required : true)
 
-# GLAD
-Glad2 = declare_dependency(
-  sources : 'externals/Glad2/src/gl.c',
-  include_directories : 'externals/Glad2/include/',
-  d_import_dirs : 'externals/Glad2/include/')
-
-# Archivos (Source y Include)
-include_main = include_directories('include')
-
-source = files([
-  'src/Core/main.cpp',
-  'src/Core/Main_Loop.cpp',
-  'src/Core/Start_And_End.cpp',
-  'src/Core/API_Graphics_Switch.cpp',
-  'src/Window/Window.cpp',
-  'src/Window/Window_Icon.cpp',
-  'src/Opengl/Opengl_Context.cpp',
-  'src/Vulkan/Setup_Vulkan.cpp',
-  'src/Log/OpenGL_Info.cpp',
-  'src/Log/Mapache.cpp',
-  'src/Log/Start_Patata_Log_Info.cpp',
-  'src/Log/Vulkan_Info.cpp'])
+subdir('externals/Glad2')
 
 features = {
-    'Vulkan' : Vulkan.found(),
-    'OpenGL' : Glad2.found(),
-    'SDL2' : sdl2_dep.found()
+  'Vulkan' : Vulkan.found(),
+  'OpenGL' : Glad2.found(),
+  'SDL2' : sdl2_dep.found()
 }
 
-summary({'OpenGL': features['OpenGL'],
-         'Vulkan': features['Vulkan'],
-          'SDL2' : features['SDL2']},
-         bool_yn : true)
+summary({
+  'OpenGL': features['OpenGL'],
+  'Vulkan': features['Vulkan'],
+  'SDL2' : features['SDL2']},
+  bool_yn : true)
+
+subdir('assets')
+
+copy = fs.copyfile(
+  patata_icon_file_bmp,
+  'patata.bmp')
+
+include_main = include_directories('include')
+subdir('src')
 
 if target_machine.system() == 'windows'
-  windows = import('windows')
-
-  Patata_icon = windows.compile_resources('src/Core/patata.rc')
-
   executable('Patata Engine',
     source,
     Patata_icon,

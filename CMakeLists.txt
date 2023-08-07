@@ -93,5 +93,7 @@ else()
 	include_directories("${CMAKE_SOURCE_DIR}/externals/Vulkan-Headers/include")
 endif()
 
+add_subdirectory(assets)
+
 # Executable
 add_subdirectory(src)
