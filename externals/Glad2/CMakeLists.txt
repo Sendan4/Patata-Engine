@@ -3,16 +3,15 @@ project(Glad2)
 
 message ("  - Glad2 -")
 
-if (SHARED_BUILD)
+if (SHARED_BUILD AND NOT MSVC)
 	message(STATUS "Shared Build")
-	if (MSVC)
-		add_library(${PROJECT_NAME} STATIC include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
-	else()
-		add_library(${PROJECT_NAME} SHARED include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
-	endif()
+	add_library(${PROJECT_NAME} SHARED include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
 else()
 	message(STATUS "Static Build")
 	add_library(${PROJECT_NAME} STATIC include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
+set_target_properties(${PROJECT_NAME}
+	PROPERTIES
+	VERSION "2.0.4")

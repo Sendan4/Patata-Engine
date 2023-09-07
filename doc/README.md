@@ -1,9 +1,14 @@
 ## Building
 
-| Linux 🛠️ 🐧 | Windows 🛠️ 🪟 |
+| Linux | Windows |
 | :--: | :--: |
 | [Español](Compile/build_linux_es.md) |  |
 | [English](Compile/build_linux_en.md) |  |
 <hr>
 
-[Configuracion ⚙️]()
+## Config
+
+| [Español](Config/Config_es.md)| [English](Config/Config_en.md) |
+| :--: | :--: |
+
+<hr>

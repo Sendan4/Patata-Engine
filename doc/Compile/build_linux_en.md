@@ -1,8 +1,7 @@
-This project uses Cmake and Meson to compile itself.
+This project uses Cmake and Meson to compile itself
 
 # Linux
-### Meson
-Before configuring the project make sure you have the necessary packages to compile.
+Before setting up the project make sure you have the necessary packages to compile.
 
 ### Fedora
 ```bash
@@ -11,17 +10,17 @@ sudo dnf install meson gcc gcc-c++ ninja-build git
 ### Debian
 
 ```bash
-sudo apt install build-essential ninja-build g++ gcc meson git
+sudo apt install build-essential ninja-build g++ gcc gcc meson git
 ```
 
 and now get the libraries.
 
 ### Fedora
 ```bash
-sudo dnf install SDL2-devel SDL2_image-devel vulkan-headers vulkan-loader-devel vulkan-validation-layers-devel
+sudo dnf install SDL2-devel SDL2_image-devel vulkan-headers vulkan-loader-devel vulkan-validation-layers-devel vulkan-validation-layers-devel
 ```
 
-## Debian
+### Debian
 ```bash
 sudo apt install libsdl2-dev libsdl2-image-2.0-0 libvulkan-dev vulkan-validationlayers vulkan-validationlayers-dev
 ```
@@ -32,7 +31,37 @@ Clone the repository
 git clone https://gitlab.com/448L/patata-engine && cd "patata-engine"
 ```
 
-if the `build` folder is not present create it.
+if the `build` folder is not there create it.
+
+```bash
+mkdir build
+```
+
+### Meson
+
+configure the project. `Release` is selected by default.
+
+```bash
+meson setup build
+```
+
+and compile with `ninja` using multiple cores.
+
+```bash
+meson compile -C build -j$(nproc)
+```
+
+or using a single core.
+
+```bash
+meson compile -C build
+```
+
+will find the executable in `build/`.
+
+### Cmake
+
+if the `build` folder is not there create it.
 
 ```bash
 mkdir build
@@ -41,127 +70,50 @@ mkdir build
 configure the project. `Release` is selected by default.
 
 ```bash
-meson setup build && cd build
-```
-
-and compile with `ninja` using several cores.
-
-```bash
-ninja -j$(nproc)
-```
-
-or using a single core.
-
-```bash
-ninja
-```
-
-you will find the executable in `build/`.
-
-## Cmake
-
-Before configuring the project make sure you have the necessary packages to compile.
-
-### Fedora
-```bash
-sudo dnf install cmake gcc gcc-c++ make.x86_64 git
-```
-### Debian
-
-```bash
-sudo apt install build-essential make g++ gcc cmake git
-```
-
-and now get the libraries.
-
-### Fedora
-```bash
-sudo dnf install SDL2-devel SDL2_image-devel vulkan-headers vulkan-loader-devel vulkan-validation-layers-devel
-```
-
-## Debian
-```bash
-sudo apt install libsdl2-dev libsdl2-image-2.0-0 libvulkan-dev vulkan-validationlayers vulkan-validationlayers-dev
-```
-
-Clone the repository
-
-```bash
-git clone https://gitlab.com/448L/patata-engine && cd "patata-engine"
-```
-
-if the `build` folder is not present create it.
-
-```bash
-mkdir build && cd build
-```
-
-configure the project. `Release` is selected by default.
-
-```bash
-cmake ..
+cmake -B build
 ```
 
 Alternatively you can use ninja with cmake, make sure you have `ninja-build` installed.
 
 ```bash
-cmake .. -G ninja
+cmake -B build -G ninja
 ```
 
-to compile with ninja using all the cores
+to compile and link to multiple cores
 
 ```bash
-ninja -j$(nproc)
+cmake --build build --config Release -j$(nproc)
 ```
 
-Compile with `make` using several cores.
+or using a single kernel.
+
 ```bash
-make -j$(nproc)
+meson compile -C build
 ```
 
-or using a single core.
+will find the executable in ``build/`.
+
+alternatively you can compile the libraries together with potato engine and link them. if you do this, you must satisfy the dependencies of the third party libraries.
+
+but first, clone the repository with its submodules.
 
 ```bash
-make
+git clone --recurse-submodules https://gitlab.com/Sendan/patata-engine.git
 ```
 
-will find the executable in `bin`
-
-If you want to compile the libraries together with Patata Engine, you must clone the repository and its submodules.
+if you already have the repository and you don't have the submodules
 
 ```bash
-git clone --recurse-submodules https://gitlab.com/448L/patata-engine.git
+git submodule update --init --recursive
+```
+configure the project
 
-
+```bash
+cmake -B build -DUSE_EXTERNAL_LIBS=ON
 ```
 
-you must create the build and bin folder if they are not there.
+you can also try to do static linking if possible (not all libraries can be statically linked)
 
 ```bash
-mkdir build
-mkdir bin
-cd build
-```
-
-configure the project with cmake.
-
-```bash
-cmake ..
-```
-
-you will have to satisfy the dependencies to compile libraries such as `SDL2`, `libconfig`, `Vulkan-Headers`.
-
-### Static or Dynamic Linking
-By default it is dynamically linked, you can use `-DSHARED_BUILD=OFF` to try to link the libraries that allow it statically.
-
-This will not link all libraries statically, because there are libraries that do not support it, such as `libvulkan`.
-
-```-DUSE_EXTERNAL_LIBS=ON``` To use the external libraries from git submodules, this will compile and link the external libraries and not the system ones.
-
-### Building
-```bash
-git clone --recurse-submodules https://gitlab.com/448L/patata-engine.git && cd patata-engine
-mkdir build && mkdir bin && cd build
-cmake .. -DUSE_EXTERNAL_LIBS=ON
-make -j$(nproc)
+cmake -B build -DUSE_EXTERNAL_LIBS=ON -DSHARED_BUILD=OFF
 ```

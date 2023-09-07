@@ -1,43 +1,22 @@
 #include <iostream>
+#include <iomanip>
+#include <ios>
 
 // Patata Engine
-#include "Core/Log.hpp"
+#include "Patata_Engine/Log.hpp"
 #include "EngineInfo.hpp"
-#include "Core/terminal_colors.hpp"
-
-// OS
-#if __linux__ && !__ANDROID__
-	#define OS "Linux"
-#elif _WIN64 || _WIN32
-	#define OS "Windows"
-#endif
-
-// Compiler
-#if __GNUC__
-	#if __MINGW64__
-		#define COMPILER "MinGW-w64"
-	#else
-		#define COMPILER "GCC"
-	#endif
-#elif __clang__
-	#define COMPILER "Clang"
-// MSVC aun no esta probado
-#elif _MSC_VER <= 1929
-	#define COMPILER "Older Visual Studio (MSVC)"
-#elif _MSC_VER >= 1930
-	#define COMPILER "Visual Studio (MSVC)"
-#endif
+#include "Patata_Engine/Terminal_Colors.hpp"
 
 void Patata::Log::StartPatataLogInfo(void) {
-	std::cout << Bold << BLightGoldenRod1 << "Patata Engine:\n" << Reset;
-	std::cout << Bold << "  Version:\t" << Reset << PATATAVERSION << "\n";
-	std::cout << Bold << "  Branch:\t" << Reset << GIT_BRANCH << "\n";
-	std::cout << Bold << "  Git Hash:\t" << Reset << GIT_HASH_LONG << "  (Long)\n";
-	std::cout << Bold << "  Git Hash:\t" << Reset << GIT_HASH_SHORT << "  (Short)\n";
-	std::cout << Bold << "  Compiler:\t" << Reset << COMPILER << "\n";
-	std::cout << Bold << "  BuildSys:\t" << Reset << BUILDSYS << "\n";
-	std::cout << Bold << "  BuildType:\t" << Reset << BUILD_TYPE << "\n";
-	std::cout << Bold << "  OS:\t\t" << Reset << OS << "\n";
+	std::cout << Bold << BLightGoldenRod1 << "Patata Engine" << std::setw(3) << ":\n" << Reset;
 
-	std::cout << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "GIT Branch" << std::setw(16) << ": " << Reset << GIT_BRANCH << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "GIT Long Hash" << std::setw(13) << ": " << Reset << GIT_HASH_LONG << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "GIT Short Hash" << std::setw(12) << ": " << Reset << GIT_HASH_SHORT << "\n";
+
+	std::cout << Bold << std::setw(4) << ' ' << "Version" << std::setw(19) << ": " << Reset << PATATAVERSION << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "Compiler" << std::setw(18) << ": " << Reset << COMPILER << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "Build System" << std::setw(14) << ": " << Reset << BUILDSYS << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "Build Type" << std::setw(16) << ": " << Reset << BUILD_TYPE << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "Operating System" << std::setw(10) << ": " << Reset << OS << "\n";
 }

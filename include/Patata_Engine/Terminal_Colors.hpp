@@ -4,6 +4,7 @@
 	#define FRojo3 "\033[38;5;160m"
 	#define FSteelBlue1 "\033[38;5;75m"
 	#define Chartreuse1 "\033[38;5;118m"
+	#define CSalmon1 "\033[38;5;209m"
 	// Background
 	#define BLightGoldenRod1 "\033[38;5;227m"
 

@@ -1,9 +1,11 @@
 #pragma once
-#include <vulkan/vulkan.hpp>
-#include <SDL_vulkan.h>
-#include <iostream>
+
 #include <vector>
-#include "Core/terminal_colors.hpp"
+#include <tuple>
+
+#include <yaml-cpp/yaml.h>
+#include <SDL.h>
+#include <vulkan/vulkan.hpp>
 
 namespace Patata {
 	namespace Graphics {
@@ -11,16 +13,15 @@ namespace Patata {
 			public:
 				bool CreateInstance(SDL_Window *);
 				uint32_t CreateLogicalDeviceAndCreateQueue(void);
-				void CreateSwapChain(uint32_t &);
+				void CreateSurface(SDL_Window *, vk::Instance, VkSurfaceKHR *);
+				std::tuple<vk::PresentModeKHR, vk::Format> CreateSwapChain(uint32_t &, YAML::Node);
 				void CreateImageView(uint32_t &);
 				void CreateCommandBuffer(uint32_t &);
 				void CreateRenderPass(void);
 				void CreatePipeline(void);
-				void VulkanInfo(void);
-				void TestColor(void);
-				
+				void VulkanInfo(YAML::Node CONFIG, std::tuple<vk::PresentModeKHR, vk::Format>);
 
-				VulkanRenderer(SDL_Window *);
+				VulkanRenderer(SDL_Window *, YAML::Node);
 				~VulkanRenderer(void);
 
 			private:

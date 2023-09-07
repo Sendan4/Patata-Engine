@@ -24,7 +24,8 @@
 - [ ] Portability of binary distribution *(Linux distros)*
 - [ ] Make the engine portable
 - [ ] Example Menu
-- [ ] Configuration Management
+- [X] Configuration Management
+- [ ] Hot set-up
 - [ ] Audio Output
 - [ ] Vulkan Renderer
 - [ ] OpenGL Renderer
@@ -40,17 +41,24 @@
 	<li><a href = "http://www.libsdl.org/">SDL2</a></li>
 	<li><a href = "https://www.vulkan.org/">Vulkan</a></li>
 	<ul>
-		(<a href = "https://github.com/KhronosGroup/Vulkan-Headers">Vulkan-Headers</a>)
-		(<a href = "https://github.com/KhronosGroup/Vulkan-ValidationLayers/tree/main">Vulkan-ValidationLayers</a>)
-		(<a href = "https://github.com/KhronosGroup/Vulkan-Loader">Vulkan-Loader</a>)
+		(<a href = "https://github.com/KhronosGroup/Vulkan-Headers.git">Vulkan-Headers</a>)
+		(<a href = "https://github.com/KhronosGroup/Vulkan-ValidationLayers.git">Vulkan-ValidationLayers</a>)
+		(<a href = "https://github.com/KhronosGroup/Vulkan-Loader.git">Vulkan-Loader</a>)
 	</ul>
-	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a> <i>(Multi-Loader used for OpenGL)</i></li>
-	<li><a href = "https://github.com/hyperrealm/libconfig">libconfig</a></li>
+	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a></li>
+	<li><a href = "https://github.com/jbeder/yaml-cpp.git">yaml-cpp</a></li>
 </ul>
 
-# Licencia
-Potato Engine is under the license [MIT](../LICENSE)
+## License
+Potato Engine is under the license [MIT](LICENSE.md)
 
+SDL 2 is under the license [Zlib](https://www.libsdl.org/license.php)
+
+Vulkan Loader, Vulkan Headers y Vulkan Validation Layers are under the license [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+Glad 2 is under the license [MIT](https://opensource.org/license/mit/)
+
+yaml-cpp is under the license [MIT](https://opensource.org/license/mit/)
 <hr>
 
 ## [Access to the documentation](doc/README.md)

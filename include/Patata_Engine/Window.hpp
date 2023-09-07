@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <SDL.h>
 
 namespace Patata {
@@ -17,4 +18,3 @@ namespace Patata {
 			SDL_Window * WINDOW;
 	};
 }
-

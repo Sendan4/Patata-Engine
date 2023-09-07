@@ -12,18 +12,19 @@
 
 ⚠️ Aun no esta listo para su uso
 
-# Sistemas Operativos disponibles
+## Sistemas Operativos disponibles
 
 | Windows | GNU/Linux | HaikuOS |
 | :-----: | :-----: | :-----: |
 |<b>[x86_64]()</b> | <b>[x86_64]()</b> | |
 
-# Metas
+## Metas
 
 - [ ] Portabilidad en la distribucion de los binarios *(Linux distros)*
 - [ ] Hacer el motor portable
 - [ ] Menu Propio de ejemplo
-- [ ] Gestion de la Configuracion
+- [X] Gestion de la configuracion
+- [ ] Configuracion en caliente
 - [ ] Salida del Audio
 - [ ] Renderizador con Vulkan
 - [ ] Renderizador con OpenGL
@@ -39,17 +40,24 @@
 	<li><a href = "http://www.libsdl.org/">SDL2</a></li>
 	<li><a href = "https://www.vulkan.org/">Vulkan</a></li>
 	<ul>
-		(<a href = "https://github.com/KhronosGroup/Vulkan-Headers">Vulkan-Headers</a>)
-		(<a href = "https://github.com/KhronosGroup/Vulkan-ValidationLayers/tree/main">Vulkan-ValidationLayers</a>)
-		(<a href = "https://github.com/KhronosGroup/Vulkan-Loader">Vulkan-Loader</a>)
+		(<a href = "https://github.com/KhronosGroup/Vulkan-Headers.git">Vulkan-Headers</a>)
+		(<a href = "https://github.com/KhronosGroup/Vulkan-ValidationLayers.git">Vulkan-ValidationLayers</a>)
+		(<a href = "https://github.com/KhronosGroup/Vulkan-Loader.git">Vulkan-Loader</a>)
 	</ul>
-	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a> <i>(Multi-Loader used for OpenGL)</i></li>
-	<li><a href = "https://github.com/hyperrealm/libconfig">libconfig</a></li>
+	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a></li>
+	<li><a href = "https://github.com/jbeder/yaml-cpp.git">yaml-cpp</a></li>
 </ul>
 
-# Licencia
-Motor Patata esta bajo la licencia [MIT](LICENSE)
+## Licencia
+Motor Patata esta bajo la licencia [MIT](LICENSE.md)
 
+SDL 2 esta bajo la licencia [Zlib](https://www.libsdl.org/license.php)
+
+Vulkan Loader, Vulkan Headers y Vulkan Validation Layers estan bajo la licencia [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+Glad 2 esta bajo la licencia [MIT](https://opensource.org/license/mit/)
+
+yaml-cpp esta bajo la licencia [MIT](https://opensource.org/license/mit/)
 <hr>
 
 ## [Acceso a la documentacion](doc/README.md)

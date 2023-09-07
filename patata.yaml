@@ -1,0 +1,8 @@
+# Patata Engine Configuration File
+# uppercase and lowcase are valid
+
+graphics-api : Vulkan
+# Vulkan or OpenGL
+
+vsync : true
+# true enables the Vertical Sync, false disables the Vertical Sync

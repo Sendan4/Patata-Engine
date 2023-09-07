@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 option(SHARED_BUILD ON)
+
 option(USE_EXTERNAL_LIBS OFF)
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -15,8 +16,8 @@ else()
 	project("Patata_Engine" LANGUAGES CXX)
 endif()
 
+include(CheckCXXCompilerFlag)
 if (NOT MSVC)
-	include(CheckCXXCompilerFlag)
 	check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORTS_CXX20)
 
 	check_cxx_compiler_flag("-Wextra" COMPILER_SUPPORTS_WEXTRA)
@@ -32,6 +33,15 @@ if (NOT MSVC)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_CLAGS} -Wall -Wextra")
 	elseif (COMPILER_SUPPORTS_WALL AND NOT COMPILER_SUPPORTS_WEXTRA)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_CLAGS} -Wall")
+	endif()
+else()
+	check_cxx_compiler_flag("/std:c++20" COMPILER_SUPPORTS_CXX20)
+	check_cxx_compiler_flag("/Wall" COMPILER_SUPPORTS_WALL)
+
+	if (COMPILER_SUPPORTS_CXX20)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20")
+	else()
+    	message(FATAL_ERROR "The compiler does not support the C++20 standard")
 	endif()
 endif()
 
@@ -83,6 +93,7 @@ elseif(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
 endif()
 
 if (NOT USE_EXTERNAL_LIBS)
+	find_package(yaml-cpp REQUIRED)
 	find_package(Vulkan REQUIRED)
 	add_subdirectory(externals/Glad2)
 	find_package(SDL2 REQUIRED)
@@ -94,6 +105,25 @@ else()
 endif()
 
 add_subdirectory(assets)
+
+# Copy Files
+if (USE_EXTERNAL_LIBS)
+	if (MSVC)
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+			file(COPY "${CMAKE_SOURCE_DIR}/patata.yaml" "${CMAKE_SOURCE_DIR}/LICENSES"
+				DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Release)
+		else()
+			file(COPY "${CMAKE_SOURCE_DIR}/patata.yaml" "${CMAKE_SOURCE_DIR}/LICENSES"
+				DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
+		endif()
+
+		file(COPY "${CMAKE_SOURCE_DIR}/patata.yaml"
+			DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+	endif()
+else ()
+	file(COPY "${CMAKE_SOURCE_DIR}/patata.yaml" "${CMAKE_SOURCE_DIR}/LICENSES"
+		DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif ()
 
 # Executable
 add_subdirectory(src)
