@@ -48,18 +48,6 @@
     <li><a href = "https://github.com/ocornut/imgui.git">Imgui</a></li>
 </ul>
 
-## Licencia
-Motor Patata esta bajo la licencia [MIT](LICENSE.md)
-
-SDL 2 esta bajo la licencia [Zlib](https://www.libsdl.org/license.php)
-
-Vulkan Loader, Vulkan Headers y Vulkan Validation Layers estan bajo la licencia [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-Glad 2 esta bajo la licencia [MIT](https://opensource.org/license/mit/)
-
-yaml-cpp esta bajo la licencia [MIT](https://opensource.org/license/mit/)
-
-Imgui esta bajo la licencia [MIT](https://opensource.org/license/mit/)
 <hr>
 
-## [Acceso a la documentacion](doc/README.md)
+### [Acceso a la documentacion](doc/README.md)
