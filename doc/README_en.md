@@ -48,19 +48,6 @@
 	<li><a href = "https://github.com/jbeder/yaml-cpp.git">yaml-cpp</a></li>
 	<li><a href = "https://github.com/ocornut/imgui.git">Imgui</a></li>
 </ul>
-
-## License
-Potato Engine is under the license [MIT](LICENSE.md)
-
-SDL 2 is under the license [Zlib](https://www.libsdl.org/license.php)
-
-Vulkan Loader, Vulkan Headers y Vulkan Validation Layers are under the license [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-Glad 2 is under the license [MIT](https://opensource.org/license/mit/)
-
-yaml-cpp is under the license [MIT](https://opensource.org/license/mit/)
-
-Imgui is under the license [MIT](https://opensource.org/license/mit/)
 <hr>
 
-## [Access to the documentation](doc/README.md)
+### [Access to the documentation](doc/README.md)
