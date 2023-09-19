@@ -7,6 +7,12 @@
 #include <glad/gl.h>
 #include <yaml-cpp/yaml.h>
 
+#if defined(DEBUG)
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_opengl3.h>
+#endif
+
 #if defined(_WIN64)
 	#include <windows.h>
 
@@ -52,6 +58,7 @@ Patata::PatataEngine::PatataEngine(
 			WINDOW_INITIAL_WIDTH,
 			WINDOW_INITIAL_HEIGHT,
 			bGraphicsAPI);
+
 	
 	// SDL_Event
 	MainEvent = new SDL_Event;
@@ -62,12 +69,29 @@ Patata::PatataEngine::PatataEngine(
 	}
 	else {
 		// OpenGL
+		
+		#if defined(DEBUG)
+		// Setup Dear ImGui context
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO &io = ImGui::GetIO();
+		io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad;
+		io.Fonts->AddFontDefault();
+		io.IniFilename = NULL;
+		io.LogFilename = NULL;
+		ImGui::StyleColorsDark();
+		#endif
+
 		pOpenGLContext = new Patata::Graphics::OpenGLContext(pWindow->WindowGet(), config);
 		pOpenGLRenderer = new Patata::Graphics::OpenGLRenderer();
 		pOpenGLRenderer->OpenGLSetViewPort(WINDOW_INITIAL_WIDTH, WINDOW_INITIAL_HEIGHT);
+
+		#if defined(DEBUG)
+		ImGui_ImplOpenGL3_Init("#version 140");
+		#endif
 		{
 			if (config["vsync"].as<bool>())
-				SDL_GL_SetSwapInterval(1);
+				SDL_GL_SetSwapInterval(-1);
 			else
 				SDL_GL_SetSwapInterval(0);
 		}
@@ -81,6 +105,13 @@ Patata::PatataEngine::~PatataEngine(void) {
 		pVulkanRenderer = nullptr;
 	} 
 	else {
+		// Imgui
+		#if defined(DEBUG)
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplSDL2_Shutdown();
+		ImGui::DestroyContext();
+		#endif
+
 		// OpenGL
 		delete pOpenGLContext;
 		pOpenGLContext = nullptr;

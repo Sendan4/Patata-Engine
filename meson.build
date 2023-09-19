@@ -84,7 +84,29 @@ yamlcpp = dependency('yaml-cpp',
   static : false,
   required : true)
 
+dependencies = [Vulkan, Glad2, sdl2_dep, yamlcpp]
+imgui_check_dep = false
+
+if (get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized')
+  imgui_check_dep = true
+  subdir('externals/imgui')
+
+  Imgui_lib = shared_library(
+    'Imgui',
+    sources : [IMGUI_SOURCE, IMGUI_BACKENDS],
+    include_directories : [IMGUI_HEADERS, IMGUI_BACKEND_HEADERS],
+    dependencies : [sdl2_dep, Vulkan])
+
+  Imgui = declare_dependency(
+    include_directories : [IMGUI_HEADERS, IMGUI_BACKEND_HEADERS],
+    d_import_dirs : [IMGUI_HEADERS, IMGUI_BACKEND_HEADERS],
+    link_with : Imgui_lib)
+
+  dependencies += [Imgui]
+endif
+
 features = {
+  'Imgui' : imgui_check_dep,
   'Vulkan' : Vulkan.found(),
   'OpenGL' : Glad2.found(),
   'SDL2' : sdl2_dep.found(),
@@ -95,7 +117,8 @@ summary({
   'OpenGL': features['OpenGL'],
   'Vulkan': features['Vulkan'],
   'SDL2' : features['SDL2'],
-  'Yaml-cpp' : features['Yaml-cpp']},
+  'Yaml-cpp' : features['Yaml-cpp'],
+  'Imgui' : features['Imgui']},
   bool_yn : true)
 
 subdir('assets')
@@ -117,12 +140,12 @@ if target_machine.system() == 'windows'
     Patata_icon,
     win_subsystem : 'console',
     include_directories : [include_main],
-    dependencies : [sdl2_dep, Vulkan, Glad2, yamlcpp],
+    dependencies : [dependencies],
     build_by_default : true)
 else
   executable('Patata_Engine',
     source,
     include_directories : [include_main],
-    dependencies : [sdl2_dep, Vulkan, Glad2, yamlcpp],
+    dependencies : [dependencies],
     build_by_default : true)
 endif

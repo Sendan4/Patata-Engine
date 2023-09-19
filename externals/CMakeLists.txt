@@ -46,3 +46,7 @@ endif ()
 set(SDL_TEST OFF)
 
 add_subdirectory(SDL)
+
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+	add_subdirectory(imgui)
+endif()

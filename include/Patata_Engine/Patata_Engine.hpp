@@ -15,6 +15,7 @@ namespace Patata {
 		public:
 			PatataEngine (std::string, uint64_t, uint64_t);
 			~PatataEngine (void);
+
 			void MainLoop(void);
 			bool MainInput(void);
 			void Render(void);
@@ -22,7 +23,7 @@ namespace Patata {
 			Patata::Window * pWindow = nullptr;
 			Patata::Graphics::VulkanRenderer * pVulkanRenderer = nullptr;
 			Patata::Graphics::OpenGLContext * pOpenGLContext = nullptr;
-			Patata::Graphics::OpenGLRenderer * pOpenGLRenderer = nullptr;	
+			Patata::Graphics::OpenGLRenderer * pOpenGLRenderer = nullptr;
 
 		private:
 			YAML::Node config;

@@ -14,9 +14,9 @@
 
 ## Sistemas Operativos disponibles
 
-| Windows | GNU/Linux | HaikuOS |
-| :-----: | :-----: | :-----: |
-|<b>[x86_64]()</b> | <b>[x86_64]()</b> | |
+| Windows | GNU/Linux |
+| :-----: | :-----: |
+|<b>x86_64</b> | <b>x86_64</b> |
 
 ## Metas
 
@@ -29,7 +29,6 @@
 - [ ] Renderizador con Vulkan
 - [ ] Renderizador con OpenGL
 - [ ] Crear una Mascota
-- [ ] HaikuOS Port
 - [ ] Decodificar, Cargar y Renderizar imagenes ([AVIF](https://aomediacodec.github.io/av1-avif/))
 - [ ] Reproducir secuencialmente animaciones de sprites
 - [ ] Soporte Apropiado de Wayland (Linux)
@@ -46,6 +45,7 @@
 	</ul>
 	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a></li>
 	<li><a href = "https://github.com/jbeder/yaml-cpp.git">yaml-cpp</a></li>
+    <li><a href = "https://github.com/ocornut/imgui.git">Imgui</a></li>
 </ul>
 
 ## Licencia
@@ -58,6 +58,8 @@ Vulkan Loader, Vulkan Headers y Vulkan Validation Layers estan bajo la licencia 
 Glad 2 esta bajo la licencia [MIT](https://opensource.org/license/mit/)
 
 yaml-cpp esta bajo la licencia [MIT](https://opensource.org/license/mit/)
+
+Imgui esta bajo la licencia [MIT](https://opensource.org/license/mit/)
 <hr>
 
 ## [Acceso a la documentacion](doc/README.md)

@@ -106,7 +106,7 @@ void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
 			GLint NumberOfExtensions = 0;
 			glGetIntegerv(GL_NUM_EXTENSIONS, &NumberOfExtensions);
 
-			for (GLint i = 0; i <= NumberOfExtensions; i++)
+			for (GLint i = 0; i < NumberOfExtensions; i++)
 				std::cout << std::setw(10) << ' ' << glGetStringi(GL_EXTENSIONS, i) << "\n";
 		}
 	#endif	

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
 option(SHARED_BUILD ON)
-
 option(USE_EXTERNAL_LIBS OFF)
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -97,6 +96,10 @@ if (NOT USE_EXTERNAL_LIBS)
 	find_package(Vulkan REQUIRED)
 	add_subdirectory(externals/Glad2)
 	find_package(SDL2 REQUIRED)
+
+	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+		add_subdirectory(externals/imgui)
+	endif()
 else()
 	add_subdirectory(externals)
 

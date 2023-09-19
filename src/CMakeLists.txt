@@ -58,7 +58,7 @@ if (USE_EXTERNAL_LIBS)
 			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 	endif()
 
-	# Linux
+	#Linux
 	if (LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
 		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 			target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -76,7 +76,7 @@ if (USE_EXTERNAL_LIBS)
 			-lvulkan-1
 			-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
-		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo") 
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 			target_link_libraries(${PROJECT_NAME} PRIVATE
 				-lVkLayer_khronos_validation
 				-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
@@ -102,3 +102,7 @@ else()
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Glad2 yaml-cpp)
+
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+	target_link_libraries(${PROJECT_NAME} PRIVATE Imgui)
+endif()
