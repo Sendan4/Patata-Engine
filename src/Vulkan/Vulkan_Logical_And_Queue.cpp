@@ -3,8 +3,8 @@
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include "Patata_Engine/Graphics/Vulkan_Renderer.hpp"
-#include "Patata_Engine/Log.hpp"
+#include "Graphics/Vulkan_Renderer.hpp"
+#include "Log.hpp"
 
 uint32_t Patata::Graphics::VulkanRenderer::CreateLogicalDeviceAndCreateQueue(void) {
 	uint32_t GraphicsQueueFamilyIndex = 0;

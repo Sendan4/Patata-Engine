@@ -10,8 +10,8 @@
 #endif
 
 // Patata Engine
-#include "Patata_Engine/Graphics/OpenGL_Context.hpp"
-#include "Patata_Engine/Log.hpp"
+#include "Graphics/OpenGL_Context.hpp"
+#include "Log.hpp"
 
 Patata::Graphics::OpenGLContext::OpenGLContext(SDL_Window * WINDOW, YAML::Node CONFIG) {
 	SetAttributes();

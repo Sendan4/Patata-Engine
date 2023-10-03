@@ -1,8 +1,6 @@
 source = files([
-  'Main.cpp',
-  'Core/Main_Loop.cpp',
   'Core/Start_And_End.cpp',
-  'Core/Main_Input.cpp',
+  'Core/Input.cpp',
   'Core/Render.cpp',
   'Window/Window.cpp',
   'Window/Window_Icon.cpp',
@@ -20,8 +18,6 @@ source = files([
   'Log/Mapache.cpp'])
 
 if target_machine.system() == 'windows'
-  windows = import('windows')
-  Patata_icon = windows.compile_resources('Core/patata.rc')
   source += files([
     'Log/Win/Start_Patata_Log_Info_Win.cpp',
     'Log/Win/Window_Icon_Set_Status_Win.cpp',

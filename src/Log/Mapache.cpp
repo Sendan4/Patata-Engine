@@ -1,7 +1,7 @@
 #include <iostream>
 
 // Patata Engine
-#include "Patata_Engine/Log.hpp"
+#include "Log.hpp"
 
 void Patata::Log::StartMapache(void) {
 	#if !(_WIN64)

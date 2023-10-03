@@ -6,7 +6,7 @@
 #include <windows.h>
 
 // Patata Engine
-#include "Patata_Engine/Log.hpp"
+#include "Log.hpp"
 
 void Patata::Log::WindowIconSetStatus(SDL_Surface * WINDOW_ICON) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);

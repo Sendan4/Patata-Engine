@@ -3,16 +3,23 @@
 #include <ios>
 
 // Patata Engine
-#include "Patata_Engine/Log.hpp"
-#include "EngineInfo.hpp"
-#include "Patata_Engine/Terminal_Colors.hpp"
+#include "Log.hpp"
+#include "Terminal_Colors.hpp"
 
 void Patata::Log::StartPatataLogInfo(void) {
-	std::cout << Bold << BLightGoldenRod1 << "Patata Engine" << std::setw(3) << ":\n" << Reset;
-
+	std::cout << Bold << BLightGoldenRod1 << ENGINE_NAME << std::setw(3) << ":\n" << Reset;
+	
+	#if defined(GIT_BRANCH)
 	std::cout << Bold << std::setw(4) << ' ' << "GIT Branch" << std::setw(16) << ": " << Reset << GIT_BRANCH << "\n";
+	#endif
+
+	#if defined(GIT_HASH_LONG)
 	std::cout << Bold << std::setw(4) << ' ' << "GIT Long Hash" << std::setw(13) << ": " << Reset << GIT_HASH_LONG << "\n";
+	#endif
+
+	#if defined(GIT_HASH_SHORT)
 	std::cout << Bold << std::setw(4) << ' ' << "GIT Short Hash" << std::setw(12) << ": " << Reset << GIT_HASH_SHORT << "\n";
+	#endif
 
 	std::cout << Bold << std::setw(4) << ' ' << "Version" << std::setw(19) << ": " << Reset << PATATAVERSION << "\n";
 	std::cout << Bold << std::setw(4) << ' ' << "Compiler" << std::setw(18) << ": " << Reset << COMPILER << "\n";

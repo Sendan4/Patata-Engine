@@ -1,8 +1,8 @@
 #include <vector>
 #include <SDL_vulkan.h>
 
-#include "Patata_Engine/Graphics/Vulkan_Renderer.hpp"
-#include "Patata_Engine/Log.hpp"
+#include "Graphics/Vulkan_Renderer.hpp"
+#include "Log.hpp"
 
 bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 	// Get Extensions
@@ -18,7 +18,7 @@ bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 		SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, extensionInstanceNames.data()));
 
 	vk::ApplicationInfo PatataEngineInfo {};
-	PatataEngineInfo.pApplicationName = "Patata Engine";
+	PatataEngineInfo.pApplicationName = ENGINE_NAME;
 	PatataEngineInfo.applicationVersion = 0;
 	PatataEngineInfo.pEngineName = "Patata Engine";
 	PatataEngineInfo.engineVersion = 0;

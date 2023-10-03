@@ -6,9 +6,9 @@
 #endif
 
 // Patata Engine
-#include "Patata_Engine/Patata_Engine.hpp"
+#include "Patata_Engine.hpp"
 
-bool Patata::PatataEngine::MainInput(void) {
+bool Patata::PatataEngine::Input(void) {
 	static bool KeyPress = false;
 	static bool FullScreen = false;
 

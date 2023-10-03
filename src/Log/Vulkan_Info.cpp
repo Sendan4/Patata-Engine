@@ -6,8 +6,8 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include "Patata_Engine/Graphics/Vulkan_Renderer.hpp"
-#include "Patata_Engine/Terminal_Colors.hpp"
+#include "Graphics/Vulkan_Renderer.hpp"
+#include "Terminal_Colors.hpp"
 
 void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format> SWAPCHAIN_INFO) {
 	std::cout << "\n" << FindianRed1 << Bold << "Vulkan Info" << std::setw(3) << ":\n" << Reset;
@@ -67,7 +67,7 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 
 	std::cout << Bold << std::setw(4) << ' ' << "Present Mode" << Reset << std::setw(19) << ": " << vk::to_string(std::get<0>(SWAPCHAIN_INFO)) << "\n";
 
-	std::cout << Bold << std::setw(4) << ' ' << "SwapChain Images" << std::setw(15) << ": " << Reset << SwapChainBuffers.size() + 1 << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "SwapChain Images" << std::setw(15) << ": " << Reset << SwapChainBuffers.size() << "\n";
 	std::cout << Bold << std::setw(4) << ' ' << "SwapChain Color Format" << std::setw(9) << ": " << Reset << vk::to_string(std::get<1>(SWAPCHAIN_INFO)) << "\n";
 
 	#if defined(DEBUG)

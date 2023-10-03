@@ -3,12 +3,13 @@
 
 #if defined(DEBUG)
 #include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_opengl3.h>
 #endif
 
 // Patata Engine
-#include "Patata_Engine/Patata_Engine.hpp"
-#include "Patata_Engine/Window.hpp"
+#include "Patata_Engine.hpp"
+#include "Window.hpp"
 
 void Patata::PatataEngine::Render(void) {
 	if (bGraphicsAPI) {
@@ -21,6 +22,10 @@ void Patata::PatataEngine::Render(void) {
 
 		#if defined(DEBUG)
 		{
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplSDL2_NewFrame();
+			ImGui::NewFrame();
+
 			ImGui::SetNextWindowSize(ImVec2(280, 200));
 			ImGui::Begin("Patata Engine - Developer Tools", nullptr, ImGuiWindowFlags_NoResize);
 			ImGui::Text("Tools coming soon");

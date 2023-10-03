@@ -7,7 +7,7 @@
 #include <yaml-cpp/yaml.h>
 #include <windows.h>
 
-#include "Patata_Engine/Graphics/Vulkan_Renderer.hpp"
+#include "Graphics/Vulkan_Renderer.hpp"
 
 void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format> SWAPCHAIN_INFO) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -103,7 +103,7 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 
 	std::cout << std::setw(4) << ' ' << "Present Mode" << std::setw(19) << ": " << vk::to_string(std::get<0>(SWAPCHAIN_INFO)) << "\n";
 
-	std::cout << std::setw(4) << ' ' << "SwapChain Images" << std::setw(15) << ": " << SwapChainBuffers.size() + 1 << "\n";
+	std::cout << std::setw(4) << ' ' << "SwapChain Images" << std::setw(15) << ": " << SwapChainBuffers.size() << "\n";
 	std::cout << std::setw(4) << ' ' << "SwapChain Color Format" << std::setw(9) << ": " << vk::to_string(std::get<1>(SWAPCHAIN_INFO)) << "\n";
 
 	std::cout << std::setw(4) << ' ' << "Validation Layer" << std::setw(15) << ": ";

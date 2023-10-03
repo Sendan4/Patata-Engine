@@ -1,9 +1,14 @@
-project('Patata Engine',
+project('Patata_Engine',
   'cpp', 'c',
   version : '0',
   default_options : [
     'buildtype=release'],
-  license : ['MIT'])
+  subproject_dir : 'externals',
+  license: 'MIT')
+
+if get_option('use_git')
+  git = find_program('git', native: true, required: false)
+endif
 
 if meson.get_compiler('cpp').get_id() == 'gcc' or meson.get_compiler('cpp').get_id() == 'clang'
   if (meson.get_compiler('cpp').has_argument('-Wall') and meson.get_compiler('cpp').has_argument('-Wextra'))
@@ -17,44 +22,65 @@ if (meson.get_compiler('cpp').has_argument('-std=c++20'))
   cpp_std = 'c++20'
 endif
 
-# commit macro
-get_commit_hash_long = run_command('git', 'rev-parse', 'HEAD', check: true)
-git_commit_long_hash = get_commit_hash_long.stdout().strip()
-
-get_commit_hash_short = run_command('git', 'rev-parse', '--short', 'HEAD', check: true)
-git_commit_short_hash = get_commit_hash_short.stdout().strip()
-
-add_project_arguments('-DGIT_HASH_LONG="'+git_commit_long_hash+'"', language : 'cpp')
-add_project_arguments('-DGIT_HASH_SHORT="'+git_commit_short_hash+'"', language : 'cpp')
-
-# Build Type macro
-if (get_option('buildtype') == 'release')
-  add_project_arguments('-DBUILD_TYPE="Release"', language : 'cpp')
-elif (get_option('buildtype') == 'debug')
-  add_project_arguments(
-    '-DBUILD_TYPE="Debug"',
-    '-DDEBUG=1',
-    language : 'cpp')
-elif (get_option('buildtype') == 'debugoptimized')
-  add_project_arguments(
-    '-DBUILD_TYPE="Debug Optimized"',
-    '-DDEBUG=1',
-    language : 'cpp')
-elif (get_option('buildtype') == 'minsize')
-  add_project_arguments('-DBUILD_TYPE="Minimal Size Release"', language : 'cpp')
+if (meson.get_compiler('cpp').has_argument('-std=gnu++20'))
+  cpp_std = 'c++20'
 endif
 
-branchCommand = run_command('git', 'branch', '--show-current', check: true)
-branchCOutput = branchCommand.stdout().strip()
-message('Branch:', branchCOutput)
+if get_option('use_git') and git.found()
+  # commit macro
+  get_commit_hash_long = run_command('git', 'rev-parse', 'HEAD', check: true)
+  git_commit_long_hash = get_commit_hash_long.stdout().strip()
+
+  get_commit_hash_short = run_command('git', 'rev-parse', '--short', 'HEAD', check: true)
+  git_commit_short_hash = get_commit_hash_short.stdout().strip()
+
+  add_project_arguments('-DGIT_HASH_LONG="'+git_commit_long_hash+'"', language : 'cpp')
+  add_project_arguments('-DGIT_HASH_SHORT="'+git_commit_short_hash+'"', language : 'cpp')
+
+  # Build Type macro
+  if (get_option('buildtype') == 'release')
+    add_project_arguments('-DBUILD_TYPE="Release"', language : 'cpp')
+  elif (get_option('buildtype') == 'debug')
+    add_project_arguments(
+      '-DBUILD_TYPE="Debug"',
+      '-DDEBUG=1',
+      language : 'cpp')
+  elif (get_option('buildtype') == 'debugoptimized')
+    add_project_arguments(
+      '-DBUILD_TYPE="Debug Optimized"',
+      '-DDEBUG=1',
+      language : 'cpp')
+  elif (get_option('buildtype') == 'minsize')
+    add_project_arguments('-DBUILD_TYPE="Minimal Size Release"', language : 'cpp')
+  endif
+
+  branchCommand = run_command('git', 'branch', '--show-current', check: true)
+  branchCOutput = branchCommand.stdout().strip()
+  message('Branch:', branchCOutput)
+
+  add_project_arguments('-DGIT_BRANCH="'+branchCOutput+'"', language : 'cpp')
+endif
 
 # Macros
 add_project_arguments(
   '-DPATATAVERSION=0',
-  '-DGIT_BRANCH="'+branchCOutput+'"',
   '-DBUILDSYS="Meson"',
   '-DENGINE_NAME="Patata Engine"',
-  language : 'cpp') 
+  language : 'cpp')
+
+meson.get_compiler('cpp').check_header('iostream', required : true)
+meson.get_compiler('cpp').check_header('ios', required : true)
+meson.get_compiler('cpp').check_header('iomanip', required : true)
+meson.get_compiler('cpp').check_header('vector', required : true)
+meson.get_compiler('cpp').check_header('algorithm', required : true)
+meson.get_compiler('cpp').check_header('cstdint', required : true)
+meson.get_compiler('cpp').check_header('cstring', required : true)
+
+if target_machine.system() == 'windows'
+  meson.get_compiler('c').check_header('windows.h', required : true)
+endif
+
+Glad2_dep = subproject('Glad2').get_variable('Glad2_dep')
 
 sdl2_dep = dependency('sdl2',
   required : true,
@@ -66,49 +92,21 @@ Vulkan = dependency('Vulkan',
   static : false,
   required : true)
 
-glad2_sources = files([meson.source_root() + '/externals/Glad2/src/gl.c'])
-glad2_includes = include_directories('externals/Glad2/include/')
-
-Glad2_lib = shared_library(
-  'Glad',
-  version : '2.0.4',
-  sources : glad2_sources,
-  include_directories : glad2_includes)
-
-Glad2 = declare_dependency(
-  include_directories : glad2_includes,
-  d_import_dirs : glad2_includes,
-  link_with : Glad2_lib)
-
 yamlcpp = dependency('yaml-cpp',
   static : false,
   required : true)
 
-dependencies = [Vulkan, Glad2, sdl2_dep, yamlcpp]
-imgui_check_dep = false
+dependencies = [Vulkan, sdl2_dep, yamlcpp, Glad2_dep]
 
 if (get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized')
-  imgui_check_dep = true
-  subdir('externals/imgui')
+  imgui_dep = subproject('Imgui').get_variable('Imgui_dep')
 
-  Imgui_lib = shared_library(
-    'Imgui',
-    sources : [IMGUI_SOURCE, IMGUI_BACKENDS],
-    include_directories : [IMGUI_HEADERS, IMGUI_BACKEND_HEADERS],
-    dependencies : [sdl2_dep, Vulkan])
-
-  Imgui = declare_dependency(
-    include_directories : [IMGUI_HEADERS, IMGUI_BACKEND_HEADERS],
-    d_import_dirs : [IMGUI_HEADERS, IMGUI_BACKEND_HEADERS],
-    link_with : Imgui_lib)
-
-  dependencies += [Imgui]
+  dependencies += [imgui_dep]
 endif
 
 features = {
-  'Imgui' : imgui_check_dep,
   'Vulkan' : Vulkan.found(),
-  'OpenGL' : Glad2.found(),
+  'OpenGL' : Glad2_dep.found(),
   'SDL2' : sdl2_dep.found(),
   'Yaml-cpp' : yamlcpp.found()
 }
@@ -117,35 +115,66 @@ summary({
   'OpenGL': features['OpenGL'],
   'Vulkan': features['Vulkan'],
   'SDL2' : features['SDL2'],
-  'Yaml-cpp' : features['Yaml-cpp'],
-  'Imgui' : features['Imgui']},
+  'Yaml-cpp' : features['Yaml-cpp']},
   bool_yn : true)
+
+#Game name
+if get_option('game_name') != ''
+  message('Game Name: ' + get_option('game_name'))
+  add_project_arguments('-DGAME_NAME="'+get_option('game_name')+'"', language : 'cpp')
+endif
 
 subdir('assets')
 
-copy = fs.copyfile(
-  patata_icon_file_bmp,
-  'patata.bmp')
+# posiblemente mueva esta parte del icono a otra parte
+# Icon
+if get_option('enable_icon')
+  add_project_arguments('-DUSE_ICON=1', language : 'cpp')
+  message('Icon: Yes')
 
-copy2 = fs.copyfile(
-  'patata.yaml',
-  'patata.yaml')
+  if get_option('use_custom_icon')
+    if get_option('icon_path') != ''
+      message('Custom Icon: Yes')
+      message('Icon Path: ' + get_option('icon_path'))
 
-include_main = include_directories('include')
+      run_command('cp', get_option('icon_path'), meson.build_root(), check : true)
+
+      if get_option('game_name') != ''
+        run_command('mv', meson.build_root() + '/icon.bmp', meson.build_root() + '/' + get_option('game_name') + '.bmp', check : true)
+      endif
+    endif
+  else
+    message('Custom Icon: No')
+
+    run_command('cp', 'assets/icon/patata.bmp', meson.build_root(), check : true)
+
+    if get_option('game_name') != ''
+      run_command('mv', meson.build_root() + '/icon.bmp', meson.build_root() + get_option('game_name') + '.bmp', check : true)
+    endif
+  endif
+else
+  message('Icon: No')
+endif
+
+run_command('cp', 'patata.yaml', meson.build_root(), check : true)
+
+if get_option('game_name') != ''
+  run_command('mv', meson.build_root() + '/patata.yaml', meson.build_root() + '/' + get_option('game_name') + '.yaml', check : true)
+endif
+
+include = include_directories('include/')
 subdir('src')
 
-if target_machine.system() == 'windows'
-  executable('Patata_Engine',
-    source,
-    Patata_icon,
-    win_subsystem : 'console',
-    include_directories : [include_main],
-    dependencies : [dependencies],
-    build_by_default : true)
-else
-  executable('Patata_Engine',
-    source,
-    include_directories : [include_main],
-    dependencies : [dependencies],
-    build_by_default : true)
-endif
+lib = library(meson.project_name(),
+  source,
+  include_directories : [include],
+  d_import_dirs : [include],
+  dependencies : [dependencies],
+  build_by_default : true)
+
+project_dep = declare_dependency(
+  include_directories : [include],
+  d_import_dirs : [include],
+  link_with : lib)
+
+set_variable(meson.project_name() + '_dep', project_dep)

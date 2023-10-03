@@ -1,0 +1,5 @@
+option('use_custom_icon', type : 'boolean', value : false)
+option('icon_path', type : 'string')
+option('enable_icon', type : 'boolean', value : true)
+option('game_name', type : 'string')
+option('use_git', type : 'boolean', value : true)

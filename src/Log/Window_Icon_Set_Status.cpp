@@ -6,8 +6,8 @@
 #include <SDL.h>
 
 // Patata Engine
-#include "Patata_Engine/Log.hpp"
-#include "Patata_Engine/Terminal_Colors.hpp"
+#include "Log.hpp"
+#include "Terminal_Colors.hpp"
 
 void Patata::Log::WindowIconSetStatus(SDL_Surface * WINDOW_ICON) {
 	if (WINDOW_ICON != nullptr) 

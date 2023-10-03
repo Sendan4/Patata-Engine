@@ -8,8 +8,8 @@
 #include <windows.h>
 
 // Patata Engine
-#include "Patata_Engine/Patata_Engine.hpp"
-#include "Patata_Engine/Log.hpp"
+#include "Patata_Engine.hpp"
+#include "Log.hpp"
 
 void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);

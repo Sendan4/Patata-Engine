@@ -23,9 +23,9 @@
 #endif
 
 // Patata Engine
-#include "Patata_Engine/Patata_Engine.hpp"
-#include "Patata_Engine/Window.hpp"
-#include "Patata_Engine/Log.hpp"
+#include "Patata_Engine.hpp"
+#include "Window.hpp"
+#include "Log.hpp"
 
 Patata::PatataEngine::PatataEngine(
 		std::string WINDOW_NAME,
@@ -34,7 +34,11 @@ Patata::PatataEngine::PatataEngine(
 	Patata::Log::StartMapache();
 	Patata::Log::StartPatataLogInfo();
 
+	#if defined(GAME_NAME)
+	config = YAML::LoadFile(strcpy(SDL_GetBasePath(), GAME_CONFIG_FILE_NAME));
+	#else
 	config = YAML::LoadFile(strcpy(SDL_GetBasePath(), "patata.yaml"));
+	#endif
 
 	// SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {

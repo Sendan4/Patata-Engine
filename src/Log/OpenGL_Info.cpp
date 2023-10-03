@@ -7,8 +7,8 @@
 #include <glad/gl.h>
 
 // Patata Engine
-#include "Patata_Engine/Terminal_Colors.hpp"
-#include "Patata_Engine/Log.hpp"
+#include "Terminal_Colors.hpp"
+#include "Log.hpp"
 
 void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
 	std::cout << Bold << FSteelBlue1 << "OpenGL Info" << std::setw(3) << ":\n" << Reset;

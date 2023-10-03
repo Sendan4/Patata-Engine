@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <SDL.h>
 
-#include "Patata_Engine/Window.hpp"
+#include "Window.hpp"
 
 Patata::Window::Window(
 		std::string WINDOW_NAME,
@@ -10,7 +10,16 @@ Patata::Window::Window(
 		uint32_t WINDOW_INITIAL_HEIGHT,
 		bool API_INITIAL) {
 	if (WINDOW_NAME.empty())
+		#if defined(GAME_NAME)
+		WINDOW_NAME = GAME_NAME;
+		#else
 		WINDOW_NAME = "Patata Engine";
+		#endif
+
+	#if DEBUG
+	WINDOW_NAME += " - Dev | Debug";
+	#endif
+
 	{
 		uint32_t flags = 0;
 
@@ -31,7 +40,9 @@ Patata::Window::Window(
 		std::cout << "SDL - Window creation failed : " << SDL_GetError() << "\n";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "SDL - Window creation failed", NULL);
 	}
+	#if defined (USE_ICON)
 	else SetIcon(WINDOW);
+	#endif
 }
 
 Patata::Window::~Window(void) {

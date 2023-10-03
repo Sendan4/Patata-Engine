@@ -3,9 +3,9 @@
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include "Patata_Engine/Graphics/Vulkan_Renderer.hpp"
-#include "Patata_Engine/Terminal_Colors.hpp"
-#include "Patata_Engine/Log.hpp"
+#include "Graphics/Vulkan_Renderer.hpp"
+#include "Terminal_Colors.hpp"
+#include "Log.hpp"
 
 void Patata::Graphics::VulkanRenderer::CreatePipeline(void) {
 	/*vk::RenderPassCreateInfo RenderPassCreateInfo {};

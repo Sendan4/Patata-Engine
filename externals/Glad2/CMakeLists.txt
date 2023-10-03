@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.18)
-project(Glad2)
 
+message("")
 message ("  - Glad2 -")
+
+project(Glad2)
 
 if (SHARED_BUILD AND NOT MSVC)
 	message(STATUS "Shared Build")
