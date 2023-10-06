@@ -50,6 +50,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"${CMAKE_BINARY_DIR}/externals/SDL/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}/../externals/Vulkan-Headers/include")
 
+message("")
 message(STATUS "Vulkan-Headers Directory: ${CMAKE_CURRENT_SOURCE_DIR}/../externals/Vulkan-Headers/include")
 
 if (USE_EXTERNAL_LIBS)

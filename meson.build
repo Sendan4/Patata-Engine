@@ -1,6 +1,6 @@
 project('Patata_Engine',
   'cpp', 'c',
-  version : '0',
+version : '0',
   default_options : [
     'buildtype=release'],
   subproject_dir : 'externals',
@@ -75,6 +75,7 @@ meson.get_compiler('cpp').check_header('vector', required : true)
 meson.get_compiler('cpp').check_header('algorithm', required : true)
 meson.get_compiler('cpp').check_header('cstdint', required : true)
 meson.get_compiler('cpp').check_header('cstring', required : true)
+meson.get_compiler('cpp').check_header('tuple', required : true)
 
 if target_machine.system() == 'windows'
   meson.get_compiler('c').check_header('windows.h', required : true)
@@ -88,13 +89,27 @@ sdl2_dep = dependency('sdl2',
   version : '>=2.24.1',
   modules : ['SDL2::SDL2'])
 
+if sdl2_dep.found()
+  meson.get_compiler('c').check_header('SDL.h', dependencies : sdl2_dep, required : true)
+  meson.get_compiler('c').check_header('SDL_vulkan.h', dependencies : sdl2_dep, required : true)
+  meson.get_compiler('c').check_header('SDL_opengl.h', dependencies : sdl2_dep, required : true)
+endif
+
 Vulkan = dependency('Vulkan',
   static : false,
   required : true)
 
+if Vulkan.found()
+  meson.get_compiler('cpp').check_header('vulkan/vulkan.hpp', dependencies : Vulkan, required : true)
+endif
+
 yamlcpp = dependency('yaml-cpp',
   static : false,
   required : true)
+
+if yamlcpp.found()
+  meson.get_compiler('cpp').check_header('yaml-cpp/yaml.h', dependencies : yamlcpp, required : true)
+endif
 
 dependencies = [Vulkan, sdl2_dep, yamlcpp, Glad2_dep]
 
