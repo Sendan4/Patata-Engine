@@ -5,9 +5,13 @@ message("  - Patata Engine -")
 
 option(SHARED_BUILD "Static Or Shared library" ON)
 option(USE_EXTERNAL_LIBS OFF)
-option(USE_GIT OFF)
+option(USE_GIT "Grab git information" ON)
 option(USE_CUSTOM_ICON OFF)
 option(ENABLE_ICON "Use icon in runtime" ON)
+
+if (MSVC)
+	set(CMAKE_SKIP_INSTALL_RULES YES)
+endif()
 
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
@@ -16,6 +20,7 @@ endif()
 project("PatataEngine")
 
 enable_language(CXX)
+include(CheckIncludeFiles)
 include(CheckCXXCompilerFlag)
 include(CheckIncludeFileCXX)
 if (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -84,7 +89,7 @@ if (USE_GIT)
 	# Git Macros
 	execute_process(
 		COMMAND git branch --show-current
-		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		OUTPUT_VARIABLE GIT_BRANCH
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -92,13 +97,13 @@ if (USE_GIT)
 
 	execute_process(
 		COMMAND git rev-parse HEAD
-		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		OUTPUT_VARIABLE GIT_HASH_LONG
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 	execute_process(
 		COMMAND git rev-parse --short HEAD
-		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		OUTPUT_VARIABLE GIT_HASH_SHORT
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -124,7 +129,6 @@ if (ENABLE_ICON)
 	add_compile_definitions(USE_ICON="1")
 	if (USE_CUSTOM_ICON)
 		message(STATUS "Custom Icon Path: ${ICON_PATH}")
-		message(STATUS "Custom Icon: Found")
 	else()
 		message(STATUS "Custom Icon: Not Found")
 	endif()
@@ -165,6 +169,7 @@ elseif(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
 endif()
 
 if (NOT USE_EXTERNAL_LIBS)
+	# Package Mananger
 	find_package(yaml-cpp REQUIRED)
 	find_package(Vulkan REQUIRED)
 	add_subdirectory(externals/Glad2)
@@ -172,9 +177,74 @@ if (NOT USE_EXTERNAL_LIBS)
 
 	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 		add_subdirectory(externals/Imgui)
+
+		find_file(HAVE_IMGUI_VULKAN_H "imgui_impl_vulkan.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/Imgui/imgui/backends")
+		find_file(HAVE_IMGUI_SDL2_H "imgui_impl_sdl2.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/Imgui/imgui/backends")
+		find_file(HAVE_IMGUI_OPENGL3_H "imgui_impl_opengl3.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/Imgui/imgui/backends")
+
+		if (NOT HAVE_IMGUI_VULKAN_H OR NOT HAVE_IMGUI_SDL2_H OR NOT HAVE_IMGUI_OPENGL3_H)
+			message(FATAL_ERROR "Missing Headers")
+		endif()
+	endif()
+
+	find_file(HAVE_VULKAN_HPP "vulkan/vulkan.hpp" PATHS ${Vulkan_INCLUDE_DIRS})
+	find_file(HAVE_SDL_H "SDL.h" PATHS ${SDL2_INCLUDE_DIRS})
+	find_file(HAVE_SDL_VULKAN_H "SDL_vulkan.h" PATHS ${SDL2_INCLUDE_DIRS})
+	find_file(HAVE_SDL_OPENGL_H "SDL_opengl.h" PATHS ${SDL2_INCLUDE_DIRS})
+	find_file(HAVE_YAML_CPP_H "yaml-cpp/yaml.h" PATHS ${Yaml-cpp_INCLUDE_DIRS})
+
+	message("")
+	message("  - Patata Engine -")
+
+	if (NOT HAVE_SDL_H OR NOT HAVE_SDL_VULKAN_H OR NOT HAVE_SDL_OPENGL_H OR NOT HAVE_VULKAN_HPP OR NOT HAVE_YAML_CPP_H)
+		message(FATAL_ERROR "Missing Headers")
+	else()
+		if (HAVE_VULKAN_HPP)
+			message(STATUS "Looking for vulkan/vulkan.hpp - found")
+		endif()
+
+		if (HAVE_SDL_H)
+			message(STATUS "Looking for SDL.h - found")
+		endif()
+
+		if (HAVE_SDL_VULKAN_H)
+			message(STATUS "Looking for SDL_vulkan.h - found")
+		endif()
+
+		if (HAVE_SDL_OPENGL_H)
+			message(STATUS "Looking for SDL_opengl.h - found")
+		endif()
+
+		if (HAVE_YAML_CPP_H)
+			message(STATUS "Looking for yaml-cpp/yaml.h - found")
+		endif()
+
+		if (HAVE_IMGUI_VULKAN_H)
+			message(STATUS "Looking for imgui_impl_vulkan.h - found")
+		endif()
+
+		if (HAVE_IMGUI_SDL2_H)
+			message(STATUS "Looking for imgui_impl_sdl2.h - found")
+		endif()
+
+		if (HAVE_IMGUI_OPENGL3_H)
+			message(STATUS "Looking for imgui_impl_opengl3.h - found")
+		endif()
 	endif()
 else()
+	# using submodules
 	add_subdirectory(externals)
+endif()
+
+# Glad Check
+find_file(HAVE_GL_H "glad/gl.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/Glad2/include/")
+
+if (NOT HAVE_GL_H)
+	message(FATAL_ERROR "Missing Headers")
+else()
+	if (HAVE_SDL_H)
+		message(STATUS "Looking for glad/gl.h - found")
+	endif()
 endif()
 
 # Copy Files

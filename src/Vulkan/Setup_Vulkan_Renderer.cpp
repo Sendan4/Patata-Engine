@@ -4,7 +4,7 @@
 
 #include <SDL_vulkan.h>
 
-#include "Graphics/Vulkan_Renderer.hpp"
+#include "Vulkan_Renderer.hpp"
 #include "Terminal_Colors.hpp"
 #include "Log.hpp"
 

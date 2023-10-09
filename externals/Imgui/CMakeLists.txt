@@ -17,9 +17,60 @@ CHECK_INCLUDE_FILE("assert.h" HAVE_ASSERT_H)
 CHECK_INCLUDE_FILE("stdlib.h" HAVE_STDLIB_H)
 CHECK_INCLUDE_FILE("limits.h" HAVE_LIMITS_H)
 CHECK_INCLUDE_FILE("math.h" HAVE_MATH_H)
+find_file(HAVE_IMGUI_VULKAN_H "imgui_impl_vulkan.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/")
+find_file(HAVE_IMGUI_SDL2_H "imgui_impl_sdl2.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/")
+find_file(HAVE_IMGUI_OPENGL3_H "imgui_impl_opengl3.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/")
+find_file(HAVE_IMGUI_H "imgui.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/")
+find_file(HAVE_IMCONFIG_H "imconfig.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/")
+find_file(HAVE_IMGUI_INTERNAL_H "imgui_internal.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/")
+find_file(HAVE_IMSTB_RECTPACK_H "imstb_rectpack.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/")
+find_file(HAVE_IMSTB_TEXTEDIT_H "imstb_textedit.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/")
+find_file(HAVE_IMSTB_TRUETYPE_H "imstb_truetype.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/")
 
-if (NOT HAVE_STDIO_H OR NOT HAVE_STDINT_H OR NOT HAVE_FLOAT_H OR NOT HAVE_STDARG_H OR NOT HAVE_STDDEF_H OR NOT HAVE_STRING_H OR NOT HAVE_ASSERT_H OR NOT HAVE_STDLIB_H OR NOT HAVE_LIMITS_H OR NOT HAVE_MATH_H)
+if (NOT USE_EXTERNAL_LIBS)
+	find_file(HAVE_VULKAN_H "vulkan/vulkan.h" PATHS ${Vulkan_INCLUDE_DIRS})
+else()
+	find_file(HAVE_VULKAN_H "vulkan/vulkan.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/../Vulkan-Headers/include/")
+endif()
+
+if (NOT HAVE_STDIO_H OR NOT HAVE_STDINT_H OR NOT HAVE_FLOAT_H OR NOT HAVE_STDARG_H OR NOT HAVE_STDDEF_H OR NOT HAVE_STRING_H OR NOT HAVE_ASSERT_H OR NOT HAVE_STDLIB_H OR NOT HAVE_LIMITS_H OR NOT HAVE_MATH_H OR NOT HAVE_IMGUI_VULKAN_H OR NOT HAVE_IMGUI_SDL2_H OR NOT HAVE_IMGUI_OPENGL3_H OR NOT HAVE_VULKAN_H OR NOT HAVE_IMGUI_INTERNAL_H OR NOT HAVE_IMSTB_RECTPACK_H OR NOT HAVE_IMSTB_TEXTEDIT_H OR NOT HAVE_IMSTB_TRUETYPE_H)
 	message(FATAL_ERROR "include files missing")
+else()
+	if (HAVE_IMGUI_H)
+		message(STATUS "Looking for imgui.h - found")
+	endif()
+
+	if (HAVE_IMGUI_INTERNAL_H)
+		message(STATUS "Looking for imgui_internal.h - found")
+	endif()
+
+	if (HAVE_IMSTB_RECTPACK_H)
+		message(STATUS "Looking for imstb_rectpack.h - found")
+	endif()
+
+	if (HAVE_IMSTB_TEXTEDIT_H)
+		message(STATUS "Looking for imstb_textedit.h - found")
+	endif()
+
+	if (HAVE_IMSTB_TRUETYPE_H)
+		message(STATUS "Looking for imstb_truetype.h - found")
+	endif()
+
+	if (HAVE_IMGUI_VULKAN_H)
+		message(STATUS "Looking for imgui_impl_vulkan.h - found")
+	endif()
+
+	if (HAVE_IMGUI_SDL2_H)
+		message(STATUS "Looking for imgui_impl_sdl2.h - found")
+	endif()
+
+	if (HAVE_IMGUI_OPENGL3_H)
+		message(STATUS "Looking for imgui_impl_opengl3.h - found")
+	endif()
+
+	if (HAVE_VULKAN_H)
+		message(STATUS "Looking for vulkan/vulkan.h - found")
+	endif()
 endif()
 
 if (SHARED_BUILD)
@@ -30,7 +81,8 @@ else ()
 	add_library(${PROJECT_NAME} STATIC)
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC "imgui/" "imgui/backends")
+target_include_directories(${PROJECT_NAME} PRIVATE "imgui/")
+target_include_directories(${PROJECT_NAME} PUBLIC "imgui/backends/")
 
 target_sources(${PROJECT_NAME} PRIVATE
 	"imgui/imgui.cpp"
@@ -39,7 +91,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"imgui/imgui_tables.cpp"
 	"imgui/imgui_widgets.cpp")
 
-if (${Vulkan_FOUND})
+if ((${Vulkan_FOUND} AND HAVE_VULKAN_H) OR (USE_EXTERNAL_LIBS AND HAVE_VULKAN_H))
 	message(STATUS "Backend: Vulkan")
 	target_sources(${PROJECT_NAME} PRIVATE
 		"imgui/backends/imgui_impl_vulkan.cpp")
@@ -54,6 +106,7 @@ if (USE_EXTERNAL_LIBS)
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
 		target_link_libraries(${PROJECT_NAME} PRIVATE vulkan)
+		message(STATUS "Backend: Vulkan")
 	endif()
 
 	# MSYS2 Vulkan Link

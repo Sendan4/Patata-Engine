@@ -9,8 +9,8 @@
 
 #if defined(DEBUG)
 #include <imgui.h>
-#include <backends/imgui_impl_sdl2.h>
-#include <backends/imgui_impl_opengl3.h>
+#include <imgui_impl_sdl2.h>
+#include <imgui_impl_opengl3.h>
 #endif
 
 #if defined(_WIN64)
@@ -93,12 +93,11 @@ Patata::PatataEngine::PatataEngine(
 		#if defined(DEBUG)
 		ImGui_ImplOpenGL3_Init("#version 140");
 		#endif
-		{
-			if (config["vsync"].as<bool>())
-				SDL_GL_SetSwapInterval(-1);
-			else
-				SDL_GL_SetSwapInterval(0);
-		}
+
+		if (config["vsync"].as<bool>())
+			SDL_GL_SetSwapInterval(-1);
+		else
+			SDL_GL_SetSwapInterval(0);
 	}
 }
 
