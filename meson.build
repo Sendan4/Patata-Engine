@@ -1,29 +1,52 @@
 project('Patata_Engine',
   'cpp', 'c',
-version : '0',
+  version : '0',
+  meson_version : '>=1.2.0',
   default_options : [
     'buildtype=release'],
   subproject_dir : 'externals',
-  license: 'MIT')
+  license : 'MIT',
+  license_files : 'LICENSE.txt')
 
 if get_option('use_git')
   git = find_program('git', native: true, required: false)
 endif
 
-if meson.get_compiler('cpp').get_id() == 'gcc' or meson.get_compiler('cpp').get_id() == 'clang'
-  if (meson.get_compiler('cpp').has_argument('-Wall') and meson.get_compiler('cpp').has_argument('-Wextra'))
+cpp = meson.get_compiler('cpp')
+
+if cpp.get_id() == 'gcc' or cpp.get_id() == 'clang'
+  if (cpp.has_argument('-Wall') and cpp.has_argument('-Wextra') and cpp.has_argument('-Wpedantic'))
     warning_level = 3
-  elif meson.get_compiler('cpp').has_argument('-Wall') and not meson.get_compiler('cpp').has_argument('-Wextra')
-    warning_level = 3
+  elif (cpp.has_argument('-Wall') and c++.has_argument('-Wextra'))
+    warning_level = 2
+  elif (cpp.has_argument('-Wall'))
+    warning_level = 1
+  else
+    warning_level = 0
   endif
 endif
 
-if (meson.get_compiler('cpp').has_argument('-std=c++20'))
+if (cpp.has_argument('-std=c++20'))
   cpp_std = 'c++20'
 endif
 
-if (meson.get_compiler('cpp').has_argument('-std=gnu++20'))
-  cpp_std = 'c++20'
+if (cpp.has_argument('-std=gnu++20'))
+  cpp_std = 'gnu++20'
+endif
+
+link_arguments = []
+
+if get_option('default_library') == 'static' or get_option('prefer_static') == true
+  cpp.has_argument('-static-libgcc')
+  cpp.has_argument('-static-libstdc++')
+
+  link_arguments += ['-static-libgcc', '-static-libgcc'] 
+endif
+
+cpp.has_link_argument('-Wl,-rpath')
+
+if (cpp.has_link_argument('-ffast-math'))
+  link_arguments += ['-ffast-math']
 endif
 
 if get_option('use_git') and git.found()
@@ -68,21 +91,22 @@ endif
 # Macros
 add_project_arguments(
   '-DPATATAVERSION=0',
-  '-DBUILDSYS="Meson (Ninja)"',
+  '-DBUILDSYS="Meson (Ninja Build)"',
   '-DENGINE_NAME="Patata Engine"',
   language : 'cpp')
 
-meson.get_compiler('cpp').check_header('iostream', required : true)
-meson.get_compiler('cpp').check_header('ios', required : true)
-meson.get_compiler('cpp').check_header('iomanip', required : true)
-meson.get_compiler('cpp').check_header('vector', required : true)
-meson.get_compiler('cpp').check_header('algorithm', required : true)
-meson.get_compiler('cpp').check_header('cstdint', required : true)
-meson.get_compiler('cpp').check_header('cstring', required : true)
-meson.get_compiler('cpp').check_header('tuple', required : true)
+cpp.check_header('iostream', required : true)
+cpp.check_header('ios', required : true)
+cpp.check_header('iomanip', required : true)
+cpp.check_header('vector', required : true)
+cpp.check_header('algorithm', required : true)
+cpp.check_header('cstdint', required : true)
+cpp.check_header('cstring', required : true)
+cpp.check_header('tuple', required : true)
 
+c = meson.get_compiler('c')
 if target_machine.system() == 'windows'
-  meson.get_compiler('c').check_header('windows.h', required : true)
+  c.check_header('windows.h', required : true)
 endif
 
 Glad2_dep = subproject('Glad2').get_variable('Glad2_dep')
@@ -90,13 +114,13 @@ Glad2_dep = subproject('Glad2').get_variable('Glad2_dep')
 sdl2_dep = dependency('sdl2',
   required : true,
   static : false,
-  version : '>=2.24.1',
+  version : '>=2.28.4',
   modules : ['SDL2::SDL2'])
 
 if sdl2_dep.found()
-  meson.get_compiler('c').check_header('SDL.h', dependencies : sdl2_dep, required : true)
-  meson.get_compiler('c').check_header('SDL_vulkan.h', dependencies : sdl2_dep, required : true)
-  meson.get_compiler('c').check_header('SDL_opengl.h', dependencies : sdl2_dep, required : true)
+  c.check_header('SDL.h', dependencies : sdl2_dep, required : true)
+  c.check_header('SDL_vulkan.h', dependencies : sdl2_dep, required : true)
+  c.check_header('SDL_opengl.h', dependencies : sdl2_dep, required : true)
 endif
 
 Vulkan = dependency('Vulkan',
@@ -104,7 +128,7 @@ Vulkan = dependency('Vulkan',
   required : true)
 
 if Vulkan.found()
-  meson.get_compiler('cpp').check_header('vulkan/vulkan.hpp', dependencies : Vulkan, required : true)
+  cpp.check_header('vulkan/vulkan.hpp', dependencies : Vulkan, required : true)
 endif
 
 yamlcpp = dependency('yaml-cpp',
@@ -112,7 +136,7 @@ yamlcpp = dependency('yaml-cpp',
   required : true)
 
 if yamlcpp.found()
-  meson.get_compiler('cpp').check_header('yaml-cpp/yaml.h', dependencies : yamlcpp, required : true)
+  cpp.check_header('yaml-cpp/yaml.h', dependencies : yamlcpp, required : true)
 endif
 
 dependencies = [Vulkan, sdl2_dep, yamlcpp, Glad2_dep]
@@ -148,19 +172,3 @@ subdir('data')
 
 include = include_directories('include/')
 subdir('src')
-
-lib = library(meson.project_name(),
-  source,
-  include_directories : [include],
-  d_import_dirs : [include],
-  dependencies : [dependencies],
-  build_by_default : true,
-  install : true,
-  install_dir : join_paths(meson.build_root(),'../bin'))
-
-project_dep = declare_dependency(
-  include_directories : [include],
-  d_import_dirs : [include],
-  link_with : lib)
-
-set_variable(meson.project_name() + '_dep', project_dep)

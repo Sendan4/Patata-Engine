@@ -32,3 +32,22 @@ else
     'Log/Vulkan_Info.cpp',
     'Log/OpenGL_Info.cpp'])
 endif
+
+lib = library(meson.project_name(),
+  source,
+  include_directories : [include],
+  d_import_dirs : [include],
+  dependencies : [dependencies],
+  build_by_default : true,
+  install : true,
+  link_args : link_arguments,
+  install_dir : join_paths(meson.global_build_root(),'../bin'),
+  install_rpath : join_paths(meson.global_build_root(),'../bin'),
+  build_rpath : join_paths(meson.global_build_root(),'../bin'))
+
+project_dep = declare_dependency(
+  include_directories : [include],
+  d_import_dirs : [include],
+  link_with : lib)
+
+set_variable(meson.project_name() + '_dep', project_dep)

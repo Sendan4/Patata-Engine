@@ -139,7 +139,7 @@ else()
 endif()
 
 # Windows shared library
-if (SHARED_BUILD AND (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows"))
+if (SHARED_BUILD)
 	add_compile_definitions(SHARED_LIBRARY_EXPORT_DEFINE="1")
 	message(STATUS "Shared Build")
 else ()

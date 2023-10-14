@@ -4,8 +4,8 @@ if get_option('enable_icon')
   message('Icon: Yes')
 
   fs = import('fs')
-  if not fs.is_dir(join_paths(meson.build_root(), '../bin/'))
-    run_command('mkdir', join_paths(meson.build_root(), '../bin/'), check : true)
+  if not fs.is_dir(join_paths(meson.global_build_root(), '../bin/'))
+    run_command('mkdir', join_paths(meson.global_build_root(), '../bin/'), check : true)
   endif
 
   if get_option('use_custom_icon')
@@ -13,7 +13,7 @@ if get_option('enable_icon')
       message('Custom Icon: Yes')
       message('Icon Path: ' + get_option('icon_path'))
 
-      run_command('cp', get_option('icon_path'), meson.build_root(), check : true)
+      run_command('cp', get_option('icon_path'), meson.global_build_root(), check : true)
 
       if get_option('game_name') != ''
         run_command('mv', meson.global_build_root() + '/icon.bmp', meson.global_build_root() + '/' + get_option('game_name') + '.bmp', check : true)

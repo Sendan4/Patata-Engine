@@ -1,6 +1,6 @@
 fs = import('fs')
-if not fs.is_dir(join_paths(meson.build_root(), '../bin/'))
-  run_command('mkdir', join_paths(meson.build_root(), '../bin/'), check : true)
+if not fs.is_dir(join_paths(meson.global_build_root(), '../bin/'))
+  run_command('mkdir', join_paths(meson.global_build_root(), '../bin/'), check : true)
 endif
 
 run_command('cp', 'patata.yaml', meson.global_build_root(), check : true)
