@@ -1,9 +1,9 @@
-| Español | [English](doc/README_en.md) |
+| Español | [English](docs/README_en.md) |
 | :--: | :--: |
 
-# <img draggable=false src = "assets/icon/patata.webp" width=24 style="image-rendering: pixelated;"> Motor Patata
+# <img draggable=false src = "data/assets/icon/patata.webp" width=24 style="image-rendering: pixelated;"> Motor Patata
 
-<img draggable=false src = "assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
+<img draggable=false src = "data/assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
 <p style=""><b>Motor Patata</b> es un motor 2d sencillo y ligero con el enfoque en el desarrollo de videojuegos.</p>
 
 <p>Soy novato en <b>C++</b>, estoy haciendo este proyecto para aprender y pasarmelo bien desarrollandolo, Asi que no esperes ver un codigo de profesional.</p>

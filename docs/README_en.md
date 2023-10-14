@@ -1,9 +1,9 @@
 | [Español](../README.md) | English |
 | :--: | :--: |
 
-# <img draggable=false src = "assets/icon/patata.webp" width=24 style="image-rendering: pixelated;">Potato Engine
+# <img draggable=false src = "data/assets/icon/patata.webp" width=24 style="image-rendering: pixelated;">Potato Engine
 
-<img draggable=false src = "assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
+<img draggable=false src = "data/assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
 
 <p><b>Potato Engine</b> is a simple and light 2d engine with a focus on video game development.</p>
 
