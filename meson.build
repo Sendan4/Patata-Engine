@@ -114,7 +114,7 @@ Glad2_dep = subproject('Glad2').get_variable('Glad2_dep')
 sdl2_dep = dependency('sdl2',
   required : true,
   static : false,
-  version : '>=2.28.4',
+  #version : '>=2.28.4',
   modules : ['SDL2::SDL2'])
 
 if sdl2_dep.found()
