@@ -61,10 +61,14 @@ if get_option('use_git') and git.found()
   add_project_arguments('-DGIT_BRANCH="'+branchCOutput+'"', language : 'cpp')
 endif
 
+if get_option('default_library') == 'shared' or get_option('default_library') == 'both'
+  add_project_arguments('-DSHARED_LIBRARY_EXPORT_DEFINE=1', language : 'cpp')
+endif
+
 # Macros
 add_project_arguments(
   '-DPATATAVERSION=0',
-  '-DBUILDSYS="Meson"',
+  '-DBUILDSYS="Meson (Ninja)"',
   '-DENGINE_NAME="Patata Engine"',
   language : 'cpp')
 
@@ -139,43 +143,8 @@ if get_option('game_name') != ''
   add_project_arguments('-DGAME_NAME="'+get_option('game_name')+'"', language : 'cpp')
 endif
 
-subdir('assets')
-
-# posiblemente mueva esta parte del icono a otra parte
-# Icon
-if get_option('enable_icon')
-  add_project_arguments('-DUSE_ICON=1', language : 'cpp')
-  message('Icon: Yes')
-
-  if get_option('use_custom_icon')
-    if get_option('icon_path') != ''
-      message('Custom Icon: Yes')
-      message('Icon Path: ' + get_option('icon_path'))
-
-      run_command('cp', get_option('icon_path'), meson.build_root(), check : true)
-
-      if get_option('game_name') != ''
-        run_command('mv', meson.build_root() + '/icon.bmp', meson.build_root() + '/' + get_option('game_name') + '.bmp', check : true)
-      endif
-    endif
-  else
-    message('Custom Icon: No')
-
-    run_command('cp', 'assets/icon/patata.bmp', meson.build_root(), check : true)
-
-    if get_option('game_name') != ''
-      run_command('mv', meson.build_root() + '/icon.bmp', meson.build_root() + get_option('game_name') + '.bmp', check : true)
-    endif
-  endif
-else
-  message('Icon: No')
-endif
-
-run_command('cp', 'patata.yaml', meson.build_root(), check : true)
-
-if get_option('game_name') != ''
-  run_command('mv', meson.build_root() + '/patata.yaml', meson.build_root() + '/' + get_option('game_name') + '.yaml', check : true)
-endif
+subdir('data/assets')
+subdir('data')
 
 include = include_directories('include/')
 subdir('src')
@@ -185,7 +154,9 @@ lib = library(meson.project_name(),
   include_directories : [include],
   d_import_dirs : [include],
   dependencies : [dependencies],
-  build_by_default : true)
+  build_by_default : true,
+  install : true,
+  install_dir : join_paths(meson.build_root(),'../bin'))
 
 project_dep = declare_dependency(
   include_directories : [include],

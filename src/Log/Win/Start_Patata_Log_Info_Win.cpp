@@ -5,7 +5,7 @@
 #include <windows.h>
 
 // Patata Engine
-#include "Log.hpp"
+#include "PatataEngine/Log.hpp"
 
 void Patata::Log::StartPatataLogInfo(void) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);

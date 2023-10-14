@@ -7,7 +7,7 @@
 #include <yaml-cpp/yaml.h>
 #include <windows.h>
 
-#include "Graphics/Vulkan_Renderer.hpp"
+#include "PatataEngine/Graphics/VulkanRenderer.hpp"
 
 void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format> SWAPCHAIN_INFO) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);

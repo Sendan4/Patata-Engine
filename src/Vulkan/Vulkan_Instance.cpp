@@ -1,8 +1,8 @@
 #include <vector>
 #include <SDL_vulkan.h>
 
-#include "Graphics/Vulkan_Renderer.hpp"
-#include "Log.hpp"
+#include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include "PatataEngine/Log.hpp"
 
 bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 	// Get Extensions

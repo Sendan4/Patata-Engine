@@ -3,8 +3,8 @@
 #include <ios>
 
 // Patata Engine
-#include "Log.hpp"
-#include "Terminal_Colors.hpp"
+#include "PatataEngine/Log.hpp"
+#include "PatataEngine/TerminalColors.hpp"
 
 void Patata::Log::StartPatataLogInfo(void) {
 	std::cout << Bold << BLightGoldenRod1 << ENGINE_NAME << std::setw(3) << ":\n" << Reset;

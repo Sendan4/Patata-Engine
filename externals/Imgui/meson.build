@@ -35,39 +35,43 @@ Sources = files(
     'imgui/imgui_widgets.cpp',
     'imgui/backends/imgui_impl_opengl3.cpp'])
 
-Include = include_directories('imgui/')
+Include = include_directories('imgui')
 
 meson.get_compiler('cpp').check_header('imgui.h',
   include_directories : Include,
-  required : true)
+   required : true)
 
-meson.get_compiler('cpp').check_header('backends/imgui_impl_opengl3.h',
-  include_directories : Include,
+backends = include_directories('imgui/backends')
+
+meson.get_compiler('cpp').has_header('imgui_impl_opengl3.h',
+  include_directories : backends,
   required : true)
 
 if Vulkan.found()
   meson.get_compiler('c').check_header('vulkan/vulkan.h', required : true)
-  meson.get_compiler('cpp').check_header('backends/imgui_impl_vulkan.h',
-    include_directories : Include,
+  meson.get_compiler('cpp').has_header('imgui_impl_vulkan.h',
+    include_directories : backends,
     required : true)
   Sources += files(['imgui/backends/imgui_impl_vulkan.cpp'])
 endif
 
 if sdl2_dep.found()
-  meson.get_compiler('cpp').check_header('backends/imgui_impl_sdl2.h',
-    include_directories : Include,
+  meson.get_compiler('cpp').has_header('imgui_impl_sdl2.h',
+    include_directories : backends,
     required : true)
   Sources += files(['imgui/backends/imgui_impl_sdl2.cpp'])
 endif
 
 lib = library(meson.project_name(),
   Sources,
-  include_directories : [Include],
-  d_import_dirs : [Include],
-  dependencies : [dependencies])
+  include_directories : [Include, backends],
+  d_import_dirs : [Include, backends],
+  dependencies : [dependencies],
+  install : true,
+  install_dir : join_paths(meson.build_root(),'../bin'))
 
 project_dep = declare_dependency(
-  include_directories : [Include],
+  include_directories : [Include, backends],
   link_with : lib)
 
 set_variable(meson.project_name() + '_dep', project_dep)

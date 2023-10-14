@@ -4,10 +4,10 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include "Patata_Engine.hpp"
-#include "Graphics/Vulkan_Renderer.hpp"
-#include "Terminal_Colors.hpp"
-#include "Log.hpp"
+#include "PatataEngine/PatataEngine.hpp"
+#include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include "PatataEngine/TerminalColors.hpp"
+#include "PatataEngine/Log.hpp"
 
 std::tuple<vk::PresentModeKHR, vk::Format> Patata::Graphics::VulkanRenderer::CreateSwapChain(uint32_t &GraphicsQueueFamilyIndex, YAML::Node CONFIG) {
 	std::vector <vk::SurfaceFormatKHR> Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);

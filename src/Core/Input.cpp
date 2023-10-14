@@ -1,12 +1,11 @@
 #include <SDL.h>
 
 #if defined(DEBUG)
-#include <imgui.h>
-#include <backends/imgui_impl_sdl2.h>
+#include <imgui_impl_sdl2.h>
 #endif
 
 // Patata Engine
-#include "Patata_Engine.hpp"
+#include "PatataEngine/PatataEngine.hpp"
 
 bool Patata::PatataEngine::Input(void) {
 	static bool KeyPress = false;

@@ -2,14 +2,13 @@
 #include <SDL.h>
 
 #if defined(DEBUG)
-#include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
 #endif
 
 // Patata Engine
-#include "Patata_Engine.hpp"
-#include "Window.hpp"
+#include "PatataEngine/PatataEngine.hpp"
+#include "PatataEngine/Window.hpp"
 
 void Patata::PatataEngine::Render(void) {
 	if (bGraphicsAPI) {

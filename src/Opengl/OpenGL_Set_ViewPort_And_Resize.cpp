@@ -3,7 +3,7 @@
 #include <cstdint>
 
 // Patata Engine 
-#include "Graphics/OpenGL_Renderer.hpp"
+#include "PatataEngine/Graphics/OpenGLRenderer.hpp"
 
 void Patata::Graphics::OpenGLRenderer::OpenGLSetViewPort(uint64_t WINDOW_INITIAL_WIDTH, uint64_t WINDOW_INITIAL_HEIGHT) {
 	glViewport(0, 0, WINDOW_INITIAL_WIDTH, WINDOW_INITIAL_HEIGHT);

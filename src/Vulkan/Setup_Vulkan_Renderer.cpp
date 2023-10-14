@@ -4,9 +4,9 @@
 
 #include <SDL_vulkan.h>
 
-#include "Vulkan_Renderer.hpp"
-#include "Terminal_Colors.hpp"
-#include "Log.hpp"
+#include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include "PatataEngine/TerminalColors.hpp"
+#include "PatataEngine/Log.hpp"
 
 Patata::Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW, YAML::Node CONFIG) {
 	CreateInstance(WINDOW);

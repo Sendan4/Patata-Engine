@@ -2,8 +2,8 @@
 #include <iostream>
 #include <SDL.h>
 
-#include "Window.hpp"
-#include "Log.hpp"
+#include "PatataEngine/Window.hpp"
+#include "PatataEngine/Log.hpp"
 
 #define GAME_ICON_FILE_NAME GAME_NAME ".bmp" 
 

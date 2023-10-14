@@ -8,7 +8,6 @@
 #include <yaml-cpp/yaml.h>
 
 #if defined(DEBUG)
-#include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
 #endif
@@ -23,9 +22,9 @@
 #endif
 
 // Patata Engine
-#include "Patata_Engine.hpp"
-#include "Window.hpp"
-#include "Log.hpp"
+#include "PatataEngine/PatataEngine.hpp"
+#include "PatataEngine/Window.hpp"
+#include "PatataEngine/Log.hpp"
 
 Patata::PatataEngine::PatataEngine(
 		std::string WINDOW_NAME,

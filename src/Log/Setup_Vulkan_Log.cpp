@@ -7,8 +7,8 @@
 #include <vulkan/vulkan.hpp>
 
 // Patata Engine
-#include "Log.hpp"
-#include "Terminal_Colors.hpp"
+#include "PatataEngine/Log.hpp"
+#include "PatataEngine/TerminalColors.hpp"
 
 void Patata::Log::ListVulkanInstanceExtensions(std::vector <const char *> &LIST, SDL_bool FOUND_EXTENSIONS) {
 	if (FOUND_EXTENSIONS) {

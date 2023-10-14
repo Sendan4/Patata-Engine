@@ -114,13 +114,17 @@ if (USE_GIT)
 		GIT_HASH_SHORT="${GIT_HASH_SHORT}")
 
 endif()
+
+set (build_system "CMake (${CMAKE_GENERATOR})")
+
 # Macros
 add_compile_definitions(
-	BUILDSYS="CMake"
+	BUILDSYS="${build_system}"
 	PATATAVERSION="0"
 	ENGINE_NAME="Patata Engine")
 
 if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
+	message(STATUS "Game Name: ${GAME_NAME}")
 	add_compile_definitions(GAME_NAME="${GAME_NAME}")
 endif()
 
@@ -129,14 +133,10 @@ if (ENABLE_ICON)
 	add_compile_definitions(USE_ICON="1")
 	if (USE_CUSTOM_ICON)
 		message(STATUS "Custom Icon Path: ${ICON_PATH}")
-	else()
-		message(STATUS "Custom Icon: Not Found")
 	endif()
 else()
 	message(STATUS "Icon: No")
 endif()
-
-message(STATUS "Game Name: ${GAME_NAME}")
 
 # Windows shared library
 if (SHARED_BUILD AND (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows"))
@@ -247,33 +247,9 @@ else()
 	endif()
 endif()
 
-# Copy Files
-if (MSVC)
-	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-		file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/patata.yaml" "${CMAKE_CURRENT_SOURCE_DIR}/LICENSES"
-			DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Release)
-
-		if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
-			file(RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/patata.yaml" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/${GAME_NAME}.yaml")
-		endif()
-	else()
-		file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/patata.yaml" "${CMAKE_CURRENT_SOURCE_DIR}/LICENSES"
-			DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
-
-		if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
-			file(RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/patata.yaml" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.yaml")
-		endif()
-	endif()
-else ()
-	file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/patata.yaml" "${CMAKE_CURRENT_SOURCE_DIR}/LICENSES"
-		DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-
-	if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
-		file(RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata.yaml" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.yaml")
-	endif()
-endif ()
+add_subdirectory(data)
+add_subdirectory(data/assets)
 
 # Library
 include_directories(include/)
 add_subdirectory(src)
-add_subdirectory(assets)

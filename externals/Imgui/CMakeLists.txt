@@ -73,7 +73,7 @@ else()
 	endif()
 endif()
 
-if (SHARED_BUILD)
+if (SHARED_BUILD AND NOT MSVC)
 	message(STATUS "Shared Build")
 	add_library(${PROJECT_NAME} SHARED)
 else ()
@@ -81,8 +81,12 @@ else ()
 	add_library(${PROJECT_NAME} STATIC)
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE "imgui/")
+target_include_directories(${PROJECT_NAME} PUBLIC "imgui")
 target_include_directories(${PROJECT_NAME} PUBLIC "imgui/backends/")
+
+if(USE_EXTERNAL_LIBS AND HAVE_VULKAN_H)
+	target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../Vulkan-Headers/include/")
+endif()
 
 target_sources(${PROJECT_NAME} PRIVATE
 	"imgui/imgui.cpp"

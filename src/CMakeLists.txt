@@ -74,7 +74,7 @@ if (USE_EXTERNAL_LIBS)
 			VkLayer_khronos_validation
 			-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
-			file(COPY "${CMAKE_SOURCE_DIR}/scripts/debug_run_patata_engine.sh"
+			file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/../tools/debug_run_patata_engine.sh"
 				DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 		endif()
 	endif()
@@ -133,8 +133,6 @@ if (MSVC)
 		#SDL2
 		set_target_properties(SDL2 PROPERTIES FOLDER "Engine/Dependencies/SDL2")
 		set_target_properties(SDL2main PROPERTIES FOLDER "Engine/Dependencies/SDL2")
-		message(SDL2-static)
-		message(SDL2-test)
 		if (TARGET SDL2-static)
 			set_target_properties(SDL2-static PROPERTIES FOLDER "Engine/Dependencies/SDL2")
 		endif()

@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <SDL.h>
 
-#include "Window.hpp"
+#include "PatataEngine/Window.hpp"
 
 Patata::Window::Window(
 		std::string WINDOW_NAME,

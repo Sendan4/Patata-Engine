@@ -11,7 +11,9 @@ meson.get_compiler('c').check_header('inttypes.h', required : true)
 lib = shared_library(meson.project_name(),
   glad2_sources,
   include_directories : [glad2_include],
-  d_import_dirs : [glad2_include])
+  d_import_dirs : [glad2_include]
+  ,install : true,
+  install_dir : join_paths(meson.build_root(),'../bin'))
 
 project_dep = declare_dependency(
   include_directories : [glad2_include],

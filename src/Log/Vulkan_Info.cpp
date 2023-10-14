@@ -6,8 +6,8 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include "Graphics/Vulkan_Renderer.hpp"
-#include "Terminal_Colors.hpp"
+#include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include "PatataEngine/TerminalColors.hpp"
 
 void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format> SWAPCHAIN_INFO) {
 	std::cout << "\n" << FindianRed1 << Bold << "Vulkan Info" << std::setw(3) << ":\n" << Reset;
