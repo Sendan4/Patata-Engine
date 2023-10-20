@@ -35,16 +35,12 @@ if (NOT MSVC)
 	check_cxx_compiler_flag("-Wall" COMPILER_SUPPORTS_WALL)
 
 	if (COMPILER_SUPPORTS_CXX20)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+		set(CMAKE_CXX_STANDARD 20)
+		set(CMAKE_CXX_STANDARD_REQUIRED ON)
 	else()
     	message(FATAL_ERROR "The compiler does not support the C++20 standard")
 	endif()
 
-	if (COMPILER_SUPPORTS_WEXTRA AND COMPILER_SUPPORTS_WALL)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_CLAGS} -Wall -Wextra")
-	elseif (COMPILER_SUPPORTS_WALL AND NOT COMPILER_SUPPORTS_WEXTRA)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_CLAGS} -Wall")
-	endif()
 else()
 	check_cxx_compiler_flag("/std:c++20" COMPILER_SUPPORTS_CXX20)
 	check_cxx_compiler_flag("/Wall" COMPILER_SUPPORTS_WALL)
@@ -54,15 +50,8 @@ else()
 	else()
     	message(FATAL_ERROR "The compiler does not support the C++20 standard")
 	endif()
-
-	if (COMPILE_SUPPORTS_WALL)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall")
-	endif()
 endif()
 
-CHECK_INCLUDE_FILE_CXX("iostream" HAVE_IOSTREAM [LANGUAGE CXX])
-CHECK_INCLUDE_FILE_CXX("ios" HAVE_IOS [LANGUAGE CXX])
-CHECK_INCLUDE_FILE_CXX("iomanip" HAVE_IOMANIP [LANGUAGE CXX])
 CHECK_INCLUDE_FILE_CXX("cstdint" HAVE_CSTDINT [LANGUAGE CXX])
 CHECK_INCLUDE_FILE_CXX("cstring" HAVE_CSTRING [LANGUAGE CXX])
 CHECK_INCLUDE_FILE_CXX("algorithm" HAVE_IOSTREAM [LANGUAGE CXX])
@@ -73,7 +62,7 @@ if (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	CHECK_INCLUDE_FILE("windows.h" HAVE_WINDOWS_H)
 endif()
 
-if (NOT HAVE_CSTDINT OR NOT HAVE_CSTRING OR NOT HAVE_IOSTREAM OR NOT HAVE_IOS OR NOT HAVE_IOMANIP OR NOT HAVE_IOSTREAM OR NOT HAVE_VECTOR OR NOT HAVE_TUPLE)
+if (NOT HAVE_CSTDINT OR NOT HAVE_CSTRING OR NOT HAVE_IOSTREAM OR NOT HAVE_VECTOR OR NOT HAVE_TUPLE)
 	if (NOT HAVE_WINDOWS_H AND (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows"))
 		message(FATAL_ERROR "include files missing")
 	endif()
@@ -109,19 +98,21 @@ if (USE_GIT)
 
 	# Macros
 	add_compile_definitions(
-		GIT_BRANCH="${GIT_BRANCH}"
-		GIT_HASH_LONG="${GIT_HASH_LONG}"
-		GIT_HASH_SHORT="${GIT_HASH_SHORT}")
+		PATATA_GIT_BRANCH="${GIT_BRANCH}"
+		PATATA_GIT_HASH_LONG="${GIT_HASH_LONG}"
+		PATATA_GIT_HASH_SHORT="${GIT_HASH_SHORT}")
 
 endif()
 
 set (build_system "CMake (${CMAKE_GENERATOR})")
+get_filename_component(compiler_program ${CMAKE_CXX_COMPILER} NAME)
 
 # Macros
 add_compile_definitions(
-	BUILDSYS="${build_system}"
-	PATATAVERSION="0"
-	ENGINE_NAME="Patata Engine")
+	PATATA_BUILD_SYSTEM="${build_system}"
+	PATATA_VERSION="0"
+	PATATA_ENGINE_NAME="Patata Engine"
+	PATATA_COMPILER_PROGRAM="${compiler_program}")
 
 if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
 	message(STATUS "Game Name: ${GAME_NAME}")
@@ -152,24 +143,25 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
 	message(STATUS "Build Type: Release")
-	add_compile_definitions(BUILD_TYPE="Release")
+	add_compile_definitions(PATATA_BUILD_TYPE="Release")
 elseif(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 	message(STATUS "Build Type: Debug")
 	add_compile_definitions(
-		BUILD_TYPE="Debug"
+		PATATA_BUILD_TYPE="Debug"
 		DEBUG=1)
 elseif(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 	message(STATUS "Build Type: Debug Optimized")
 	add_compile_definitions(
-		BUILD_TYPE="Debug Optimized"
+		PATATA_BUILD_TYPE="Debug Optimized"
 		DEBUG=1)
 elseif(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
 	message(STATUS "Build Type: Minimal Size Release")
-	add_compile_definitions(BUILD_TYPE="Minimal Size Release")
+	add_compile_definitions(PATATA_BUILD_TYPE="Minimal Size Release")
 endif()
 
 if (NOT USE_EXTERNAL_LIBS)
 	# Package Mananger
+	add_subdirectory(externals/fast_io)
 	find_package(yaml-cpp REQUIRED)
 	find_package(Vulkan REQUIRED)
 	add_subdirectory(externals/Glad2)

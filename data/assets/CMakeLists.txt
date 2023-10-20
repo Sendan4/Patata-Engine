@@ -37,8 +37,13 @@ if (ENABLE_ICON)
 		endif()
 
 		if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
-			file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata.bmp"
-				"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.bmp")
+			if (MSVC)
+				file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/patata.bmp"
+					"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.bmp")
+			else()
+				file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata.bmp"
+					"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.bmp")
+			endif()
 		endif()
 	endif ()
 endif()

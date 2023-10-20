@@ -6,24 +6,24 @@
 
 // OS
 #if __linux__ && !__ANDROID__
-	#define OS "Linux"
+	#define PATATA_OS "Linux"
 #elif _WIN64 || _WIN32
-	#define OS "Windows"
+	#define PATATA_OS "Windows"
 #endif
 
 // Compiler
 #if __GNUC__
 	#if __MINGW64__
-		#define COMPILER "MinGW-w64"
+		#define PATATA_COMPILER "MinGW-w64 -> "
 	#else
-		#define COMPILER "GCC"
+		#define PATATA_COMPILER "GCC -> "
 	#endif
 #elif __clang__
-	#define COMPILER "Clang"
+	#define PATATA_COMPILER "Clang -> "
 #elif _MSC_VER <= 1929
-	#define COMPILER "Older Visual Studio (MSVC)"
+	#define PATATA_COMPILER "Old Microsoft Visual C++ (MSVC) -> "
 #elif _MSC_VER >= 1930
-	#define COMPILER "Visual Studio (MSVC)"
+	#define PATATA_COMPILER "Microsoft Visual C++ (MSVC) -> "
 #endif
 
 namespace Patata {
@@ -34,13 +34,18 @@ namespace Patata {
 		void WindowIconSetStatus(SDL_Surface *);
 
 		// Vulkan Setup
-		void ListVulkanInstanceExtensions(std::vector <const char *> &, SDL_bool);
+		void ListVulkanInstanceExtensions(std::vector <const char *>, SDL_bool);
 		bool VulkanInstanceResult(vk::Result);
-		void ListVulkanDeviceResult(const std::vector <const char *>);
+		void ListVulkanDeviceResult(std::vector <const char *>);
 		void VulkanLogicalDeviceResult(vk::Result);
 		void CheckSwapChain(vk::Result);
 		void CheckCommandPool(vk::Result);
 		void CheckRenderPass(vk::Result);
 		void CheckSurface(bool);
+
+		// Errors
+		void YamlFileErrorMessage(void);
+		void FatalErrorMessage(std::string, std::string, YAML::Node);
+		void ErrorMessage(std::string);
 	}
 }

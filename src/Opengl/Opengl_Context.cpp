@@ -1,5 +1,4 @@
-#include <iostream>
-
+#include <fast_io.h>
 #include <yaml-cpp/yaml.h>
 #include <glad/gl.h>
 #include <SDL.h>
@@ -15,7 +14,7 @@
 
 Patata::Graphics::OpenGLContext::OpenGLContext(SDL_Window * WINDOW, YAML::Node CONFIG) {
 	SetAttributes();
-	CreateContext(WINDOW);
+	CreateContext(WINDOW, CONFIG);
 	Patata::Log::OpenGLInfo(CONFIG);
 }
 
@@ -35,12 +34,12 @@ void Patata::Graphics::OpenGLContext::SetAttributes(void) {
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 }
 
-void Patata::Graphics::OpenGLContext::CreateContext(SDL_Window * WINDOW) {
+void Patata::Graphics::OpenGLContext::CreateContext(SDL_Window * WINDOW, YAML::Node CONFIG) {
 	SDLGLCONTEXT = SDL_GL_CreateContext(WINDOW);
 
 	if (!SDLGLCONTEXT) {
-		std::cout << "Could not create OpenGL context" << std::endl;
-		return;
+		Patata::Log::FatalErrorMessage("OpenGL", "Your hardware does not support OpenGL 3.1 or higher", CONFIG);
+		exit(-1);
 	}
 	
 	gladLoadGL(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress));

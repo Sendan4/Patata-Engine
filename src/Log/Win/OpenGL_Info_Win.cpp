@@ -1,11 +1,9 @@
-#include <iostream>
-#include <iomanip>
-#include <ios>
 #include <cstring>
+#include <windows.h>
 
+#include <fast_io.h>
 #include <yaml-cpp/yaml.h>
 #include <glad/gl.h>
-#include <windows.h>
 
 // Patata Engine
 #include "PatataEngine/PatataEngine.hpp"
@@ -15,12 +13,12 @@ void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	SetConsoleTextAttribute(Terminal, 9);
-	std::cout << "OpenGL Info" << std::setw(3) << ":\n";
+	fast_io::io::println(fast_io::out(), "OpenGL Info :");
 	SetConsoleTextAttribute(Terminal, 7);
 
-	std::cout << std::setw(4) << ' ' << "Vendor"  << std::setw(20) << ": " << glGetString(GL_VENDOR) << "\n";
+	fast_io::io::println(fast_io::out(), "    Vendor                  : ", std::string_view{ reinterpret_cast<const char *>(glGetString(GL_VENDOR)) });
 
-	std::cout << std::setw(4) << ' ' << "Renderer" << std::setw(18) << ": " << glGetString(GL_RENDERER) << "\n";
+	fast_io::io::println(fast_io::out(), "    Renderer                : ", std::string_view{ reinterpret_cast<const char *>(glGetString(GL_RENDERER)) });
 
 	{
 		GLint glmayorversion = 0, glminorversion = 0;
@@ -28,88 +26,81 @@ void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
 		glGetIntegerv(GL_MINOR_VERSION, &glminorversion);
 		std::string glversion = std::to_string(glmayorversion) + '.' + std::to_string(glminorversion);
 
-		std::cout << std::setw(4) << ' ' << "Version" << std::setw(19) << ": " << glversion << "\n";
+		fast_io::io::println(fast_io::out(), "    Version                 : ", glversion);
 	}
 
-	std::cout << std::setw(4) << ' ' << "GLSL Version" << std::setw(14) << ": " << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";
+	fast_io::io::println(fast_io::out(), "    GLSL Version            : ", std::string_view{ reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)) });
 
-	std::cout << std::setw(4) << ' ' << "GLAD Version" << std::setw(14) << ": " << GLAD_GENERATOR_VERSION << "\n";
+	fast_io::io::println(fast_io::out(), "    GLAD Version            : ", GLAD_GENERATOR_VERSION);
 
-	std::cout << std::setw(4) << ' ' << "Profile" << std::setw(19) << ": ";
+	fast_io::io::print(fast_io::out(), "    Profile                 : ");
 	{
 		GLint contextflags = 0;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &contextflags);
 
 		switch (contextflags) {
 			case GL_CONTEXT_CORE_PROFILE_BIT :
-				std::cout << "Core\n";
+				fast_io::io::println(fast_io::out(), "Core");
 				break;
 
 			case GL_CONTEXT_COMPATIBILITY_PROFILE_BIT :
-				std::cout << "Compatibility\n";
+				fast_io::io::println(fast_io::out(), "Compatibility");
 				break;
 
 			default :
-				std::cout << "Unknown\n";
+				fast_io::io::println(fast_io::out(), "Unknown");
 				break;
 		}
 	}
 
-	std::cout << std::setw(4) << ' ' << "Accelerated Visual" << std::setw(8) << ": ";
+	fast_io::io::print(fast_io::out(), "    Accelerated Visual      : ");
 	{
 		int accel = 0;
 		SDL_GL_GetAttribute(SDL_GL_ACCELERATED_VISUAL, &accel);
 
 		if (accel == 1)
-			std::cout << "Hardware\n";
+			fast_io::io::println(fast_io::out(), "Hardware");
 		else if (accel == 0)
-			std::cout << "Software\n";
+			fast_io::io::println(fast_io::out(), "Software");
 	}
 
-	std::cout << std::setw(4) << ' ' << "Buffer" << std::setw(20) << ": ";
+	fast_io::io::print(fast_io::out(), "    Buffer                  : ");
 	{
 		int buff = 0;
 		SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &buff);
 
 		if (buff == 1)
-			std::cout << "Double\n";
+			fast_io::io::println(fast_io::out(), "Double");
 		else if (buff == 0)
-			std::cout << "Single\n";
+			fast_io::io::println(fast_io::out(), "Double");
 	}
 
-	std::cout << std::setw(4) << ' ' << "Vsync" << std::setw(21) << ": ";
-	if (CONFIG["vsync"].as<bool>()) {
-		SetConsoleTextAttribute(Terminal, 10);
-		std::cout << "Yes\n";
-		SetConsoleTextAttribute(Terminal, 7);
-	}
-	else {
-		SetConsoleTextAttribute(Terminal, 14);
-		std::cout << "No\n";
-		SetConsoleTextAttribute(Terminal, 7);
-	}
+	fast_io::io::print(fast_io::out(), "    Vsync                   : ");
+	if (CONFIG["vsync"].as<bool>())
+		fast_io::io::println(fast_io::out(), "Yes");
+	else
+		fast_io::io::println(fast_io::out(), "No");
 
-	SetConsoleTextAttribute(Terminal, 9);
-	std::cout << "\n" << std::setw(4) << ' ' << "Used Extensions" << std::setw(3) << ":\n";
-	SetConsoleTextAttribute(Terminal, 7);
+	fast_io::io::println(fast_io::out(), "\n    Used Extensions");
 
 	if (strcmp(reinterpret_cast<const char *>(glGetString(GL_VENDOR)), reinterpret_cast<const char *>("ATI Technologies Inc")) != 0) {
-		if (GL_AMD_performance_monitor)
-			std::cout << std::setw(10) << ' ' << "GL_AMD_perfomance_monitor\n";
+		if (GL_AMD_performance_monitor) {
+			SetConsoleTextAttribute(Terminal, 2);
+			fast_io::io::println(fast_io::out(), "        GL_AMD_perfomance_monitor");
+			SetConsoleTextAttribute(Terminal, 7);
+		}
 	}
 
 	#if DEBUG
-		SetConsoleTextAttribute(Terminal, 9);
-		std::cout << "\n" << std::setw(4) << ' ' << "Available Extensions" << std::setw(3) << ":\n";
-		SetConsoleTextAttribute(Terminal, 7);
+		fast_io::io::println(fast_io::out(), "\n    Available Extensions :");
 		{
 			GLint NumberOfExtensions = 0;
 			glGetIntegerv(GL_NUM_EXTENSIONS, &NumberOfExtensions);
 
 			for (GLint i = 0; i < NumberOfExtensions; i++)
-				std::cout << std::setw(10) << ' ' << glGetStringi(GL_EXTENSIONS, i) << "\n";
+				fast_io::io::println(fast_io::out(), "        ", std::string_view{ reinterpret_cast<const char *>(glGetStringi(GL_EXTENSIONS, i)) });
 		}
 	#endif	
 
-	std::cout << "\n";
+	fast_io::io::println(fast_io::out());
 }
