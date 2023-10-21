@@ -1,6 +1,7 @@
+#include <iostream>
+#include <iomanip>
 #include <vector>
 
-#include <fast_io.h>
 #include <SDL.h>
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
@@ -9,70 +10,70 @@
 #include "PatataEngine/Log.hpp"
 #include "PatataEngine/TerminalColors.hpp"
 
-void Patata::Log::ListVulkanInstanceExtensions(std::vector <const char *> LIST, SDL_bool FOUND_EXTENSIONS) {
+void Patata::Log::ListVulkanInstanceExtensions(std::vector <const char *> &LIST, SDL_bool FOUND_EXTENSIONS) {
 	if (FOUND_EXTENSIONS) {
-		fast_io::io::println(FindianRed1, Bold, "Vulkan Instance Extensions", Reset);
-		for (const char * &extension : LIST)
-			fast_io::io::println(Dim, std::string_view{ extension }, Reset);
-		fast_io::io::println(Reset);
+		std::cout << FindianRed1 << Bold << "Vulkan Instance Extensions" << Reset << "\n";
+		for (const auto &extension : LIST)
+			std::cout << std::setw(10) << Dim << extension << Reset << "\n";
+		std::cout << Reset << "\n";
 	}
 	else {
-		fast_io::io::perrln("ERROR Fatal : ", std::string_view{ SDL_GetError() });
+		std::cout << Bold << "  Error al obtener la lista de extensiones necesarias : " << Reset << SDL_GetError() << "\n";
 	}
 }
 
 bool Patata::Log::VulkanInstanceResult(vk::Result RESULT) {
 	if (RESULT != vk::Result::eSuccess) {
-		fast_io::io::println(Bold, "Instance                       : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset, "\n");
+		std::cout << Bold << "Instance" << std::setw(23) << ": " << Reset << BLightGoldenRod1 << vk::to_string(RESULT) << Reset << "\n\n";
 		return false;
 	}
 	else {
-		fast_io::io::println(Bold, "Instance                       : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset, "\n");
+		std::cout << Bold << "Instance" << std::setw(23) << ": " << Reset << Chartreuse1 << vk::to_string(RESULT) << Reset << "\n\n";
 		return true;
 	}
 }
 
 void Patata::Log::ListVulkanDeviceResult(const std::vector <const char *> DEVICE_EXTENSIONS) {
-	fast_io::io::println(Bold, FindianRed1, "Vulkan Device Extensions", Reset);
-	for (const char * Extensions : DEVICE_EXTENSIONS)
-		fast_io::io::println(Dim, std::string_view{ Extensions },  Reset);
-	fast_io::io::println("");
+	std::cout << Bold << FindianRed1 << "Vulkan Device Extensions" << Reset << "\n";
+	for (auto Extensions : DEVICE_EXTENSIONS)
+		std::cout << std::setw(10) << Dim << Extensions << Reset << "\n";
+	std::cout << "\n";
 }
 
 void Patata::Log::VulkanLogicalDeviceResult(vk::Result RESULT) {	
 	if (RESULT != vk::Result::eSuccess) {
-		fast_io::io::println(Bold, "Logical Device                  : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset);
+		std::cout << Bold << "Logical Device" << std::setw(17) << ": " << Reset << BLightGoldenRod1 << vk::to_string(RESULT) << Reset << "\n";
 	}
-	else fast_io::io::println(Bold, "Logical Device                 : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset);
+	else std::cout << Bold << "Logical Device" << std::setw(17) << ": " << Reset << Chartreuse1 << vk::to_string(RESULT) << Reset << "\n";
 }
 
 void Patata::Log::CheckSurface(bool SURFACE) {
-	fast_io::io::print(Bold, "SDL Surface                    : ", Reset);
+	std::cout << Bold << "SDL Surface" << std::setw(20) << ": " << Reset;
 	if (SURFACE)
-		fast_io::io::println(Chartreuse1, "Yes", Reset);
+		std::cout << Chartreuse1 << "Yes\n" << Reset;
 	else {
-		fast_io::io::println(BLightGoldenRod1, "No", Reset);
-		fast_io::io::println(Bold, CSalmon1, "ERROR Fatal : ", Reset, std::string_view{ SDL_GetError() });
+		std::cout << BLightGoldenRod1 << "No\n" << Reset;
+		std::cout << SDL_GetError() << "\n";
 	}
 }
 
 void Patata::Log::CheckSwapChain(vk::Result RESULT) {
 	if (RESULT != vk::Result::eSuccess)
-		fast_io::io::println(Bold, "SwapChain                      : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset);
+		std::cout << Bold << "SwapChain" << std::setw(22) << ": " << Reset << BLightGoldenRod1 << vk::to_string(RESULT) << Reset << "\n";
 	else
-		fast_io::io::println(Bold, "SwapChain                      : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset);
-} 
+		std::cout << Bold << "SwapChain" << std::setw(22) << ": " << Reset << Chartreuse1 << vk::to_string(RESULT) << Reset << "\n";
+}
 
 void Patata::Log::CheckCommandPool(vk::Result RESULT) {
 	if (RESULT != vk::Result::eSuccess)
-		fast_io::io::println(Bold, "CommandPool                    : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset);
+		std::cout << Bold << "CommandPool" << std::setw(20) << ": " << Reset << BLightGoldenRod1 << vk::to_string(RESULT) << Reset << "\n";
 	else
-		fast_io::io::println(Bold, "CommandPool                    : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset);
+		std::cout << Bold << "CommandPool" << std::setw(20) << ": " << Reset << Chartreuse1 << vk::to_string(RESULT) << Reset << "\n";
 }
 
 void Patata::Log::CheckRenderPass(vk::Result RESULT) {
 	if (RESULT != vk::Result::eSuccess)
-		fast_io::io::println(Bold, "RenderPass                     : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset);
+		std::cout << Bold << "RenderPass" << std::setw(21) << ": " << Reset << BLightGoldenRod1 << vk::to_string(RESULT) << Reset << "\n";
 	else
-		fast_io::io::println(Bold, "RenderPass                     : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset);
+		std::cout << Bold << "RenderPass" << std::setw(21) << ": " << Reset << Chartreuse1 << vk::to_string(RESULT) << Reset << "\n";
 }

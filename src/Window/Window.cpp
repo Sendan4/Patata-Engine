@@ -1,13 +1,14 @@
+#include <iostream>
 #include <cstdint>
-#include <string>
-
-#include <fast_io.h>
 #include <SDL.h>
 
 #include "PatataEngine/Window.hpp"
-#include "PatataEngine/Log.hpp"
 
-Patata::Window::Window(std::string WINDOW_NAME, uint64_t WINDOW_INITIAL_WIDTH, uint64_t WINDOW_INITIAL_HEIGHT, bool API_INITIAL, YAML::Node CONFIG) {
+Patata::Window::Window(
+		std::string WINDOW_NAME,
+		uint32_t WINDOW_INITIAL_WIDTH,
+		uint32_t WINDOW_INITIAL_HEIGHT,
+		bool API_INITIAL) {
 	if (WINDOW_NAME.empty())
 		#if defined(GAME_NAME)
 		WINDOW_NAME = GAME_NAME;
@@ -16,7 +17,7 @@ Patata::Window::Window(std::string WINDOW_NAME, uint64_t WINDOW_INITIAL_WIDTH, u
 		#endif
 
 	#if DEBUG
-	WINDOW_NAME += " | Debug (Development)";
+	WINDOW_NAME += " - Dev | Debug";
 	#endif
 
 	{
@@ -36,11 +37,11 @@ Patata::Window::Window(std::string WINDOW_NAME, uint64_t WINDOW_INITIAL_WIDTH, u
 	}
 
 	if (!WINDOW) {
-		Patata::Log::FatalErrorMessage("Window Error", SDL_GetError(), CONFIG);
-		exit(-1);
+		std::cout << "SDL - Window creation failed : " << SDL_GetError() << "\n";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "SDL - Window creation failed", NULL);
 	}
 	#if defined (USE_ICON)
-	else SetIcon(WINDOW, CONFIG);
+	else SetIcon(WINDOW);
 	#endif
 }
 

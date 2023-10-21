@@ -15,9 +15,7 @@ source = files([
   'Vulkan/Vulkan_CommandBuffer.cpp',
   'Vulkan/Vulkan_PipeLine.cpp',
   'Vulkan/Vulkan_RenderPass.cpp',
-  'Log/Mapache.cpp',
-  'Log/YamlErrors.cpp',
-  'Log/ErrorMessages.cpp'])
+  'Log/Mapache.cpp'])
 
 if target_machine.system() == 'windows'
   source += files([

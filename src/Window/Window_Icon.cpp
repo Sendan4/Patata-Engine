@@ -7,7 +7,7 @@
 
 #define GAME_ICON_FILE_NAME GAME_NAME ".bmp" 
 
-void Patata::Window::SetIcon(SDL_Window * WINDOW, YAML::Node CONFIG) {
+void Patata::Window::SetIcon(SDL_Window * WINDOW) {
 	#if defined(GAME_NAME)
 	SDL_Surface * WINDOW_ICON = SDL_LoadBMP(strcat(SDL_GetBasePath(), GAME_ICON_FILE_NAME));
 	#else
@@ -16,12 +16,6 @@ void Patata::Window::SetIcon(SDL_Window * WINDOW, YAML::Node CONFIG) {
 
 	if (WINDOW_ICON != nullptr)
 		SDL_SetWindowIcon(WINDOW, WINDOW_ICON);
-	else {
-		Patata::Log::ErrorMessage(SDL_GetError());
-		SDL_ClearError();
-		SDL_FreeSurface(WINDOW_ICON);
-		return;
-	}
 
 	SDL_FreeSurface(WINDOW_ICON);
 

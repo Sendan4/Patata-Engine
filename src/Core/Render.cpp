@@ -26,7 +26,7 @@ void Patata::PatataEngine::Render(void) {
 			ImGui::NewFrame();
 
 			ImGui::SetNextWindowSize(ImVec2(280, 200));
-			ImGui::Begin("🦝 🥔 Patata Engine - Developer Tools", nullptr, ImGuiWindowFlags_NoResize);
+			ImGui::Begin("Patata Engine - Developer Tools", nullptr, ImGuiWindowFlags_NoResize);
 			ImGui::Text("Tools coming soon");
 			ImGui::End();
 		}

@@ -6,5 +6,3 @@ graphics-api : Vulkan
 
 vsync : true
 # true enables the Vertical Sync, false disables the Vertical Sync
-
-show-fatal-error-messagebox : false

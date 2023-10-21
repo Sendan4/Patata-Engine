@@ -18,7 +18,3 @@
 	path = externals/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
 	branch = master
-[submodule "externals/Imgui/imgui"]
-	path = externals/Imgui/imgui
-	url = https://github.com/ocornut/imgui.git
-	branch = master

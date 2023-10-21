@@ -13,3 +13,19 @@
 	#define Reset "\033[0m"
 	#define Dim "\e[2m"
 #endif
+
+#if defined(_WIN64)
+	// Foreground
+	#define FindianRed1 ""
+	#define FRojo3 ""
+	#define FSteelBlue1 ""
+	#define Chartreuse1 ""
+
+	// Background
+	#define BLightGoldenRod1 ""
+
+	// Otros
+	#define Bold ""
+	#define Reset ""
+	#define Dim ""
+#endif

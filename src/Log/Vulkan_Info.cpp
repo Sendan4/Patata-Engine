@@ -1,79 +1,79 @@
+#include <iomanip>
+#include <ios>
+#include <iostream>
 #include <cstring>
 #include <tuple>
 
-#include <fast_io.h>
 #include <yaml-cpp/yaml.h>
 
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
 #include "PatataEngine/TerminalColors.hpp"
 
-void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> SWAPCHAIN_INFO) {
-	fast_io::io::println("\n", FindianRed1, Bold, "Vulkan Info :", Reset);
+void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format> SWAPCHAIN_INFO) {
+	std::cout << "\n" << FindianRed1 << Bold << "Vulkan Info" << std::setw(3) << ":\n" << Reset;
 
 	vk::PhysicalDeviceProperties PhysicalDeviceProperties = PhysicalDevice.getProperties();
 	const uint32_t VulkanVersion = PhysicalDeviceProperties.apiVersion;
 
-	// Vendor
 	{
 		std::string Vendor;
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : Vendor = "Intel"; break;
-			case 4098 : Vendor = "AMD (Advanced Micro Devices, Inc.)"; break;
-			case 4318 : Vendor = "Nvidia (NVIDIA Corporation)"; break;
+			case 32902 : std::cout << FSteelBlue1; Vendor = "Intel"; break;
+			case 4098 : std::cout << FindianRed1; Vendor = "AMD (Advanced Micro Devices, Inc.)"; break;
+			case 4318 : std::cout << Chartreuse1; Vendor = "Nvidia (NVIDIA Corporation)"; break;
 		}
 
-		fast_io::io::print(Bold, "    Vendor                       : ", Reset);
+		std::cout << Reset << Bold << std::setw(4) << ' ' << "Vendor" << std::setw(25) << ": " << Reset;
 
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : fast_io::io::println(FSteelBlue1, Vendor, Reset); break;
-			case 4098 : fast_io::io::println(FindianRed1, Vendor, Reset); break;
-			case 4318 : fast_io::io::println(Chartreuse1, Vendor, Reset); break;
+			case 32902 : std::cout << FSteelBlue1 << Vendor << Reset << "\n"; break;
+			case 4098 : std::cout << FindianRed1 << Vendor << Reset << "\n"; break;
+			case 4318 : std::cout << Chartreuse1 << Vendor << Reset << "\n"; break;
 		}
 	}
 
-	fast_io::io::print(Bold, "    VendorID                     : ", Reset);
+	std::cout << Bold << std::setw(4) << ' ' << "VendorID" << std::setw(23) << ": " << Reset;
 	switch (PhysicalDeviceProperties.vendorID) {
-		case 32902 : fast_io::io::print(FSteelBlue1); break;
-		case 4098 : fast_io::io::print(FindianRed1); break;
-		case 4318 : fast_io::io::print(Chartreuse1); break;
+		case 32902 : std::cout << FSteelBlue1; break;
+		case 4098 : std::cout << FindianRed1; break;
+		case 4318 : std::cout << Chartreuse1; break;
 	}
-	fast_io::io::println(Dim, PhysicalDeviceProperties.vendorID, "  ", PhysicalDeviceProperties.vendorID, Reset);
+	std::cout << Dim << PhysicalDeviceProperties.vendorID << std::hex << std::showbase << "  " << PhysicalDeviceProperties.vendorID << Reset << std::dec << "\n";
 
-	fast_io::io::print(Bold, "    Device Name                  : ", Reset);
+	std::cout << Bold << std::setw(4) << ' ' << "Device Name" << std::setw(20) << ": " << Reset;
 	switch (PhysicalDeviceProperties.vendorID) {
-		case 32902 : fast_io::io::print(FSteelBlue1); break;
-		case 4098 : fast_io::io::print(FindianRed1); break;
-		case 4318 : fast_io::io::print(Chartreuse1); break;
+		case 32902 : std::cout << FSteelBlue1; break;
+		case 4098 : std::cout << FindianRed1; break;
+		case 4318 : std::cout << Chartreuse1; break;
 	}
-	fast_io::io::println(std::string_view{ PhysicalDeviceProperties.deviceName }, Reset);
+	std::cout << PhysicalDeviceProperties.deviceName << Reset << "\n";
 
-	fast_io::io::print(Bold, "    Device Type                  : ", Reset);
-	fast_io::io::println(vk::to_string(PhysicalDeviceProperties.deviceType), Reset);
+	std::cout << Bold << std::setw(4) << ' ' << "Device Type" << std::setw(20) << ": " << Reset;
+	std::cout << vk::to_string(PhysicalDeviceProperties.deviceType) << Reset << "\n";
 
-	fast_io::io::print(Bold, "    Vulkan Version               : ", Reset);
+	std::cout << Bold << std::setw(4) << ' ' << "Vulkan Version" << std::setw(17) << ": " << Reset;
 	{
 		std::string vk_version = std::to_string(VK_VERSION_MAJOR(VulkanVersion)) + '.' + std::to_string(VK_VERSION_MINOR(VulkanVersion)) + '.' + std::to_string(VK_VERSION_PATCH(VulkanVersion)) + '.' + std::to_string(VK_API_VERSION_VARIANT(VulkanVersion));
-		fast_io::io::println(vk_version);
+		std::cout << vk_version << Reset << "\n";
 	}
 
-	fast_io::io::println(Bold, "    Driver Version               : ", Reset, PhysicalDeviceProperties.driverVersion);
+	std::cout << Bold << std::setw(4) << ' ' << "Driver Version" << std::setw(17) << ": " << Reset << PhysicalDeviceProperties.driverVersion << "\n";
 
-	fast_io::io::print(Bold, "    Vsync                        : ");
+	std::cout << Bold << std::setw(4) << ' ' << "Vsync" << std::setw(26) << ": ";
 	if ((std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eMailbox || std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eFifo) && CONFIG["vsync"].as<bool>())
-		fast_io::io::println(Reset, Chartreuse1, "Yes", Reset);
+		std::cout << Reset << Chartreuse1 << "Yes" << Reset << "\n";
 	else if (std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eImmediate && !CONFIG["vsync"].as<bool>())
-		fast_io::io::println(Reset, BLightGoldenRod1, "No", Reset);
+		std::cout << Reset << BLightGoldenRod1 << "No" << Reset << "\n";
 
-	fast_io::io::println(Bold, "    Present Mode                 : ", Reset, vk::to_string(std::get<0>(SWAPCHAIN_INFO)));
+	std::cout << Bold << std::setw(4) << ' ' << "Present Mode" << Reset << std::setw(19) << ": " << vk::to_string(std::get<0>(SWAPCHAIN_INFO)) << "\n";
 
-	fast_io::io::println(Bold, "    SwapChain Images             : ", Reset, SwapChainBuffers.size());
-	fast_io::io::println(Bold, "    SwapChain Image Color Format : ", Reset, vk::to_string(std::get<1>(SWAPCHAIN_INFO)));
-	fast_io::io::println(Bold, "    SwapChain Image Color Space  : ", Reset, vk::to_string(std::get<2>(SWAPCHAIN_INFO)));
+	std::cout << Bold << std::setw(4) << ' ' << "SwapChain Images" << std::setw(15) << ": " << Reset << SwapChainBuffers.size() << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "SwapChain Color Format" << std::setw(9) << ": " << Reset << vk::to_string(std::get<1>(SWAPCHAIN_INFO)) << "\n";
 
 	#if defined(DEBUG)
-		fast_io::io::println(Bold, "    Validation Layer             : ", Reset, Chartreuse1, "Enabled", Reset);
+		std::cout << Bold << std::setw(4) << ' ' << "Validation Layer" << std::setw(15) << ": " << Reset << Chartreuse1 << "Enabled\n" << Reset;
 	#else
-		fast_io::io::println(Bold, "    Validation Layer             : ", Reset, BLightGoldenRod1, "Disabled", Reset);
+		std::cout << Bold << std::setw(4) << ' ' << "Validation Layer" << std::setw(15) << ": " << Reset << BLightGoldenRod1 << "Disabled\n" << Reset;
 	#endif
-		fast_io::io::println("");
+	std::cout << "\n";
 }

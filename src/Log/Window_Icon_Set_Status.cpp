@@ -1,14 +1,19 @@
+#include <iostream>
+#include <iomanip>
+#include <ios>
+#include <cstring>
+
 #include <SDL.h>
-#include <fast_io.h>
 
 // Patata Engine
 #include "PatataEngine/Log.hpp"
 #include "PatataEngine/TerminalColors.hpp"
 
 void Patata::Log::WindowIconSetStatus(SDL_Surface * WINDOW_ICON) {
-	if (WINDOW_ICON != nullptr)
-		fast_io::io::println(Bold, "    Icon                    : ", Reset, Chartreuse1, "Yes", Reset, "\n");
+	if (WINDOW_ICON != nullptr) 
+		std::cout << Bold << std::setw(4) << ' ' << "Icon" << std::setw(22) << ": " << Reset << Chartreuse1  << "Yes\n\n" << Reset;
 	else {
-		fast_io::io::println(Bold, "    Icon                    : ", Reset, BLightGoldenRod1, "No", Reset);
+		std::cout << Bold << std::setw(4) << ' ' << "Icon" << std::setw(22) << ": " << Reset << BLightGoldenRod1 << "NO\n\n" << Reset;
+		std::cout << "\n" << BLightGoldenRod1 << SDL_GetError() << Reset << "\n\n";
 	}
 }

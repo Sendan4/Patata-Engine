@@ -1,6 +1,7 @@
+#include <iostream>
+#include <iomanip>
 #include <vector>
 
-#include <fast_io.h>
 #include <windows.h>
 #include <SDL.h>
 #include <SDL_vulkan.h>
@@ -9,121 +10,147 @@
 // Patata Engine
 #include "PatataEngine/Log.hpp"
 
-void Patata::Log::ListVulkanInstanceExtensions(std::vector <const char *> LIST, SDL_bool FOUND_EXTENSIONS) {
+void Patata::Log::ListVulkanInstanceExtensions(std::vector <const char *> &LIST, SDL_bool FOUND_EXTENSIONS) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	if (FOUND_EXTENSIONS) {
 		SetConsoleTextAttribute(Terminal, 12);
-		fast_io::io::println(fast_io::out(), "Vulkan Instance Extensions");
+		std::cout << "Vulkan Instance Extensions\n";
 		SetConsoleTextAttribute(Terminal, 7);
 
-		for (const char * &extension : LIST)
-			fast_io::io::println(fast_io::out(), std::string_view{ extension });
-		fast_io::io::println(fast_io::out());
-	}	
+		for (const auto &extension : LIST)
+			std::cout << std::setw(10) << ' ' << extension << "\n";
+		std::cout << "\n";
+	}
+	else {
+		std::cout << "Error al obtener la lista de extensiones necesarias : " << SDL_GetError() << "\n";
+	}
 }
 
 bool Patata::Log::VulkanInstanceResult(vk::Result RESULT) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	fast_io::io::print(fast_io::out(), "Instance                       : ");
 	if (RESULT != vk::Result::eSuccess) {
+		std::cout << "Instance" << std::setw(23) << ": ";
+
 		SetConsoleTextAttribute(Terminal, 14);
-		fast_io::io::println(fast_io::out(), vk::to_string(RESULT), "\n");
+		std::cout << vk::to_string(RESULT) << "\n\n";
 		SetConsoleTextAttribute(Terminal, 7);
+
 		return false;
 	}
-	else
-		SetConsoleTextAttribute(Terminal, 10);
+	else {
+		std::cout << "Instance" << std::setw(23) << ": ";
 
-	fast_io::io::println(fast_io::out(), vk::to_string(RESULT), "\n");
-	SetConsoleTextAttribute(Terminal, 7);
-	return true;
+		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n\n";
+		SetConsoleTextAttribute(Terminal, 7);
+
+		return true;
+	}
 }
 
 void Patata::Log::ListVulkanDeviceResult(const std::vector <const char *> DEVICE_EXTENSIONS) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	SetConsoleTextAttribute(Terminal, 12);
-	fast_io::io::println(fast_io::out(), "Vulkan Device Extensions");
+	std::cout << "Vulkan Device Extensions\n";
 	SetConsoleTextAttribute(Terminal, 7);
 
-	for (const char * Extensions : DEVICE_EXTENSIONS)
-		fast_io::io::println(fast_io::out(), std::string_view{ Extensions });
-	fast_io::io::println(fast_io::out());
+	for (auto Extensions : DEVICE_EXTENSIONS)
+		std::cout << std::setw(10) << ' ' << Extensions << "\n";
+	std::cout << "\n";
 }
 
-void Patata::Log::VulkanLogicalDeviceResult(vk::Result RESULT) {
+void Patata::Log::VulkanLogicalDeviceResult(vk::Result RESULT) {	
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	fast_io::io::print(fast_io::out(), "Logical Device                 : ");
+	if (RESULT != vk::Result::eSuccess) {
+		std::cout << "Logical Device" << std::setw(17) << ": ";
 
-	if (RESULT != vk::Result::eSuccess)
 		SetConsoleTextAttribute(Terminal, 14);
-	else
-		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
+	}
+	else {
+		std::cout << "Logical Device" << std::setw(17) << ": ";
 
-	fast_io::io::println(fast_io::out(), vk::to_string(RESULT));
-	SetConsoleTextAttribute(Terminal, 7);
+		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
+	}
 }
 
 void Patata::Log::CheckSurface(bool SURFACE) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	fast_io::io::print(fast_io::out(), "SDL Surface                    : ");
+	std::cout << "SDL Surface" << std::setw(20) << ": ";
 	if (SURFACE) {
 		SetConsoleTextAttribute(Terminal, 10);
-		fast_io::io::println(fast_io::out(), "Yes");
+		std::cout << "Yes\n";
 		SetConsoleTextAttribute(Terminal, 7);
 	}
 	else {
 		SetConsoleTextAttribute(Terminal, 14);
-		fast_io::io::println(fast_io::out(), "No");
-		SetConsoleTextAttribute(Terminal, 12);
-		fast_io::io::println(fast_io::out(), "ERROR : ");
+		std::cout << "No\n";
+		std::cout << SDL_GetError() << "\n";
 		SetConsoleTextAttribute(Terminal, 7);
-		fast_io::io::println(std::string_view{ SDL_GetError() });
 	}
 }
 
 void Patata::Log::CheckSwapChain(vk::Result RESULT) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	fast_io::io::print(fast_io::out(), "SwapChain                      : ");
+	if (RESULT != vk::Result::eSuccess) {
+		std::cout << "SwapChain" << std::setw(22) << ": ";
 
-	if (RESULT != vk::Result::eSuccess)
 		SetConsoleTextAttribute(Terminal, 14);
-	else
-		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
+	}
+	else {
+		std::cout << "SwapChain" << std::setw(22) << ": ";
 
-	fast_io::io::println(fast_io::out(), vk::to_string(RESULT));
-	SetConsoleTextAttribute(Terminal, 7);
-} 
+		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
+	}
+}
 
 void Patata::Log::CheckCommandPool(vk::Result RESULT) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	fast_io::io::print(fast_io::out(), "CommandPool                    : ");
+	if (RESULT != vk::Result::eSuccess) {
+		std::cout << "CommandPool" << std::setw(20) << ": ";
 
-	if (RESULT != vk::Result::eSuccess)
 		SetConsoleTextAttribute(Terminal, 14);
-	else
-		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
+	}
+	else {
+		std::cout << "CommandPool" << std::setw(20) << ": ";
 
-	fast_io::io::println(fast_io::out(), vk::to_string(RESULT));
-	SetConsoleTextAttribute(Terminal, 7);
+		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
+	}
 }
 
 void Patata::Log::CheckRenderPass(vk::Result RESULT) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
-	
-	fast_io::io::print(fast_io::out(), "RenderPass                     : ");
 
-	if (RESULT != vk::Result::eSuccess)
+	if (RESULT != vk::Result::eSuccess) {
+		std::cout << "RenderPass" << std::setw(21) << ": ";
+
 		SetConsoleTextAttribute(Terminal, 14);
-	else
-		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
+	}
+	else {
+		std::cout << "RenderPass" << std::setw(21) << ": ";
 
-	fast_io::io::println(fast_io::out(), vk::to_string(RESULT));
-	SetConsoleTextAttribute(Terminal, 7);
+		SetConsoleTextAttribute(Terminal, 10);
+		std::cout << vk::to_string(RESULT) << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
+	}
 }

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vector>
 #include <tuple>
 
@@ -8,14 +9,14 @@
 #include "PatataEngine/Log.hpp"
 
 Patata::Graphics::VulkanRenderer::VulkanRenderer(SDL_Window * WINDOW, YAML::Node CONFIG) {
-	if (!CreateInstance(WINDOW, CONFIG)) return;
+	CreateInstance(WINDOW);
 
 	PhysicalDevice = VulkanInstance.enumeratePhysicalDevices().front();
 	uint32_t GraphicsQueueFamilyIndex = CreateLogicalDeviceAndCreateQueue();
 	
 	Patata::Log::CheckSurface(SDL_Vulkan_CreateSurface(WINDOW, VulkanInstance, reinterpret_cast<VkSurfaceKHR *>(&Surface)));
 
-	std::tuple <vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> swapchaininfo = CreateSwapChain(GraphicsQueueFamilyIndex, CONFIG);
+	std::tuple <vk::PresentModeKHR, vk::Format> swapchaininfo = CreateSwapChain(GraphicsQueueFamilyIndex, CONFIG);
 	CreateImageView(GraphicsQueueFamilyIndex);
 	CreateCommandBuffer(GraphicsQueueFamilyIndex);
 	CreateRenderPass();

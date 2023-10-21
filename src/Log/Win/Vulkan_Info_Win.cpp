@@ -1,4 +1,6 @@
-#include <fast_io.h>
+#include <iomanip>
+#include <ios>
+#include <iostream>
 #include <cstring>
 #include <tuple>
 
@@ -7,11 +9,11 @@
 
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
 
-void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> SWAPCHAIN_INFO) {
+void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format> SWAPCHAIN_INFO) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	SetConsoleTextAttribute(Terminal, 12);
-	fast_io::io::println(fast_io::out(), "\nVulkan Info :");
+	std::cout << "\n" << "Vulkan Info" << std::setw(3) << ":\n";
 	SetConsoleTextAttribute(Terminal, 7);
 
 	vk::PhysicalDeviceProperties PhysicalDeviceProperties = PhysicalDevice.getProperties();
@@ -20,84 +22,99 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 	{
 		std::string Vendor;
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : Vendor = "Intel"; break;
-			case 4098 : Vendor = "AMD (Advanced Micro Devices, Inc.)"; break;
-			case 4318 : Vendor = "Nvidia (NVIDIA Corporation)"; break;
+			case 32902 :
+				SetConsoleTextAttribute(Terminal, 1);
+				Vendor = "Intel";
+				SetConsoleTextAttribute(Terminal, 7);
+				break;
+			case 4098 :
+				SetConsoleTextAttribute(Terminal, FOREGROUND_RED);
+				Vendor = "AMD (Advanced Micro Devices, Inc.)";
+				SetConsoleTextAttribute(Terminal, 7);
+				break;
+			case 4318 :
+				SetConsoleTextAttribute(Terminal, 10);
+				Vendor = "Nvidia (NVIDIA Corporation)";
+				SetConsoleTextAttribute(Terminal, 7);
+				break;
 		}
 
-		fast_io::io::print(fast_io::out(), "    Vendor                       : ");
+		std::cout << std::setw(4) << ' ' << "Vendor" << std::setw(25) << ": ";
 
 		switch (PhysicalDeviceProperties.vendorID) {
 			case 32902 :
 				SetConsoleTextAttribute(Terminal, 1);
-				fast_io::io::println(fast_io::out(), Vendor);
+				std::cout << Vendor << "\n";
+				SetConsoleTextAttribute(Terminal, 7);
 				break;
 			case 4098 :
 				SetConsoleTextAttribute(Terminal, 12);
-				fast_io::io::println(fast_io::out(), Vendor);
+				std::cout << Vendor << "\n";
+				SetConsoleTextAttribute(Terminal, 7);
 				break;
 			case 4318 :
 				SetConsoleTextAttribute(Terminal, 10);
-				fast_io::io::println(fast_io::out(), Vendor);
+				std::cout << Vendor << "\n";
+				SetConsoleTextAttribute(Terminal, 7);
 				break;
 		}
-		SetConsoleTextAttribute(Terminal, 7);
 	}
 
-	fast_io::io::print(fast_io::out(), "    VendorID                     : ");
+	std::cout << std::setw(4) << ' ' << "VendorID" << std::setw(23) << ": ";
 	switch (PhysicalDeviceProperties.vendorID) {
 		case 32902 : SetConsoleTextAttribute(Terminal, 1); break;
 		case 4098 : SetConsoleTextAttribute(Terminal, 12); break;
 		case 4318 : SetConsoleTextAttribute(Terminal, 10); break;
 	}
-	fast_io::io::println(fast_io::out(), "Hex[", fast_io::mnp::hex(PhysicalDeviceProperties.vendorID), "]  Dec[", PhysicalDeviceProperties.vendorID, "]");
+	std::cout << PhysicalDeviceProperties.vendorID << std::hex << std::showbase << "  " << PhysicalDeviceProperties.vendorID << std::dec << "\n";
 	SetConsoleTextAttribute(Terminal, 7);
 
-	fast_io::io::print(fast_io::out(), "    Device Type                  : ");
-	
-	fast_io::io::println(fast_io::out(), vk::to_string(PhysicalDeviceProperties.deviceType));
-
-	fast_io::io::print(fast_io::out(), "    Device Name                  : ");
+	std::cout << std::setw(4) << ' ' << "Device Name" << std::setw(20) << ": ";
 	switch (PhysicalDeviceProperties.vendorID) {
 		case 32902 : SetConsoleTextAttribute(Terminal, 1); break;
 		case 4098 : SetConsoleTextAttribute(Terminal, 12); break;
 		case 4318 : SetConsoleTextAttribute(Terminal, 10); break;
 	}
-	fast_io::io::println(fast_io::out(), std::string_view{ PhysicalDeviceProperties.deviceName });
+	std::cout << PhysicalDeviceProperties.deviceName << "\n";
 	SetConsoleTextAttribute(Terminal, 7);
 
-	fast_io::io::print(fast_io::out(), "    Vulkan Version               : ");
+	std::cout << std::setw(4) << ' ' << "Device Type" << std::setw(20) << ": ";
+	std::cout << vk::to_string(PhysicalDeviceProperties.deviceType) << "\n";
+
+	std::cout << std::setw(4) << ' ' << "Vulkan Version" << std::setw(17) << ": ";
 	{
 		std::string vk_version = std::to_string(VK_VERSION_MAJOR(VulkanVersion)) + '.' + std::to_string(VK_VERSION_MINOR(VulkanVersion)) + '.' + std::to_string(VK_VERSION_PATCH(VulkanVersion)) + '.' + std::to_string(VK_API_VERSION_VARIANT(VulkanVersion));
-		fast_io::io::println(fast_io::out(), vk_version);
+		std::cout << vk_version << "\n";
 	}
 
-	fast_io::io::println(fast_io::out(), "    Driver Version               : ", PhysicalDeviceProperties.driverVersion);
+	std::cout << std::setw(4) << ' ' << "Driver Version" << std::setw(17) << ": " << PhysicalDeviceProperties.driverVersion << "\n";
 
-	fast_io::io::print(fast_io::out(), "    Vsync                        : ");
+	std::cout << std::setw(4) << ' ' << "Vsync" << std::setw(26) << ": ";
 	if ((std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eMailbox || std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eFifo) && CONFIG["vsync"].as<bool>()) {
 		SetConsoleTextAttribute(Terminal, 10);
-		fast_io::io::println(fast_io::out(), "Yes");
+		std::cout << "Yes" << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
 	}
 	else if (std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eImmediate && !CONFIG["vsync"].as<bool>()) {
 		SetConsoleTextAttribute(Terminal, 14);
-		fast_io::io::println(fast_io::out(), "No");
+		std::cout << "No" << "\n";
+		SetConsoleTextAttribute(Terminal, 7);
 	}
-	SetConsoleTextAttribute(Terminal, 7);
 
-	fast_io::io::println(fast_io::out(), "    Present Mode                 : ", vk::to_string(std::get<0>(SWAPCHAIN_INFO)));
-	fast_io::io::println(fast_io::out(), "    SwapChain Images             : ", SwapChainBuffers.size());
-	fast_io::io::println(fast_io::out(), "    SwapChain Image Color Format : ", vk::to_string(std::get<1>(SWAPCHAIN_INFO)));
-	fast_io::io::println(fast_io::out(), "    SwapChain Image Color Space  : ", vk::to_string(std::get<2>(SWAPCHAIN_INFO)));
-	
-	fast_io::io::print(fast_io::out(), "    Validation Layer             : ");
+	std::cout << std::setw(4) << ' ' << "Present Mode" << std::setw(19) << ": " << vk::to_string(std::get<0>(SWAPCHAIN_INFO)) << "\n";
+
+	std::cout << std::setw(4) << ' ' << "SwapChain Images" << std::setw(15) << ": " << SwapChainBuffers.size() << "\n";
+	std::cout << std::setw(4) << ' ' << "SwapChain Color Format" << std::setw(9) << ": " << vk::to_string(std::get<1>(SWAPCHAIN_INFO)) << "\n";
+
+	std::cout << std::setw(4) << ' ' << "Validation Layer" << std::setw(15) << ": ";
 	#if defined(DEBUG)
 		SetConsoleTextAttribute(Terminal, 10);
-		fast_io::io::println(fast_io::out(), "Enabled");
+		std::cout << "Enabled\n";
+		SetConsoleTextAttribute(Terminal, 7);
 	#else
 		SetConsoleTextAttribute(Terminal, 14);
-		fast_io::io::println(fast_io::out(), "Disabled");
+		std::cout << "Disabled\n";
+		SetConsoleTextAttribute(Terminal, 7);
 	#endif
-	SetConsoleTextAttribute(Terminal, 7);
-	fast_io::io::println(fast_io::out(), "");
+	std::cout << "\n";
 }

@@ -1,26 +1,29 @@
-#include <fast_io.h>
+#include <iostream>
+#include <iomanip>
+#include <ios>
 
 // Patata Engine
 #include "PatataEngine/Log.hpp"
 #include "PatataEngine/TerminalColors.hpp"
 
 void Patata::Log::StartPatataLogInfo(void) {
-	fast_io::io::println(BLightGoldenRod1, Bold, PATATA_ENGINE_NAME, " :", Reset);
+	std::cout << Bold << BLightGoldenRod1 << ENGINE_NAME << std::setw(3) << ":\n" << Reset;
 	
-	#if defined(PATATA_GIT_BRANCH)
-	fast_io::io::println("    GIT Branch              : ", PATATA_GIT_BRANCH);
+	#if defined(GIT_BRANCH)
+	std::cout << Bold << std::setw(4) << ' ' << "GIT Branch" << std::setw(16) << ": " << Reset << GIT_BRANCH << "\n";
 	#endif
 
-	#if defined(PATATA_GIT_HASH_LONG)
-	fast_io::io::println("    GIT Commit Hash Long    : ", PATATA_GIT_HASH_LONG);
+	#if defined(GIT_HASH_LONG)
+	std::cout << Bold << std::setw(4) << ' ' << "GIT Long Hash" << std::setw(13) << ": " << Reset << GIT_HASH_LONG << "\n";
 	#endif
 
-	#if defined(PATATA_GIT_HASH_SHORT)
-	fast_io::io::println("    GIT Commit Hash Short   : ", PATATA_GIT_HASH_SHORT);
+	#if defined(GIT_HASH_SHORT)
+	std::cout << Bold << std::setw(4) << ' ' << "GIT Short Hash" << std::setw(12) << ": " << Reset << GIT_HASH_SHORT << "\n";
 	#endif
 
-	fast_io::io::println("    Version                 : ", PATATA_VERSION);
-	fast_io::io::println("    Compiler                : ", PATATA_COMPILER, PATATA_COMPILER_PROGRAM);
-	fast_io::io::println("    Build System            : ", PATATA_BUILD_SYSTEM);
-	fast_io::io::println("    Build Type              : ", PATATA_BUILD_TYPE);
-	fast_io::io::println("    Operating System        : ", PATATA_OS);}
+	std::cout << Bold << std::setw(4) << ' ' << "Version" << std::setw(19) << ": " << Reset << PATATAVERSION << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "Compiler" << std::setw(18) << ": " << Reset << COMPILER << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "Build System" << std::setw(14) << ": " << Reset << BUILDSYS << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "Build Type" << std::setw(16) << ": " << Reset << BUILD_TYPE << "\n";
+	std::cout << Bold << std::setw(4) << ' ' << "Operating System" << std::setw(10) << ": " << Reset << OS << "\n";
+}
