@@ -1,8 +1,8 @@
-#include <iostream>
 #include <cstdint>
 #include <cstring>
 #include <algorithm>
 
+#include <fast_io.h>
 #include <SDL.h>
 #include <glad/gl.h>
 #include <yaml-cpp/yaml.h>
@@ -32,17 +32,23 @@ Patata::PatataEngine::PatataEngine(
 		uint64_t WINDOW_INITIAL_HEIGHT) {
 	Patata::Log::StartMapache();
 	Patata::Log::StartPatataLogInfo();
-
-	#if defined(GAME_NAME)
-	config = YAML::LoadFile(strcpy(SDL_GetBasePath(), GAME_CONFIG_FILE_NAME));
-	#else
-	config = YAML::LoadFile(strcpy(SDL_GetBasePath(), "patata.yaml"));
-	#endif
+	
+	try {
+		#if defined(GAME_NAME)
+		config = YAML::LoadFile(strcpy(SDL_GetBasePath(), GAME_CONFIG_FILE_NAME));
+		#else
+		config = YAML::LoadFile(strcpy(SDL_GetBasePath(), "patata.yaml"));
+		#endif
+	}
+	catch(const YAML::BadFile) {
+		Patata::Log::YamlFileErrorMessage();
+		exit(-1);
+	}
 
 	// SDL
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
-		std::cout << "SDL - fail to start : " << SDL_GetError() << "\n";
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Problems starting", "SDL Failed to start subsystems", NULL);
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) > 0) {
+		Patata::Log::FatalErrorMessage("SDL", SDL_GetError(), config);
+		exit(-1);
 	}
 	
 	{
@@ -54,54 +60,89 @@ Patata::PatataEngine::PatataEngine(
 		else if (GraphicsAPI == "OPENGL")
 			bGraphicsAPI = false;
 	}
-
-	// Create Window
-	pWindow = new Patata::Window(
-			WINDOW_NAME,
-			WINDOW_INITIAL_WIDTH,
-			WINDOW_INITIAL_HEIGHT,
-			bGraphicsAPI);
-
 	
 	// SDL_Event
 	MainEvent = new SDL_Event;
 	
-	if (bGraphicsAPI) {
-		// Vulkan
-		pVulkanRenderer = new Patata::Graphics::VulkanRenderer(pWindow->WindowGet(), config);
-	}
-	else {
-		// OpenGL
+	switch(bGraphicsAPI) {
+		case true:
+			// Vulkan
+			try {
+				// Create Window
+				pWindow = new Patata::Window(
+					WINDOW_NAME,
+					WINDOW_INITIAL_WIDTH,
+					WINDOW_INITIAL_HEIGHT,
+					bGraphicsAPI,
+					config);
+
+				pVulkanRenderer = new Patata::Graphics::VulkanRenderer(pWindow->WindowGet(), config);
+
+				break;
+			}
+			catch (...) {
+				bGraphicsAPI = false;
+
+				delete pVulkanRenderer;
+				pVulkanRenderer = nullptr;
+
+				delete pWindow;
+				pWindow = nullptr;
+
+				#if defined(_WIN64)
+					fast_io::io::println(fast_io::out(), "Switching to OpenGL");
+					fast_io::io::println(fast_io::out(), "Re-creating the window :");
+				#else
+					fast_io::io::println("Switching to OpenGL");
+					fast_io::io::println("Re-creating the window :");
+				#endif
+			}
+
+		case false:
+			// Create Window
+			pWindow = new Patata::Window(
+				WINDOW_NAME,
+				WINDOW_INITIAL_WIDTH,
+				WINDOW_INITIAL_HEIGHT,
+				bGraphicsAPI,
+				config);
+
+			// OpenGL
 		
-		#if defined(DEBUG)
-		// Setup Dear ImGui context
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO &io = ImGui::GetIO();
-		io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad;
-		io.Fonts->AddFontDefault();
-		io.IniFilename = NULL;
-		io.LogFilename = NULL;
-		ImGui::StyleColorsDark();
-		#endif
+			#if defined(DEBUG)
+			// Setup Dear ImGui context
+			IMGUI_CHECKVERSION();
+			ImGui::CreateContext();
+			ImGuiIO &io = ImGui::GetIO();
+			io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad;
 
-		static ImFontConfig cfg;
-		cfg.OversampleH = cfg.OversampleV = 1;
-		cfg.MergeMode = false;
-		//cfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_LoadColor;
+			static ImFontConfig cfg;
+			cfg.OversampleH = cfg.OversampleV = 1;
+			cfg.MergeMode = false;
+			//cfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_LoadColor;
 
-		pOpenGLContext = new Patata::Graphics::OpenGLContext(pWindow->WindowGet(), config);
-		pOpenGLRenderer = new Patata::Graphics::OpenGLRenderer();
-		pOpenGLRenderer->OpenGLSetViewPort(WINDOW_INITIAL_WIDTH, WINDOW_INITIAL_HEIGHT);
+			io.Fonts->AddFontDefault(&cfg);
+			io.Fonts->Build();
+			io.IniFilename = NULL;
+			io.LogFilename = NULL;
 
-		#if defined(DEBUG)
-		ImGui_ImplOpenGL3_Init("#version 140");
-		#endif
+			ImGui::StyleColorsDark();
+			#endif
 
-		if (config["vsync"].as<bool>())
-			SDL_GL_SetSwapInterval(-1);
-		else
-			SDL_GL_SetSwapInterval(0);
+			pOpenGLContext = new Patata::Graphics::OpenGLContext(pWindow->WindowGet(), config);
+			pOpenGLRenderer = new Patata::Graphics::OpenGLRenderer();
+			pOpenGLRenderer->OpenGLSetViewPort(WINDOW_INITIAL_WIDTH, WINDOW_INITIAL_HEIGHT);
+
+			#if defined(DEBUG)
+			ImGui_ImplOpenGL3_Init("#version 140");
+			#endif
+
+			if (config["vsync"].as<bool>())
+				SDL_GL_SetSwapInterval(-1);
+			else
+				SDL_GL_SetSwapInterval(0);
+
+			break;
 	}
 }
 

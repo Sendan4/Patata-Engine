@@ -22,7 +22,9 @@ target_sources (${PROJECT_NAME} PRIVATE
 	"Opengl/Opengl_Context.cpp"
 	"Opengl/OpenGL_Set_ViewPort_And_Resize.cpp"
 	"Opengl/OpenGL_Renderer.cpp"
-	"Log/Mapache.cpp")
+	"Log/Mapache.cpp"
+	"Log/ErrorMessages.cpp"
+	"Log/YamlErrors.cpp")
 
 if (MSVC)
 	# List Headers Files in Visual Studio
@@ -110,11 +112,13 @@ else()
 		${SDL2_LIBRARIES})
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Glad2 yaml-cpp)
+target_link_libraries(${PROJECT_NAME} PUBLIC Fast_io Glad2 yaml-cpp)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 	target_link_libraries(${PROJECT_NAME} PUBLIC Imgui)
 endif()
+
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4>)
 
 if (MSVC)
 	set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Engine")

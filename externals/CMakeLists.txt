@@ -1,15 +1,17 @@
 # Externals / Thrid Party Libraries
 
+add_subdirectory(fast_io)
+
 # Yaml-cpp
 message("")
 message("  - Yaml-cpp -")
 
-set (YAML_CPP_BUILD_TOOLS OFF)
-set (YAML_CPP_INSTALL OFF)
-set (YAML_CPP_BUILD_TESTS OFF)
+set (YAML_CPP_BUILD_TOOLS OFF CACHE INTERNAL "..." FORCE)
+set (YAML_CPP_INSTALL OFF CACHE INTERNAL "..." FORCE)
+set (YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "..." FORCE)
 
 if (SHARED_BUILD)
-	set (YAML_BUILD_SHARED_LIBS ON)
+	set (YAML_BUILD_SHARED_LIBS ON INTERNAL FORCE)
 	message(STATUS "Shared Build")
 else ()
 	message(STATUS "Static Build")
@@ -22,14 +24,14 @@ if (MSVC OR LINUX)
 	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 		message("")
 		message("  - Vulkan ValidationLayers -")
-		set (UPDATE_DEPS ON)
+		set (UPDATE_DEPS ON CACHE INTERNAL "..." FORCE)
 		add_subdirectory(Vulkan-ValidationLayers)
 	endif()
 
 	# Vulkan
 	message("")
 	message("  - Vulkan Loader -")
-	set (UPDATE_DEPS ON)
+	set (UPDATE_DEPS ON CACHE INTERNAL "..." FORCE)
 	add_subdirectory(Vulkan-Loader)
 endif()
 
@@ -41,15 +43,15 @@ message("")
 message("  - SDL2 -")
 
 if (NOT SHARED_BUILD)
-	set(SDL_SHARED OFF)
-	set(SDL_STATIC ON)
+	set(SDL_SHARED OFF CACHE INTERNAL "..." FORCE)
+	set(SDL_STATIC ON CACHE INTERNAL "..." FORCE)
 else ()
-	set(SDL_SHARED ON)
-	set(SDL_STATIC OFF)
+	set(SDL_SHARED ON CACHE INTERNAL "..." FORCE)
+	set(SDL_STATIC OFF CACHE INTERNAL "..." FORCE)
 endif ()
-set(SDL_TEST OFF)
-set (SDL_DIRECTX OFF)
-set (SDL_RENDER_D3D OFF)
+set(SDL_TEST OFF CACHE INTERNAL "..." FORCE)
+set (SDL_DIRECTX OFF CACHE INTERNAL "..." FORCE)
+set (SDL_RENDER_D3D OFF CACHE INTERNAL "..." FORCE)
 
 add_subdirectory(SDL)
 

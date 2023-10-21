@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vector>
 #include <tuple>
 
@@ -9,7 +8,7 @@
 #include "PatataEngine/TerminalColors.hpp"
 #include "PatataEngine/Log.hpp"
 
-std::tuple<vk::PresentModeKHR, vk::Format> Patata::Graphics::VulkanRenderer::CreateSwapChain(uint32_t &GraphicsQueueFamilyIndex, YAML::Node CONFIG) {
+std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> Patata::Graphics::VulkanRenderer::CreateSwapChain(uint32_t &GraphicsQueueFamilyIndex, YAML::Node CONFIG) {
 	std::vector <vk::SurfaceFormatKHR> Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
 
 	for (uint16_t i = 0; i < Formats.size(); i++)
@@ -63,5 +62,5 @@ std::tuple<vk::PresentModeKHR, vk::Format> Patata::Graphics::VulkanRenderer::Cre
 
 	Patata::Log::CheckSwapChain(Result);	
 
-	return {PresentMode, ColorFormat};
+	return {PresentMode, ColorFormat, SurfaceFormat.colorSpace};
 }

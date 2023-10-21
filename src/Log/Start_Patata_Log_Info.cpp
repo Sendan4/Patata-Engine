@@ -1,29 +1,26 @@
-#include <iostream>
-#include <iomanip>
-#include <ios>
+#include <fast_io.h>
 
 // Patata Engine
 #include "PatataEngine/Log.hpp"
 #include "PatataEngine/TerminalColors.hpp"
 
 void Patata::Log::StartPatataLogInfo(void) {
-	std::cout << Bold << BLightGoldenRod1 << ENGINE_NAME << std::setw(3) << ":\n" << Reset;
+	fast_io::io::println(BLightGoldenRod1, Bold, PATATA_ENGINE_NAME, " :", Reset);
 	
-	#if defined(GIT_BRANCH)
-	std::cout << Bold << std::setw(4) << ' ' << "GIT Branch" << std::setw(16) << ": " << Reset << GIT_BRANCH << "\n";
+	#if defined(PATATA_GIT_BRANCH)
+	fast_io::io::println(Bold, "    GIT Branch              : ", Reset, PATATA_GIT_BRANCH);
 	#endif
 
-	#if defined(GIT_HASH_LONG)
-	std::cout << Bold << std::setw(4) << ' ' << "GIT Long Hash" << std::setw(13) << ": " << Reset << GIT_HASH_LONG << "\n";
+	#if defined(PATATA_GIT_HASH_LONG)
+	fast_io::io::println(Bold, "    GIT Commit Hash Long    : ", Reset, PATATA_GIT_HASH_LONG);
 	#endif
 
-	#if defined(GIT_HASH_SHORT)
-	std::cout << Bold << std::setw(4) << ' ' << "GIT Short Hash" << std::setw(12) << ": " << Reset << GIT_HASH_SHORT << "\n";
+	#if defined(PATATA_GIT_HASH_SHORT)
+	fast_io::io::println(Bold, "    GIT Commit Hash Short   : ", Reset, PATATA_GIT_HASH_SHORT);
 	#endif
 
-	std::cout << Bold << std::setw(4) << ' ' << "Version" << std::setw(19) << ": " << Reset << PATATAVERSION << "\n";
-	std::cout << Bold << std::setw(4) << ' ' << "Compiler" << std::setw(18) << ": " << Reset << COMPILER << "\n";
-	std::cout << Bold << std::setw(4) << ' ' << "Build System" << std::setw(14) << ": " << Reset << BUILDSYS << "\n";
-	std::cout << Bold << std::setw(4) << ' ' << "Build Type" << std::setw(16) << ": " << Reset << BUILD_TYPE << "\n";
-	std::cout << Bold << std::setw(4) << ' ' << "Operating System" << std::setw(10) << ": " << Reset << OS << "\n";
-}
+	fast_io::io::println(Bold, "    Version                 : ", Reset, PATATA_VERSION);
+	fast_io::io::println(Bold, "    Compiler                : ", Reset, PATATA_COMPILER, PATATA_COMPILER_PROGRAM);
+	fast_io::io::println(Bold, "    Build System            : ", Reset, PATATA_BUILD_SYSTEM);
+	fast_io::io::println(Bold, "    Build Type              : ", Reset, PATATA_BUILD_TYPE);
+	fast_io::io::println(Bold, "    Operating System        : ", Reset, PATATA_OS);}

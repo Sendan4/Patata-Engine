@@ -1,7 +1,4 @@
-#include <iostream>
-#include <iomanip>
-#include <ios>
-
+#include <fast_io.h>
 #include <windows.h>
 
 // Patata Engine
@@ -11,24 +8,24 @@ void Patata::Log::StartPatataLogInfo(void) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	SetConsoleTextAttribute(Terminal, 14);
-	std::cout << ENGINE_NAME << std::setw(3) << ":\n";
+	fast_io::io::println(fast_io::out(), PATATA_ENGINE_NAME, " :");
 	SetConsoleTextAttribute(Terminal, 7);
 	
-	#if defined(GIT_BRANCH)
-	std::cout << std::setw(4) << ' ' << "Git Branch" << std::setw(16) << ": " << GIT_BRANCH << "\n";
+	#if defined(PATATA_GIT_BRANCH)
+	fast_io::io::println(fast_io::out(), "    GIT Branch              : ", PATATA_GIT_BRANCH);
 	#endif
 
-	#if defined(GIT_HASH_LONG)
-	std::cout << std::setw(4) << ' ' << "Git Long Hash" << std::setw(13) << ": " << GIT_HASH_LONG << "\n";
+	#if defined(PATATA_GIT_HASH_LONG)
+	fast_io::io::println(fast_io::out(), "    GIT Commit Hash Long    : ", PATATA_GIT_HASH_LONG);
 	#endif
 
-	#if defined(GIT_HASH_SHORT)
-	std::cout << std::setw(4) << ' ' << "Git Short Hash" << std::setw(12) << ": " << GIT_HASH_SHORT << "\n";
+	#if defined(PATATA_GIT_HASH_SHORT)
+	fast_io::io::println(fast_io::out(), "    GIT Commit Hash Short   : ", PATATA_GIT_HASH_SHORT);
 	#endif
 
-	std::cout << std::setw(4) << ' ' << "Version" << std::setw(19) << ": " << PATATAVERSION << "\n";
-	std::cout << std::setw(4) << ' ' << "Compiler" << std::setw(18) << ": " << COMPILER << "\n";
-	std::cout << std::setw(4) << ' ' << "Build System" << std::setw(14) << ": " << BUILDSYS << "\n";
-	std::cout << std::setw(4) << ' ' << "Build Type" << std::setw(16) << ": " << BUILD_TYPE << "\n";
-	std::cout << std::setw(4) << ' ' << "Operating System" << std::setw(10) << ": " << OS << "\n";
+	fast_io::io::println(fast_io::out(), "    Version                 : ", PATATA_VERSION);
+	fast_io::io::println(fast_io::out(), "    Compiler                : ", PATATA_COMPILER, PATATA_COMPILER_PROGRAM);
+	fast_io::io::println(fast_io::out(), "    Build System            : ", PATATA_BUILD_SYSTEM);
+	fast_io::io::println(fast_io::out(), "    Build Type              : ", PATATA_BUILD_TYPE);
+	fast_io::io::println(fast_io::out(), "    Operating System        : ", PATATA_OS);
 }

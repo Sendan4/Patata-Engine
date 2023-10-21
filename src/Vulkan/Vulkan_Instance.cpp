@@ -1,10 +1,11 @@
 #include <vector>
 #include <SDL_vulkan.h>
+#include <yaml-cpp/yaml.h>
 
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
 #include "PatataEngine/Log.hpp"
 
-bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
+bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW, YAML::Node CONFIG) {
 	// Get Extensions
 	unsigned int extensionInstanceCount = 0;
 
@@ -18,9 +19,9 @@ bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 		SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, extensionInstanceNames.data()));
 
 	vk::ApplicationInfo PatataEngineInfo {};
-	PatataEngineInfo.pApplicationName = ENGINE_NAME;
+	PatataEngineInfo.pApplicationName = PATATA_ENGINE_NAME;
 	PatataEngineInfo.applicationVersion = 0;
-	PatataEngineInfo.pEngineName = "Patata Engine";
+	PatataEngineInfo.pEngineName = PATATA_ENGINE_NAME;
 	PatataEngineInfo.engineVersion = 0;
 	PatataEngineInfo.apiVersion = VK_API_VERSION_1_3;
 
@@ -37,7 +38,15 @@ bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window * WINDOW) {
 	VulkanInstanceInfo.enabledExtensionCount = static_cast<uint32_t>(extensionInstanceCount);
 	VulkanInstanceInfo.ppEnabledExtensionNames = extensionInstanceNames.data();
 	
-	vk::Result Result = vk::createInstance(&VulkanInstanceInfo, nullptr, &VulkanInstance);
+	vk::Result Result;
+	try	{
+		Result = vk::createInstance(&VulkanInstanceInfo, nullptr, &VulkanInstance);
+		//throw(vk::Result::eErrorIncompatibleDriver);
+	}
+	catch (vk::Result & Error) {
+		Patata::Log::FatalErrorMessage("Vulkan Error", vk::to_string(Error), CONFIG);
+		throw("Vulkan Instance Fail");
+	}
 
 	return Patata::Log::VulkanInstanceResult(Result);
 }

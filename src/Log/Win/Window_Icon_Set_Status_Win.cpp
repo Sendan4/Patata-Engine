@@ -1,7 +1,6 @@
-#include <iostream>
-#include <iomanip>
 #include <cstring>
 
+#include <fast_io.h>
 #include <SDL.h>
 #include <windows.h>
 
@@ -12,21 +11,19 @@ void Patata::Log::WindowIconSetStatus(SDL_Surface * WINDOW_ICON) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	if (WINDOW_ICON != nullptr) {
-		std::cout << std::setw(4) << ' ' << "Icon" << std::setw(22) << ": ";
+		fast_io::io::print(fast_io::out(), "    Icon                    : ");
 		SetConsoleTextAttribute(Terminal, 10);
-		std::cout << "Yes\n";
+		fast_io::io::println(fast_io::out(), "Yes");
 		SetConsoleTextAttribute(Terminal, 7);
 
-		std::cout << "\n";
+		fast_io::io::println(fast_io::out(), "");
 	}
 	else {
-		std::cout << std::setw(4) << ' ' << "Icon" << std::setw(22) << ": ";
+		fast_io::io::print(fast_io::out(), "    Icon                    : ");
 		SetConsoleTextAttribute(Terminal, 14);
-		std::cout << "No\n";
-		SetConsoleTextAttribute(Terminal, 12);
-		std::cout << SDL_GetError() << "\n";
+		fast_io::io::println(fast_io::out(), "No");
 		SetConsoleTextAttribute(Terminal, 7);
 
-		std::cout << "\n";
+		fast_io::io::println(fast_io::out(), "");
 	}
 }

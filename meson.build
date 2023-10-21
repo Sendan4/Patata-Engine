@@ -3,7 +3,9 @@ project('Patata_Engine',
   version : '0',
   meson_version : '>=1.2.0',
   default_options : [
-    'buildtype=release'],
+    'buildtype=release',
+    'cpp_std=c++20',
+    'warning_level=0'],
   subproject_dir : 'externals',
   license : 'MIT',
   license_files : 'LICENSE.txt')
@@ -15,24 +17,20 @@ endif
 cpp = meson.get_compiler('cpp')
 
 if cpp.get_id() == 'gcc' or cpp.get_id() == 'clang'
-  if (cpp.has_argument('-Wall') and cpp.has_argument('-Wextra') and cpp.has_argument('-Wpedantic'))
-    warning_level = 3
-  elif (cpp.has_argument('-Wall') and c++.has_argument('-Wextra'))
-    warning_level = 2
-  elif (cpp.has_argument('-Wall'))
-    warning_level = 1
-  else
-    warning_level = 0
-  endif
+  #if (cpp.has_argument('-Wall') and cpp.has_argument('-Wextra') and cpp.has_argument('-Wpedantic'))
+  #  warning_level = 3
+  #elif (cpp.has_argument('-Wall') and c++.has_argument('-Wextra'))
+  #  warning_level = 2
+  #elif (cpp.has_argument('-Wall'))
+  #  warning_level = 1
+  #else
+  #  warning_level = 0
+  #endif
+  warning_level = 0
 endif
 
-if (cpp.has_argument('-std=c++20'))
-  cpp_std = 'c++20'
-endif
-
-if (cpp.has_argument('-std=gnu++20'))
-  cpp_std = 'gnu++20'
-endif
+cpp.has_argument('-std=c++20')
+cpp.has_argument('-std=gnu++20')
 
 link_arguments = []
 
@@ -57,31 +55,31 @@ if get_option('use_git') and git.found()
   get_commit_hash_short = run_command('git', 'rev-parse', '--short', 'HEAD', check: true)
   git_commit_short_hash = get_commit_hash_short.stdout().strip()
 
-  add_project_arguments('-DGIT_HASH_LONG="'+git_commit_long_hash+'"', language : 'cpp')
-  add_project_arguments('-DGIT_HASH_SHORT="'+git_commit_short_hash+'"', language : 'cpp')
+  add_project_arguments('-DPATATA_GIT_HASH_LONG="'+git_commit_long_hash+'"', language : 'cpp')
+  add_project_arguments('-DPATATA_GIT_HASH_SHORT="'+git_commit_short_hash+'"', language : 'cpp')
 
   # Build Type macro
   if (get_option('buildtype') == 'release')
-    add_project_arguments('-DBUILD_TYPE="Release"', language : 'cpp')
+    add_project_arguments('-DPATATA_BUILD_TYPE="Release"', language : 'cpp')
   elif (get_option('buildtype') == 'debug')
     add_project_arguments(
-      '-DBUILD_TYPE="Debug"',
+      '-DPATATA_BUILD_TYPE="Debug"',
       '-DDEBUG=1',
       language : 'cpp')
   elif (get_option('buildtype') == 'debugoptimized')
     add_project_arguments(
-      '-DBUILD_TYPE="Debug Optimized"',
+      '-DPATATA_BUILD_TYPE="Debug Optimized"',
       '-DDEBUG=1',
       language : 'cpp')
   elif (get_option('buildtype') == 'minsize')
-    add_project_arguments('-DBUILD_TYPE="Minimal Size Release"', language : 'cpp')
+    add_project_arguments('-DPATATA_BUILD_TYPE="Minimal Size Release"', language : 'cpp')
   endif
 
   branchCommand = run_command('git', 'branch', '--show-current', check: true)
   branchCOutput = branchCommand.stdout().strip()
   message('Branch:', branchCOutput)
 
-  add_project_arguments('-DGIT_BRANCH="'+branchCOutput+'"', language : 'cpp')
+  add_project_arguments('-DPATATA_GIT_BRANCH="'+branchCOutput+'"', language : 'cpp')
 endif
 
 if get_option('default_library') == 'shared' or get_option('default_library') == 'both'
@@ -90,14 +88,12 @@ endif
 
 # Macros
 add_project_arguments(
-  '-DPATATAVERSION=0',
-  '-DBUILDSYS="Meson (Ninja Build)"',
-  '-DENGINE_NAME="Patata Engine"',
+  '-DPATATA_VERSION=0',
+  '-DPATATA_BUILD_SYSTEM="Meson (Ninja Build)"',
+  '-DPATATA_COMPILER_PROGRAM="Undefined"',
+  '-DPATATA_ENGINE_NAME="Patata Engine"',
   language : 'cpp')
 
-cpp.check_header('iostream', required : true)
-cpp.check_header('ios', required : true)
-cpp.check_header('iomanip', required : true)
 cpp.check_header('vector', required : true)
 cpp.check_header('algorithm', required : true)
 cpp.check_header('cstdint', required : true)
@@ -110,6 +106,8 @@ if target_machine.system() == 'windows'
 endif
 
 Glad2_dep = subproject('Glad2').get_variable('Glad2_dep')
+
+Fast_io_dep = subproject('fast_io').get_variable('fast_io_dep')
 
 sdl2_dep = dependency('sdl2',
   required : true,
@@ -139,7 +137,7 @@ if yamlcpp.found()
   cpp.check_header('yaml-cpp/yaml.h', dependencies : yamlcpp, required : true)
 endif
 
-dependencies = [Vulkan, sdl2_dep, yamlcpp, Glad2_dep]
+dependencies = [Vulkan, Fast_io_dep, sdl2_dep, yamlcpp, Glad2_dep]
 
 if (get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized')
   imgui_dep = subproject('imgui').get_variable('imgui_dep')

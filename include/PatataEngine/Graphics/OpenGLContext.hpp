@@ -14,7 +14,7 @@ namespace Patata {
 
 			private:
 				void SetAttributes(void);
-				void CreateContext(SDL_Window *);
+				void CreateContext(SDL_Window *, YAML::Node);
 
 				SDL_GLContext SDLGLCONTEXT = NULL;
 		};

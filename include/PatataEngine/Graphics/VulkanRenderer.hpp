@@ -11,15 +11,15 @@ namespace Patata {
 	namespace Graphics {
 		class VulkanRenderer {
 			public:
-				bool CreateInstance(SDL_Window *);
+				bool CreateInstance(SDL_Window *, YAML::Node);
 				uint32_t CreateLogicalDeviceAndCreateQueue(void);
 				void CreateSurface(SDL_Window *, vk::Instance, VkSurfaceKHR *);
-				std::tuple<vk::PresentModeKHR, vk::Format> CreateSwapChain(uint32_t &, YAML::Node);
+				std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> CreateSwapChain(uint32_t &, YAML::Node);
 				void CreateImageView(uint32_t &);
 				void CreateCommandBuffer(uint32_t &);
 				void CreateRenderPass(void);
 				void CreatePipeline(void);
-				void VulkanInfo(YAML::Node CONFIG, std::tuple<vk::PresentModeKHR, vk::Format>);
+				void VulkanInfo(YAML::Node CONFIG, std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR>);
 
 				VulkanRenderer(SDL_Window *, YAML::Node);
 				~VulkanRenderer(void);

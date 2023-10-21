@@ -1,10 +1,14 @@
-#include <iostream>
+#include <fast_io.h>
 
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
-#include "PatataEngine/TerminalColors.hpp"
+#if defined(_WIN64)
+	#include <windows.h>
+#else
+	#include "PatataEngine/TerminalColors.hpp"
+#endif
 #include "PatataEngine/Log.hpp"
 
 void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFamilyIndex) {
@@ -24,9 +28,17 @@ void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFa
 
 	vk::Result Result = Device.createImage(&CreateImageInfo, nullptr, &DepthImage);
 	if (Result != vk::Result::eSuccess)
-		std::cout << "  DepthImage For BindImageMemory -> Result :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n\n";
+		#if defined(_WIN64)
+			fast_io::io::println(fast_io::out(), "DepthImage For BindImageMemory : ", vk::to_string(Result));
+		#else
+			fast_io::io::println(Bold, "DepthImage For BindImageMemory : ", Reset, BLightGoldenRod1, vk::to_string(Result), Reset);
+		#endif
 	else
-		std::cout << "  DepthImage For BindImageMemory -> Result :\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n\n";
+		#if defined(_WIN64)
+			fast_io::io::println(fast_io::out(), "DepthImage For BindImageMemory : ", vk::to_string(Result));
+		#else
+			fast_io::io::println(Bold, "DepthImage For BindImageMemory : ", Reset, Chartreuse1, vk::to_string(Result), Reset);
+		#endif
 
 	// create Depht and color Image
 
@@ -60,22 +72,28 @@ void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFa
 	std::vector <vk::Image> SwapChainImages = Device.getSwapchainImagesKHR(SwapChain);
 	SwapChainBuffers.resize(SwapChainImages.size());
 
-	std::cout << Bold << FindianRed1 << "  Creating SwapChainBuffer:\n" << Reset;
+	#if defined(_WIN64)
+	fast_io::io::println(fast_io::out(), "Creating SwapChainBuffer : ");
+	#else
+	fast_io::io::println("Creating SwapChainBuffer : ");
+	#endif
 	for (uint32_t i = 0; i < SwapChainBuffers.size(); i++) {
 		SwapChainBuffers[i].Image = SwapChainImages[i];
-
-		//Result = Device.createImageView(&CreateImageViewInfo, nullptr, &ImageView);
-		//if (Result != vk::Result::eSuccess)
-		//	std::cout << FindianRed1 << Bold << "SwapChainBuffer -> ImageView Result " << i << " :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n";
-		//else
-		//	std::cout << FindianRed1 << Bold << "SwapChainBuffer -> ImageView Result " << i << ":\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n";
-		//SwapChainBuffers[i].Views[0] = ColorImageView;
 		
 		Result = Device.createImageView(&CreateImageViewInfo, nullptr, &ImageView);
 		if (Result != vk::Result::eSuccess)
-			std::cout << "SwapChainBuffer ImageView " << i << " :\t" << Reset << BLightGoldenRod1 << vk::to_string(Result) << Reset << "\n";
+			#if defined(_WIN64)
+				fast_io::io::println(fast_io::out(), "SwapChainBuffer ImageView : ", vk::to_string(Result));
+			#else
+				fast_io::io::println("SwapChainBuffer ImageView : ", vk::to_string(Result));
+			#endif
 		else
-			std::cout << "SwapChainBuffer ImageView " << i << ":\t" << Reset << Chartreuse1 << vk::to_string(Result) << Reset << "\n";
+			#if defined(_WIN64)
+				fast_io::io::println(fast_io::out(), "SwapChainBuffer ImageView : ", vk::to_string(Result));
+			#else
+				fast_io::io::println("SwapChainBuffer ImageView : ", vk::to_string(Result));
+			#endif
+
 
 		SwapChainBuffers[i].Views[1] = ImageView;
 
@@ -83,5 +101,5 @@ void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFa
 
 		//SwapChainBuffers[i].FrameBuffer = ;
 	}
-	std::cout << "\n";
+	fast_io::io::println(fast_io::out(), "");
 }

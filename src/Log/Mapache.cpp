@@ -1,12 +1,12 @@
-#include <iostream>
+#include <fast_io.h>
 
 // Patata Engine
 #include "PatataEngine/Log.hpp"
 
 void Patata::Log::StartMapache(void) {
 	#if !(_WIN64)
-		std::cout << "🦝 🥔\n";
+		fast_io::io::println("🦝 🥔");
 	#else
-		std::cout << "Tanuki\n";
+		fast_io::io::println(fast_io::out(), "Tanuki");
 	#endif
 }

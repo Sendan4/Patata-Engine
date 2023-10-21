@@ -110,7 +110,6 @@ if (USE_EXTERNAL_LIBS)
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
 		target_link_libraries(${PROJECT_NAME} PRIVATE vulkan)
-		message(STATUS "Backend: Vulkan")
 	endif()
 
 	# MSYS2 Vulkan Link

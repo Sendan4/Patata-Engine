@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
