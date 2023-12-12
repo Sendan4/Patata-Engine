@@ -1,78 +1,35 @@
-#include <vector>
+#include <cstddef>
+#if defined(__GNUC__) || defined(__MINGW64__)
+#include <cxxabi.h>
+#endif
 
 #include <fast_io.h>
-#include <SDL.h>
-#include <SDL_vulkan.h>
-#include <vulkan/vulkan.hpp>
+#include <iterator>
 
 // Patata Engine
-#include "PatataEngine/Log.hpp"
-#include "PatataEngine/TerminalColors.hpp"
+#include "Log.hpp"
+#include "TerminalColors.hpp"
 
-void Patata::Log::ListVulkanInstanceExtensions(std::vector <const char *> LIST, SDL_bool FOUND_EXTENSIONS) {
+void Patata::Log::VulkanList(const char *List[], const unsigned int & ListSize, bool FOUND_EXTENSIONS, const std::string & MESSAGE) {
 	if (FOUND_EXTENSIONS) {
-		fast_io::io::println(FindianRed1, Bold, "Vulkan Instance Extensions", Reset);
-		for (const char * &extension : LIST)
-			fast_io::io::println(Dim, std::string_view{ extension }, Reset);
-		fast_io::io::println(Reset);
+		fast_io::io::println(Reset, Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(*List).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, MESSAGE, Reset, " : ", ListSize + 1);
+		for (unsigned int i = 0; i <= ListSize; i++) {
+			if (List[i] != nullptr)
+				fast_io::io::println("  ", Dim, std::string_view{ List[i] }, Reset);
+			else break;
+		}
+		fast_io::io::println("");
+	}
+	else ErrorMessage(SDL_GetError());
+}
+
+void Patata::Log::VulkanCheck(const std::string & Message, const vk::Result & Result) {
+	if (Result != vk::Result::eSuccess) {
+		fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(Result).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, Message, " : ", Reset, BLightGoldenRod1, vk::to_string(Result), Reset);
+		return;
 	}
 	else {
-		fast_io::io::perrln("ERROR Fatal : ", std::string_view{ SDL_GetError() });
+		fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(Result).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, Message, " : ", Reset, Chartreuse1, vk::to_string(Result), Reset);
+		return;
 	}
-}
-
-bool Patata::Log::VulkanInstanceResult(vk::Result RESULT) {
-	if (RESULT != vk::Result::eSuccess) {
-		fast_io::io::println(Bold, "Instance                       : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset, "\n");
-		return false;
-	}
-	else {
-		fast_io::io::println(Bold, "Instance                       : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset, "\n");
-		return true;
-	}
-}
-
-void Patata::Log::ListVulkanDeviceResult(const std::vector <const char *> DEVICE_EXTENSIONS) {
-	fast_io::io::println(Bold, FindianRed1, "Vulkan Device Extensions", Reset);
-	for (const char * Extensions : DEVICE_EXTENSIONS)
-		fast_io::io::println(Dim, std::string_view{ Extensions },  Reset);
-	fast_io::io::println("");
-}
-
-void Patata::Log::VulkanLogicalDeviceResult(vk::Result RESULT) {	
-	if (RESULT != vk::Result::eSuccess) {
-		fast_io::io::println(Bold, "Logical Device                  : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset);
-	}
-	else fast_io::io::println(Bold, "Logical Device                 : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset);
-}
-
-void Patata::Log::CheckSurface(bool SURFACE) {
-	fast_io::io::print(Bold, "SDL Surface                    : ", Reset);
-	if (SURFACE)
-		fast_io::io::println(Chartreuse1, "Yes", Reset);
-	else {
-		fast_io::io::println(BLightGoldenRod1, "No", Reset);
-		fast_io::io::println(Bold, CSalmon1, "ERROR Fatal : ", Reset, std::string_view{ SDL_GetError() });
-	}
-}
-
-void Patata::Log::CheckSwapChain(vk::Result RESULT) {
-	if (RESULT != vk::Result::eSuccess)
-		fast_io::io::println(Bold, "SwapChain                      : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset);
-	else
-		fast_io::io::println(Bold, "SwapChain                      : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset);
-} 
-
-void Patata::Log::CheckCommandPool(vk::Result RESULT) {
-	if (RESULT != vk::Result::eSuccess)
-		fast_io::io::println(Bold, "CommandPool                    : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset);
-	else
-		fast_io::io::println(Bold, "CommandPool                    : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset);
-}
-
-void Patata::Log::CheckRenderPass(vk::Result RESULT) {
-	if (RESULT != vk::Result::eSuccess)
-		fast_io::io::println(Bold, "RenderPass                     : ", Reset, BLightGoldenRod1, vk::to_string(RESULT), Reset);
-	else
-		fast_io::io::println(Bold, "RenderPass                     : ", Reset, Chartreuse1, vk::to_string(RESULT), Reset);
 }

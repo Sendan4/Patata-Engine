@@ -1,10 +1,7 @@
-#include <vector>
-
-#include <SDL_vulkan.h>
-#include <vulkan/vulkan.hpp>
+#include <string>
 
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
-#include "PatataEngine/Log.hpp"
+#include "Log.hpp"
 
 uint32_t Patata::Graphics::VulkanRenderer::CreateLogicalDeviceAndCreateQueue(void) {
 	uint32_t GraphicsQueueFamilyIndex = 0;
@@ -25,23 +22,24 @@ uint32_t Patata::Graphics::VulkanRenderer::CreateLogicalDeviceAndCreateQueue(voi
 	DeviceQueueCreateInfo.queueCount = 1;
 	DeviceQueueCreateInfo.pQueuePriorities = &QueuePriority;
 
-	const std::vector <const char *> DeviceExtensions = {
+	const char * DeviceExtensions[] = {
 		"VK_KHR_swapchain",
 		"VK_KHR_driver_properties",
-		"VK_KHR_maintenance4"};
+		"VK_KHR_maintenance4"
+	};
 
 	vk::DeviceCreateInfo DeviceCreateInfo{};
-	DeviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(DeviceExtensions.size());
-	DeviceCreateInfo.ppEnabledExtensionNames = DeviceExtensions.data();
+	DeviceCreateInfo.enabledExtensionCount = std::size(DeviceExtensions) - 1;
+	DeviceCreateInfo.ppEnabledExtensionNames = DeviceExtensions;
 	DeviceCreateInfo.pNext = {};
 	DeviceCreateInfo.queueCreateInfoCount = 1;
 	DeviceCreateInfo.pQueueCreateInfos = &DeviceQueueCreateInfo;
 
-	Patata::Log::ListVulkanDeviceResult(DeviceExtensions);
+	Patata::Log::VulkanList(DeviceExtensions, std::size(DeviceExtensions) - 1, true, "Device Extensions");
 
 	vk::Result Result = PhysicalDevice.createDevice(&DeviceCreateInfo, nullptr, &Device);
 
-	Patata::Log::VulkanLogicalDeviceResult(Result);
+	Patata::Log::VulkanCheck("Physical Device", Result);
 
 	Queue = Device.getQueue(GraphicsQueueFamilyIndex, 0); 
 	return GraphicsQueueFamilyIndex;

@@ -1,7 +1,7 @@
 | Español | [English](docs/README_en.md) |
 | :--: | :--: |
 
-# <img draggable=false src = "data/assets/icon/patata.webp" width=24 style="image-rendering: pixelated;"> Motor Patata
+# <img draggable=false src = "data/assets/icon/patata-debug.webp" width=24 style="image-rendering: pixelated;"> Motor Patata
 
 <img draggable=false src = "data/assets/icon/patata_icon.svg" width=60 align=left style="margin:10px 10px;">
 <p style=""><b>Motor Patata</b> es un motor 2d sencillo y ligero con el enfoque en el desarrollo de videojuegos.</p>
@@ -12,7 +12,72 @@
 
 ⚠️ Aun no esta listo para su uso
 
-## Sistemas Operativos disponibles
+## Ejemplo de su uso
+[Programa de Ejemplo](examples/Simple Program/Main.cpp)
+
+```cpp
+#include <SDL.h>
+#include <PatataEngine/PatataEngine.hpp>
+
+int main(int argc, char ** argv) {
+    Patata::Engine Patata;
+
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) exit(1);
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    SDL_Window * window = SDL_CreateWindow(
+		#if defined(DEBUG)
+		"Patata Engine | Debug (Development)",
+		#else
+		"Patata Engine",
+		#endif
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        1280, 720,
+        Patata.GetWindowFlags());
+
+	SDL_GLContext * context = nullptr;
+ 
+	Patata.Info->pWindow = window;
+	Patata.Info->pOpenGLContext = context;
+
+	Patata.InitRenderer();
+
+	bool run = true;
+	while(run) {
+		SDL_Event event;
+		while(SDL_PollEvent(&event)) {
+			// Patata Events
+			Patata.HandleEvent(event);
+			// Your Events
+			if (event.type == SDL_QUIT) {
+				run = false;
+				break;
+			}
+		}
+		
+		// Your Render Functions
+
+		Patata.Render();
+	}
+	
+	if(*Patata.pGraphicsAPI == Patata::GraphicsAPI::OpenGL) {
+		SDL_GL_DeleteContext(context);
+		delete context;
+		context = nullptr;
+	}
+
+	SDL_DestroyWindow(window);
+
+	return 0;
+}
+```
+
+## Sistemas Operativos Compatibles
 
 | Windows | GNU/Linux |
 | :-----: | :-----: |
@@ -34,6 +99,10 @@
 - [ ] Soporte Apropiado de Wayland (Linux)
 - [X] Crear un logo o simbolo
 
+## Para Hacer
+- VkLayerKhronosValidation debe ser encontrado por Patata si este se compila con ```USE_EXTERNAL_LIBS```, y este debe de estar en su mismo directorio.
+- ReHacer la forma en la que patata puede cargar o aceptar iconos para la ventana
+
 ## Librerias de terceros usadas en este proyecto
 <ul>
 	<li><a href = "http://www.libsdl.org/">SDL2</a></li>
@@ -51,4 +120,10 @@
 
 <hr>
 
-### [Acceso a la documentacion](doc/README.md)
+### [Acceso a la documentacion](docs/README.md)
+
+<hr>
+
+## Espejos Oficiales
+- [Github](https://github.com/Sendan4/Patata-Engine.git)
+- [Codeberg](https://codeberg.org/Sendan/patata-engine.git)

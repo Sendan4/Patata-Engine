@@ -1,6 +1,5 @@
 #include <glad/gl.h>
-#include <SDL.h>
-#include <cstdint>
+#include <yaml-cpp/yaml.h>
 
 // Patata Engine 
 #include "PatataEngine/Graphics/OpenGLRenderer.hpp"

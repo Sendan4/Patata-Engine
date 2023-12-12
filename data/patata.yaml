@@ -1,10 +1,14 @@
 # Patata Engine Configuration File
 # uppercase and lowcase are valid
 
-graphics-api : Vulkan
-# Vulkan or OpenGL
+patata-engine :
+  show-fatal-error-messagebox : false
+  prefer-wayland : true
 
-vsync : true
-# true enables the Vertical Sync, false disables the Vertical Sync
+  raccoon-renderer :
+    graphics-api : Vulkan
+    # Vulkan or OpenGL
 
-show-fatal-error-messagebox : false
+    vsync : true
+    # true enables the Vertical Sync, false disables the Vertical Sync
+    opengl-adaptative-vsync : true

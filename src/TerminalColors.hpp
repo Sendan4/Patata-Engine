@@ -5,6 +5,8 @@
 	#define FSteelBlue1 "\033[38;5;75m"
 	#define Chartreuse1 "\033[38;5;118m"
 	#define CSalmon1 "\033[38;5;209m"
+	#define LightSalmon3 "\033[38;5;173m"
+	#define CGREY66 "\033[38;5;248m"
 	// Background
 	#define BLightGoldenRod1 "\033[38;5;227m"
 

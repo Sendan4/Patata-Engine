@@ -1,5 +1,5 @@
 project('imgui', 'cpp',
-  version : '1.89.9',
+  version : '1.90',
   meson_version : '>=1.2.0')
 
 sdl2_dep = dependency('sdl2',
@@ -39,28 +39,14 @@ Sources = files(
 
 Include = include_directories('.')
 
-meson.get_compiler('cpp').check_header('imgui.h',
-  include_directories : Include,
-   required : true)
-
 backends = include_directories('backends/')
-
-meson.get_compiler('cpp').has_header('imgui_impl_opengl3.h',
-  include_directories : backends,
-  required : true)
 
 if Vulkan.found()
   meson.get_compiler('c').check_header('vulkan/vulkan.h', required : true)
-  meson.get_compiler('cpp').has_header('imgui_impl_vulkan.h',
-    include_directories : backends,
-    required : true)
   Sources += files(['backends/imgui_impl_vulkan.cpp'])
 endif
 
 if sdl2_dep.found()
-  meson.get_compiler('cpp').has_header('imgui_impl_sdl2.h',
-    include_directories : backends,
-    required : true)
   Sources += files(['backends/imgui_impl_sdl2.cpp'])
 endif
 

@@ -2,17 +2,13 @@
 	#define GAME_CONFIG_FILE_NAME GAME_NAME ".yaml"
 #endif
 
-#include <string>
-
-#include <SDL.h>
 #include <fast_io.h>
-#include <yaml-cpp/yaml.h>
 
-#include "PatataEngine/Log.hpp"
+#include "Log.hpp"
 #if defined(_WIN64)
 	#include <windows.h>
 #else
-	#include "PatataEngine/TerminalColors.hpp"
+	#include "TerminalColors.hpp"
 #endif
 
 void Patata::Log::YamlFileErrorMessage(void) {

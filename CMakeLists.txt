@@ -4,10 +4,19 @@ message("")
 message("  - Patata Engine -")
 
 option(SHARED_BUILD "Static Or Shared library" ON)
-option(USE_EXTERNAL_LIBS OFF)
+option(USE_EXTERNAL_LIBS "Sse libraries from external folder insted of system libraries" ON)
 option(USE_GIT "Grab git information" ON)
 option(USE_CUSTOM_ICON OFF)
-option(ENABLE_ICON "Use icon in runtime" ON)
+option(ENABLE_ICON "use icon in runtime" ON)
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	option(XORG_SUPPORT "Disable or enable Xorg suport | Xorg is almost obsolete" OFF)
+	if (XORG_SUPPORT)
+		message(STATUS "Xorg Support : Enabled")
+	else()
+		message(STATUS "Xorg Support : Disabled")
+	endif()
+endif ()
 
 if (MSVC)
 	set(CMAKE_SKIP_INSTALL_RULES YES)
@@ -17,27 +26,46 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif()
 
-project("PatataEngine" LANGUAGES CXX)
+set (PATATA_SHARED_BUILD OFF CACHE INTERNAL "...")
+set (PATATA_STATIC_BUILD OFF CACHE INTERNAL "...")
+
+if (SHARED_BUILD)
+	set (PATATA_SHARED_BUILD ON CACHE INTERNAL "...")
+endif()
+
+if (NOT SHARED_BUILD)
+	set (PATATA_STATIC_BUILD ON CACHE INTERNAL "...")
+endif()
+
+set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
+project("PatataEngine" LANGUAGES CXX VERSION 1 HOMEPAGE_URL "https://gitlab.com/Sendan/patata-engine.git")
+
+set (PATATA_ENGINE_VERSION_MAYOR 1)
+set (PATATA_ENGINE_VERSION_MINOR 0)
+set (PATATA_ENGINE_VERSION_PATCH 0)
+set (PATATA_ENGINE_VERSION "1.0.0")
 
 include(CheckIncludeFiles)
 include(CheckCXXCompilerFlag)
 include(CheckIncludeFileCXX)
+include(CheckTypeSize)
 
 if (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	enable_language(C)
 	include(CheckIncludeFile)
 endif()
 
+if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
+	message(STATUS "Game Name : ${GAME_NAME}")
+endif()
+
 if (NOT MSVC)
 	check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORTS_CXX20)
-
 	check_cxx_compiler_flag("-Wextra" COMPILER_SUPPORTS_WEXTRA)
 	check_cxx_compiler_flag("-Wall" COMPILER_SUPPORTS_WALL)
 
-	if (COMPILER_SUPPORTS_CXX20)
-		set(CMAKE_CXX_STANDARD 20)
-		set(CMAKE_CXX_STANDARD_REQUIRED ON)
-	else()
+	if (NOT COMPILER_SUPPORTS_CXX20)
     	message(FATAL_ERROR "The compiler does not support the C++20 standard")
 	endif()
 
@@ -45,91 +73,189 @@ else()
 	check_cxx_compiler_flag("/std:c++20" COMPILER_SUPPORTS_CXX20)
 	check_cxx_compiler_flag("/Wall" COMPILER_SUPPORTS_WALL)
 
-	if (COMPILER_SUPPORTS_CXX20)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20")
-	else()
+	if (NOT COMPILER_SUPPORTS_CXX20)
     	message(FATAL_ERROR "The compiler does not support the C++20 standard")
 	endif()
 endif()
-
-CHECK_INCLUDE_FILE_CXX("cstdint" HAVE_CSTDINT [LANGUAGE CXX])
-CHECK_INCLUDE_FILE_CXX("cstring" HAVE_CSTRING [LANGUAGE CXX])
-CHECK_INCLUDE_FILE_CXX("algorithm" HAVE_IOSTREAM [LANGUAGE CXX])
-CHECK_INCLUDE_FILE_CXX("vector" HAVE_VECTOR [LANGUAGE CXX])
-CHECK_INCLUDE_FILE_CXX("tuple" HAVE_TUPLE [LANGUAGE CXX])
 
 if (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	CHECK_INCLUDE_FILE("windows.h" HAVE_WINDOWS_H)
 endif()
 
-if (NOT HAVE_CSTDINT OR NOT HAVE_CSTRING OR NOT HAVE_IOSTREAM OR NOT HAVE_VECTOR OR NOT HAVE_TUPLE)
-	if (NOT HAVE_WINDOWS_H AND (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows"))
+if (NOT HAVE_WINDOWS_H AND (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows"))
+	message(FATAL_ERROR "missing windows.h")
+endif()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	CHECK_INCLUDE_FILE_CXX("cxxabi.h" HAVE_CXXABI_H LANGUAGE CXX)
+
+	if (NOT HAVE_CXXABI_H)
 		message(FATAL_ERROR "include files missing")
 	endif()
+endif()
 
+CHECK_INCLUDE_FILE_CXX("cstring" HAVE_CSTRING LANGUAGE CXX)
+CHECK_INCLUDE_FILE_CXX("algorithm" HAVE_IOSTREAM LANGUAGE CXX)
+CHECK_INCLUDE_FILE_CXX("tuple" HAVE_TUPLE LANGUAGE CXX)
+
+if (NOT HAVE_CSTRING OR NOT HAVE_IOSTREAM OR NOT HAVE_TUPLE)
 	message(FATAL_ERROR "include files missing")
 endif()
 
-if (USE_GIT)
-	set (GIT_BRANCH "NULL")
-	set (GIT_HASH_SHORT "0")
-	set (GIT_HASH_LONG "0")
+check_type_size("uint16_t" SUPPORT_UINT16_T LANGUAGE CXX)
 
+if (NOT SUPPORT_UINT16_T)
+	message(FATAL_ERROR "Not Support uint16_t")
+endif()
+
+check_type_size("uint32_t" SUPPORT_UINT32_T LANGUAGE CXX)
+
+if (NOT SUPPORT_UINT32_T)
+	message(FATAL_ERROR "Not Support uint32_t")
+endif()
+
+check_type_size("uint64_t" SUPPORT_UINT64_T LANGUAGE CXX)
+
+if (NOT SUPPORT_UINT64_T)
+	message(FATAL_ERROR "Not Support uint64_t")
+endif()
+
+check_type_size("int16_t" SUPPORT_INT16_T LANGUAGE CXX)
+
+if (NOT SUPPORT_INT16_T)
+	message(FATAL_ERROR "Not Support int16_t")
+endif()
+
+check_type_size("int32_t" SUPPORT_INT32_T LANGUAGE CXX)
+
+if (NOT SUPPORT_INT32_T)
+	message(FATAL_ERROR "Not Support int32_t")
+endif()
+
+check_type_size("int64_t" SUPPORT_INT64_T LANGUAGE CXX)
+
+if (NOT SUPPORT_INT64_T)
+	message(FATAL_ERROR "Not Support int64_t")
+endif()
+
+check_type_size("bool" SUPPORT_BOOL LANGUAGE CXX)
+
+if (NOT SUPPORT_BOOL)
+	message(FATAL_ERROR "Not Support Bool")
+endif()
+
+check_type_size("const char *" SUPPORT_CONST_CHAR_P LANGUAGE CXX)
+
+if (NOT SUPPORT_CONST_CHAR_P)
+	message(FATAL_ERROR "Not Support const char *")
+endif()
+
+find_program(GIT NAMES git)
+
+if (USE_GIT AND GIT)
+	message (STATUS "Git Found : ${GIT}")
 	# Git Macros
 	execute_process(
-		COMMAND git branch --show-current
+		COMMAND git branch --show-current HEAD
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		OUTPUT_VARIABLE GIT_BRANCH
+		OUTPUT_VARIABLE PATATA_GIT_BRANCH
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-	message(STATUS "Git Branch: ${GIT_BRANCH}")
+	message(STATUS "Git Branch : ${PATATA_GIT_BRANCH}")
 
 	execute_process(
 		COMMAND git rev-parse HEAD
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		OUTPUT_VARIABLE GIT_HASH_LONG
+		OUTPUT_VARIABLE PATATA_GIT_HASH_LONG
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 	execute_process(
 		COMMAND git rev-parse --short HEAD
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		OUTPUT_VARIABLE GIT_HASH_SHORT
+		OUTPUT_VARIABLE PATATA_GIT_HASH_SHORT
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-	# Macros
-	add_compile_definitions(
-		PATATA_GIT_BRANCH="${GIT_BRANCH}"
-		PATATA_GIT_HASH_LONG="${GIT_HASH_LONG}"
-		PATATA_GIT_HASH_SHORT="${GIT_HASH_SHORT}")
+	execute_process(
+		COMMAND git diff HEAD --shortstat
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		OUTPUT_VARIABLE PATATA_GIT_WORK_DIR_TEXT
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+	execute_process(
+		COMMAND git diff HEAD --shortstat --staged
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		OUTPUT_VARIABLE PATATA_GIT_COMMIT_STAGE_TEXT
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+	# The commit is Dirty?
+	if ("${PATATA_GIT_WORK_DIR_TEXT}" STREQUAL "")
+		set (PATATA_GIT_WORK_DIR_IS_CLEAN "Clean")
+	else()
+		set (PATATA_GIT_WORK_DIR_IS_CLEAN "Dirty")
+	endif()
+
+	# The Changes are in the stage?
+	if (NOT "${PATATA_GIT_COMMIT_STAGE_TEXT}" STREQUAL "")
+		set (PATATA_GIT_WORK_DIR_IS_STAGED "Staged")
+	else()
+		set (PATATA_GIT_WORK_DIR_IS_STAGED "Not Staged")
+	endif()
+
+	if (USE_EXTERNAL_LIBS)
+		execute_process(
+			COMMAND git describe --tags --abbrev=0
+			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/externals/yaml-cpp/"
+			OUTPUT_VARIABLE PATATA_YAML-CPP_VERSION
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+		execute_process(
+			COMMAND git describe --tags --abbrev=0
+			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/externals/Vulkan-Loader/"
+			OUTPUT_VARIABLE PATATA_VULKAN_LOADER_VERSION
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+		
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+			execute_process(
+				COMMAND git describe --tags --abbrev=0
+				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/externals/Vulkan-ValidationLayers/"
+				OUTPUT_VARIABLE PATATA_VULKAN_VALIDATION_LAYERS_VERSION
+				OUTPUT_STRIP_TRAILING_WHITESPACE)
+		endif()
+	endif()
 endif()
 
-set (build_system "CMake (${CMAKE_GENERATOR})")
+# Search Generator Version
+if ("${CMAKE_GENERATOR}" STREQUAL "Ninja" OR "${CMAKE_GENERATOR}" STREQUAL "Eclipse CDT4 - Ninja")
+	execute_process(
+		COMMAND ninja --version
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		OUTPUT_VARIABLE CMAKE_GENERATOR_VERSION
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+elseif ("${CMAKE_GENERATOR}" STREQUAL "Borland Makefiles" OR "${CMAKE_GENERATOR}" STREQUAL "Unix Makefiles" OR "${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles" OR "${CMAKE_GENERATOR}" STREQUAL "MinGW Makefiles" OR "${CMAKE_GENERATOR}" STREQUAL "Eclipse CDT4 - MinGW Makefiles" OR "${CMAKE_GENERATOR}" STREQUAL "Eclipse CDT4 - Unix Makefiles" OR "${CMAKE_GENERATOR}" STREQUAL "KDevelop3 - Unix Makefiles")
+	execute_process(
+		COMMAND make --version
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		OUTPUT_VARIABLE CMAKE_GENERATOR_VERSION
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+	string(REGEX MATCH "[0-9]+\.[0-9]+\.[0-9]" CMAKE_GENERATOR_VERSION ${CMAKE_GENERATOR_VERSION})
+else()
+	set (CMAKE_GENERATOR_VERSION "")
+endif()
+
 get_filename_component(compiler_program ${CMAKE_CXX_COMPILER} NAME)
 
-# Macros
-add_compile_definitions(
-	PATATA_BUILD_SYSTEM="${build_system}"
-	PATATA_VERSION="0"
-	PATATA_ENGINE_NAME="Patata Engine"
-	PATATA_COMPILER_PROGRAM="${compiler_program}")
-
-if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
-	message(STATUS "Game Name: ${GAME_NAME}")
-	add_compile_definitions(GAME_NAME="${GAME_NAME}")
-endif()
-
 if (ENABLE_ICON)
-	message(STATUS "Icon: Yes")
-	add_compile_definitions(USE_ICON="1")
+	message(STATUS "Icon : Yes")
+	add_compile_definitions(USE_ICON=1)
 	if (USE_CUSTOM_ICON)
-		message(STATUS "Custom Icon Path: ${ICON_PATH}")
+		message(STATUS "Custom Icon Path : ${ICON_PATH}")
 	endif()
 else()
-	message(STATUS "Icon: No")
+	message(STATUS "Icon : No")
 endif()
 
-# Windows shared library
+# shared library
 if (SHARED_BUILD)
 	add_compile_definitions(SHARED_LIBRARY_EXPORT_DEFINE="1")
 	message(STATUS "Shared Build")
@@ -138,32 +264,21 @@ else ()
 	message(STATUS "Static Build")
 endif()
 
+message(STATUS "Build Type : ${CMAKE_BUILD_TYPE}")
+message(STATUS "Version : ${PATATA_ENGINE_VERSION}")
+
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
-	message(STATUS "Build Type: Release")
-	add_compile_definitions(PATATA_BUILD_TYPE="Release")
-elseif(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-	message(STATUS "Build Type: Debug")
-	add_compile_definitions(
-		PATATA_BUILD_TYPE="Debug"
-		DEBUG=1)
-elseif(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-	message(STATUS "Build Type: Debug Optimized")
-	add_compile_definitions(
-		PATATA_BUILD_TYPE="Debug Optimized"
-		DEBUG=1)
-elseif(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
-	message(STATUS "Build Type: Minimal Size Release")
-	add_compile_definitions(PATATA_BUILD_TYPE="Minimal Size Release")
-endif()
+include(CheckSymbolExists)
 
 if (NOT USE_EXTERNAL_LIBS)
 	# Package Mananger
 	add_subdirectory(externals/fast_io)
 	find_package(yaml-cpp REQUIRED)
 	find_package(Vulkan REQUIRED)
+	find_package(Vulkan-Headers REQUIRED)
 	add_subdirectory(externals/Glad2)
 	find_package(SDL2 REQUIRED)
 
@@ -223,6 +338,12 @@ if (NOT USE_EXTERNAL_LIBS)
 			message(STATUS "Looking for imgui_impl_opengl3.h - found")
 		endif()
 	endif()
+
+	check_symbol_exists("vk::createInstance" "${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.hpp" HAS_VKCREATEINSTANCE)
+
+	if (HAS_VKCREATEINSTANCE)
+		message(FATAL_ERROR "vulkan/vulkan.hpp not have vk::createInstance")
+	endif()
 else()
 	# using submodules
 	add_subdirectory(externals)
@@ -245,3 +366,16 @@ add_subdirectory(data/assets)
 # Library
 include_directories(include/)
 add_subdirectory(src)
+
+install(TARGETS ${PROJECT_NAME}
+	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+
+set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${CMAKE_BUILD_TYPE}-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_CXX_COMPILER_ID}")
+if (SHARED_BUILD)
+	set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}-Shared")
+else()
+	set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}-Static")
+endif()
+
+include(CPack)

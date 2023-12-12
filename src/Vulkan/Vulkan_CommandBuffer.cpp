@@ -1,9 +1,5 @@
-#include <SDL_vulkan.h>
-#include <vulkan/vulkan.hpp>
-
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
-#include "PatataEngine/TerminalColors.hpp"
-#include "PatataEngine/Log.hpp"
+#include "Log.hpp"
 
 void Patata::Graphics::VulkanRenderer::CreateCommandBuffer(uint32_t &GraphicsQueueFamilyIndex) {
 	vk::CommandPoolCreateInfo CreateCommandPoolInfo {};
@@ -11,7 +7,7 @@ void Patata::Graphics::VulkanRenderer::CreateCommandBuffer(uint32_t &GraphicsQue
 	CreateCommandPoolInfo.queueFamilyIndex = GraphicsQueueFamilyIndex;
 
 	vk::Result Result = Device.createCommandPool(&CreateCommandPoolInfo, nullptr, &CommandPool);
-	Patata::Log::CheckCommandPool(Result);
+	Patata::Log::VulkanCheck("CommandPool", Result);
 
 	std::vector <vk::Image> SwapChainImages = Device.getSwapchainImagesKHR(SwapChain);
 

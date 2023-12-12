@@ -1,12 +1,5 @@
-#include <vector>
-#include <tuple>
-
-#include <yaml-cpp/yaml.h>
-
-#include "PatataEngine/PatataEngine.hpp"
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
-#include "PatataEngine/TerminalColors.hpp"
-#include "PatataEngine/Log.hpp"
+#include "Log.hpp"
 
 std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> Patata::Graphics::VulkanRenderer::CreateSwapChain(uint32_t &GraphicsQueueFamilyIndex, YAML::Node CONFIG) {
 	std::vector <vk::SurfaceFormatKHR> Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
@@ -24,7 +17,7 @@ std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> Patata::Graphics::
 	SwapChainExtent.width = 1280;
 	SwapChainExtent.height = 720;
 
-	if (CONFIG["vsync"].as<bool>()) {
+	if (CONFIG["patata-engine"]["raccoon-renderer"]["vsync"].as<bool>()) {
 		for (const vk::PresentModeKHR &Mode : PresentModes) {
 			if (Mode == vk::PresentModeKHR::eMailbox) {
 				PresentMode = vk::PresentModeKHR::eMailbox;
@@ -60,7 +53,7 @@ std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> Patata::Graphics::
 	
 	vk::Result Result = Device.createSwapchainKHR(&SwapChainCreateInfo, nullptr, &SwapChain);
 
-	Patata::Log::CheckSwapChain(Result);	
+	Patata::Log::VulkanCheck("SwapChain", Result);	
 
 	return {PresentMode, ColorFormat, SurfaceFormat.colorSpace};
 }

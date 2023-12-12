@@ -1,18 +1,15 @@
 #include <fast_io.h>
 
-#include <SDL_vulkan.h>
-#include <vulkan/vulkan.hpp>
-
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
 #if defined(_WIN64)
 	#include <windows.h>
 #else
-	#include "PatataEngine/TerminalColors.hpp"
+	#include "TerminalColors.hpp"
 #endif
-#include "PatataEngine/Log.hpp"
+#include "Log.hpp"
 
 void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFamilyIndex) {
-	vk::ImageCreateInfo CreateImageInfo{};
+	/*vk::ImageCreateInfo CreateImageInfo{};
 	CreateImageInfo.imageType = vk::ImageType::e2D;
 	CreateImageInfo.setExtent(vk::Extent3D {SwapChainExtent.width, SwapChainExtent.height, 1});
 	CreateImageInfo.mipLevels = 1;
@@ -27,6 +24,7 @@ void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFa
 	CreateImageInfo.pQueueFamilyIndices = &GraphicsQueueFamilyIndex;
 
 	vk::Result Result = Device.createImage(&CreateImageInfo, nullptr, &DepthImage);
+
 	if (Result != vk::Result::eSuccess)
 		#if defined(_WIN64)
 			fast_io::io::println(fast_io::out(), "DepthImage For BindImageMemory : ", vk::to_string(Result));
@@ -75,12 +73,14 @@ void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFa
 	#if defined(_WIN64)
 	fast_io::io::println(fast_io::out(), "Creating SwapChainBuffer : ");
 	#else
+
 	fast_io::io::println("Creating SwapChainBuffer : ");
 	#endif
 	for (uint32_t i = 0; i < SwapChainBuffers.size(); i++) {
 		SwapChainBuffers[i].Image = SwapChainImages[i];
 		
 		Result = Device.createImageView(&CreateImageViewInfo, nullptr, &ImageView);
+		
 		if (Result != vk::Result::eSuccess)
 			#if defined(_WIN64)
 				fast_io::io::println(fast_io::out(), "SwapChainBuffer ImageView : ", vk::to_string(Result));
@@ -94,12 +94,11 @@ void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFa
 				fast_io::io::println("SwapChainBuffer ImageView : ", vk::to_string(Result));
 			#endif
 
+		//SwapChainBuffers[i].Views[1] = ImageView;
 
-		SwapChainBuffers[i].Views[1] = ImageView;
-
-		Device.destroyImageView(ImageView);
+		//Device.destroyImageView(ImageView);
 
 		//SwapChainBuffers[i].FrameBuffer = ;
 	}
-	fast_io::io::println(fast_io::out(), "");
+	fast_io::io::println(fast_io::out(), "");*/
 }

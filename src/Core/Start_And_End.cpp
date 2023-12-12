@@ -1,6 +1,8 @@
-#include <cstdint>
 #include <cstring>
 #include <algorithm>
+#if defined(__linux__)
+#include <cstdlib>
+#endif
 
 #include <fast_io.h>
 #include <SDL.h>
@@ -23,21 +25,23 @@
 
 // Patata Engine
 #include "PatataEngine/PatataEngine.hpp"
-#include "PatataEngine/Window.hpp"
-#include "PatataEngine/Log.hpp"
+#include "Log.hpp"
 
-Patata::PatataEngine::PatataEngine(
-		std::string WINDOW_NAME,
-		uint64_t WINDOW_INITIAL_WIDTH,
-		uint64_t WINDOW_INITIAL_HEIGHT) {
+#if defined(PATATA_GAME_NAME)
+	#define GAME_CONFIG_FILE_NAME PATATA_GAME_NAME ".yaml"
+#else
+	#define GAME_CONFIG_FILE_NAME "patata.yaml"
+#endif
+
+Patata::Engine::Engine(void) {
 	Patata::Log::StartMapache();
 	Patata::Log::StartPatataLogInfo();
 	
 	try {
-		#if defined(GAME_NAME)
-		config = YAML::LoadFile(strcpy(SDL_GetBasePath(), GAME_CONFIG_FILE_NAME));
+		#if defined(PATATA_GAME_NAME)
+		Config = YAML::LoadFile(strcpy(SDL_GetBasePath(), GAME_CONFIG_FILE_NAME));
 		#else
-		config = YAML::LoadFile(strcpy(SDL_GetBasePath(), "patata.yaml"));
+		Config = YAML::LoadFile(strcpy(SDL_GetBasePath(), "patata.yaml"));
 		#endif
 	}
 	catch(const YAML::BadFile) {
@@ -45,136 +49,52 @@ Patata::PatataEngine::PatataEngine(
 		exit(-1);
 	}
 
-	// SDL
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) > 0) {
-		Patata::Log::FatalErrorMessage("SDL", SDL_GetError(), config);
-		exit(-1);
+	#if defined(__linux__)
+	{
+		/*
+		if (strcmp(getenv("XDG_CURRENT_DESKTOP"), "GNOME") == 0)
+			if (setenv("LIBDECOR_PLUGIN_DIR", SDL_GetBasePath(), 1) != 0)
+				Patata::Log::ErrorMessage("Cannot set enviroment varible LIBDECOR_PLUGIN_DIR");*/
+
+		/*
+		if (setenv("VK_LAYER_PATH", SDL_GetBasePath(), 1) != 0)
+			Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");*/
+
+		if (Config["patata-engine"]["prefer-wayland"].as<bool>())
+			if(setenv("SDL_VIDEODRIVER", "wayland", 1) != 0)
+				Patata::Log::ErrorMessage("Cannot set enviroment varible SDL_VIDEODRIVER");
 	}
+	#endif
 	
 	{
-		std::string GraphicsAPI = config["graphics-api"].as<std::string>();
+		std::string GraphicsAPI = Config["patata-engine"]["raccoon-renderer"]["graphics-api"].as<std::string>();
 		std::transform(GraphicsAPI.begin(), GraphicsAPI.end(), GraphicsAPI.begin(), ::toupper);
 
 		if (GraphicsAPI == "VULKAN")
-			bGraphicsAPI = true;
+			bGraphicsAPI = Patata::GraphicsAPI::Vulkan;
 		else if (GraphicsAPI == "OPENGL")
-			bGraphicsAPI = false;
+			bGraphicsAPI = Patata::GraphicsAPI::OpenGL;
 	}
-	
-	// SDL_Event
+
 	MainEvent = new SDL_Event;
-	
-	switch(bGraphicsAPI) {
-		case true:
-			// Vulkan
-			try {
-				// Create Window
-				pWindow = new Patata::Window(
-					WINDOW_NAME,
-					WINDOW_INITIAL_WIDTH,
-					WINDOW_INITIAL_HEIGHT,
-					bGraphicsAPI,
-					config);
-
-				pVulkanRenderer = new Patata::Graphics::VulkanRenderer(pWindow->WindowGet(), config);
-
-				break;
-			}
-			catch (...) {
-				bGraphicsAPI = false;
-
-				delete pVulkanRenderer;
-				pVulkanRenderer = nullptr;
-
-				delete pWindow;
-				pWindow = nullptr;
-
-				#if defined(_WIN64)
-					fast_io::io::println(fast_io::out(), "Switching to OpenGL");
-					fast_io::io::println(fast_io::out(), "Re-creating the window :");
-				#else
-					fast_io::io::println("Switching to OpenGL");
-					fast_io::io::println("Re-creating the window :");
-				#endif
-			}
-
-		case false:
-			// Create Window
-			pWindow = new Patata::Window(
-				WINDOW_NAME,
-				WINDOW_INITIAL_WIDTH,
-				WINDOW_INITIAL_HEIGHT,
-				bGraphicsAPI,
-				config);
-
-			// OpenGL
-		
-			#if defined(DEBUG)
-			// Setup Dear ImGui context
-			IMGUI_CHECKVERSION();
-			ImGui::CreateContext();
-			ImGuiIO &io = ImGui::GetIO();
-			io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad;
-
-			static ImFontConfig cfg;
-			cfg.OversampleH = cfg.OversampleV = 1;
-			cfg.MergeMode = false;
-			//cfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_LoadColor;
-
-			io.Fonts->AddFontDefault(&cfg);
-			io.Fonts->Build();
-			io.IniFilename = NULL;
-			io.LogFilename = NULL;
-
-			ImGui::StyleColorsDark();
-			#endif
-
-			pOpenGLContext = new Patata::Graphics::OpenGLContext(pWindow->WindowGet(), config);
-			pOpenGLRenderer = new Patata::Graphics::OpenGLRenderer();
-			pOpenGLRenderer->OpenGLSetViewPort(WINDOW_INITIAL_WIDTH, WINDOW_INITIAL_HEIGHT);
-
-			#if defined(DEBUG)
-			ImGui_ImplOpenGL3_Init("#version 140");
-			#endif
-
-			if (config["vsync"].as<bool>())
-				SDL_GL_SetSwapInterval(-1);
-			else
-				SDL_GL_SetSwapInterval(0);
-
-			break;
-	}
 }
 
-Patata::PatataEngine::~PatataEngine(void) {
+#if defined(__GNUC__) || defined(__MINGW64__)
+#include <cxxabi.h>
+#endif
+#if defined(_WIN64)
+#else
+#include "TerminalColors.hpp"
+#endif
+#include "ExitLog.hpp"
+
+Patata::Engine::~Engine(void) {
 	if (bGraphicsAPI) {
 		// Vulkan
-		delete pVulkanRenderer;
-		pVulkanRenderer = nullptr;
+		Patata::Log::DeleteAndLogPtr("Vulkan Renderer", pVulkanRenderer);
 	} 
-	else {
-		// Imgui
-		#if defined(DEBUG)
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplSDL2_Shutdown();
-		ImGui::DestroyContext();
-		#endif
-
+	else {		
 		// OpenGL
-		delete pOpenGLContext;
-		pOpenGLContext = nullptr;
-		delete pOpenGLRenderer;
-		pOpenGLRenderer = nullptr;
+		Patata::Log::DeleteAndLogPtr("OpenGL Renderer", pOpenGLRenderer);
 	}
-
-	// SDL_Event
-	delete MainEvent;
-	MainEvent = nullptr;
-	
-	// Window
-	delete pWindow;
-	pWindow = nullptr;
-
-	// SDL
-	SDL_Quit(); 
 }

@@ -1,6 +1,6 @@
 if (ENABLE_ICON)
 	if (NOT DEFINED ICON_PATH)
-		set (ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/icon/patata.bmp")
+		set (ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/icon/")
 	endif()
 
 	# GAME_NAME is Required here
@@ -12,6 +12,8 @@ if (ENABLE_ICON)
 
 				file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/icon.bmp"
 					"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.bmp")
+
+				install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.bmp" DESTINATION "assets/")
 			endif()
 		else()
 			if (DEFINED GAME_NAME)
@@ -21,13 +23,24 @@ if (ENABLE_ICON)
 				file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/icon.bmp"
 					"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.bmp")
 			endif()
+
+			install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.bmp" DESTINATION "assets/")
 		endif()
 	else ()
 		# GAME_NAME is opcional here
-		if (NOT "${ICON_PATH}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}/icon/patata.bmp")
+		if (NOT "${ICON_PATH}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}/icon/")
 			message(FATAL_ERROR "Use -DICON_PATH With -DGAME_NAME And -DUSE_CUSTOM_ICON=ON")
 		endif()
 
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+			set (ICON_PATH "${ICON_PATH}patata-debug.bmp")
+		endif()
+
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
+			set (ICON_PATH "${ICON_PATH}patata-release.bmp")
+		endif()
+
+		# Copy
 		if (MSVC)
 			file(COPY ${ICON_PATH}
 				DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
@@ -36,14 +49,54 @@ if (ENABLE_ICON)
 				DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 		endif()
 
+		# Rename
 		if (DEFINED GAME_NAME AND NOT "${GAME_NAME}" STREQUAL "")
 			if (MSVC)
-				file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/patata.bmp"
-					"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.bmp")
+				if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+					file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/patata-debug.bmp"
+						"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.bmp")
+				elseif(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
+					file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/patata-release.bmp"
+						"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.bmp")
+				endif()
+
+				install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.bmp" DESTINATION "assets/")
 			else()
-				file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata.bmp"
-					"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.bmp")
+				if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+					file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata-debug.bmp"
+						"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.bmp")
+				elseif(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
+					file (RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata-release.bmp"
+						"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.bmp")
+				endif()
+
+				install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.bmp" DESTINATION "assets/")
+			endif()
+		else()
+			if (MSVC)
+				if(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
+					install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/patata-release.bmp" DESTINATION "assets/")
+				endif()
+				if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+					install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/patata-debug.bmp" DESTINATION "assets/")
+				endif()
+			else()
+				if(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
+					install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata-release.bmp" DESTINATION "assets/")
+				endif()
+				if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+					install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata-debug.bmp" DESTINATION "assets/")
+				endif()
 			endif()
 		endif()
 	endif ()
+endif()
+
+if(${CMAKE_BUILD_TYPE} STREQUAL "Release" OR ${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
+	set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/icon/patata-release.ico" CACHE INTERNAL "...")
+	set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/icon/patata-release.ico" CACHE INTERNAL "...")
+endif()
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+	set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/icon/patata-debug.ico" CACHE INTERNAL "...")
+	set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/icon/patata-debug.ico" CACHE INTERNAL "...")
 endif()

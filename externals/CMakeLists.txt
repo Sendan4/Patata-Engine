@@ -19,19 +19,34 @@ endif()
 
 add_subdirectory(yaml-cpp)
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	# Linux Wayland / Xorg
+	# Wayland Enable by default
+	set (BUILD_WSI_WAYLAND_SUPPORT ON CACHE INTERNAL "..." FORCE)
+
+	# Xorg Disable by default
+	if (NOT XORG_SUPPORT)
+		set (BUILD_WSI_XCB_SUPPORT OFF CACHE BOOL "..." FORCE)
+		set (BUILD_WSI_XLIB_SUPPORT OFF CACHE BOOL "..." FORCE)
+	else()
+		set (BUILD_WSI_XLIB_SUPPORT ON CACHE BOOL "..." FORCE)
+		set (BUILD_WSI_XCB_SUPPORT ON CACHE BOOL "..." FORCE)
+	endif()
+endif()
+
 if (MSVC OR LINUX)
+	set (UPDATE_DEPS ON CACHE INTERNAL "..." FORCE)
+
 	# Vulkan Validation Layer
 	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 		message("")
 		message("  - Vulkan ValidationLayers -")
-		set (UPDATE_DEPS ON CACHE INTERNAL "..." FORCE)
 		add_subdirectory(Vulkan-ValidationLayers)
 	endif()
 
 	# Vulkan
 	message("")
 	message("  - Vulkan Loader -")
-	set (UPDATE_DEPS ON CACHE INTERNAL "..." FORCE)
 	add_subdirectory(Vulkan-Loader)
 endif()
 
@@ -53,6 +68,18 @@ set(SDL_TEST OFF CACHE INTERNAL "..." FORCE)
 set (SDL_DIRECTX OFF CACHE INTERNAL "..." FORCE)
 set (SDL_RENDER_D3D OFF CACHE INTERNAL "..." FORCE)
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	if (NOT XORG_SUPPORT)
+		set (SDL_X11 OFF CACHE INTERNAL "..." FORCE)
+		set (SDL_X11_SHARED OFF CACHE INTERNAL "..." FORCE)
+	endif ()
+
+	set (SDL_WAYLAND ON CACHE INTERNAL "..." FORCE)
+	set (SDL_WAYLAND_SHARED ON CACHE INTERNAL "..." FORCE)
+	set (SDL_WAYLAND_LIBDECOR ON CACHE INTERNAL "..." FORCE)
+	set (SDL_WAYLAND_LIBDECOR_SHARED ON CACHE INTERNAL "..." FORCE)
+endif ()
+
 add_subdirectory(SDL)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
@@ -63,17 +90,13 @@ endif()
 message("")
 message("  - Patata Engine -")
 
+include(CheckCXXSymbolExists)
+
 find_file(HAVE_VULKAN_HPP "vulkan/vulkan.hpp" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include/")
 find_file(HAVE_SDL_H "SDL.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/SDL/include/")
 find_file(HAVE_SDL_VULKAN_H "SDL_vulkan.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/SDL/include/")
 find_file(HAVE_SDL_OPENGL_H "SDL_opengl.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/SDL/include/")
-find_file(HAVE_YAML_CPP_H "yaml-cpp/yaml.h" PATHS "${CMAKE_BINARY_DIR}/externals/yaml-cpp/include/")
-
-if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-	find_file(HAVE_IMGUI_VULKAN_H "imgui_impl_vulkan.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/Imgui/imgui/backends")
-	find_file(HAVE_IMGUI_SDL2_H "imgui_impl_sdl2.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/Imgui/imgui/backends")
-	find_file(HAVE_IMGUI_OPENGL3_H "imgui_impl_opengl3.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/Imgui/imgui/backends")
-endif()
+find_file(HAVE_YAML_CPP_H "yaml-cpp/yaml.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/yaml-cpp/include/")
 
 if (NOT HAVE_SDL_H OR NOT HAVE_SDL_VULKAN_H OR NOT HAVE_SDL_OPENGL_H OR NOT HAVE_VULKAN_HPP OR NOT HAVE_YAML_CPP_H)
 	message(FATAL_ERROR "Missing Headers")
@@ -100,6 +123,10 @@ else()
 endif()
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+	find_file(HAVE_IMGUI_VULKAN_H "imgui_impl_vulkan.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends")
+	find_file(HAVE_IMGUI_SDL2_H "imgui_impl_sdl2.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends")
+	find_file(HAVE_IMGUI_OPENGL3_H "imgui_impl_opengl3.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends")
+
 	if (NOT HAVE_IMGUI_VULKAN_H OR NOT HAVE_IMGUI_SDL2_H OR NOT HAVE_IMGUI_OPENGL3_H)
 		message(FATAL_ERROR "Missing Headers")
 	else()

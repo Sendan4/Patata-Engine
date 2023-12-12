@@ -1,42 +1,113 @@
-#include <cstring>
-#include <windows.h>
+#if defined(__GNUC__) || defined(__MINGW64__)
+#include <cxxabi.h>
+#endif
 
+#include <windows.h>
 #include <fast_io.h>
 #include <yaml-cpp/yaml.h>
 #include <glad/gl.h>
 
 // Patata Engine
 #include "PatataEngine/PatataEngine.hpp"
-#include "PatataEngine/Log.hpp"
+#include "Log.hpp"
 
-void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
+void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	SetConsoleTextAttribute(Terminal, 9);
-	fast_io::io::println(fast_io::out(), "OpenGL Info :");
-	SetConsoleTextAttribute(Terminal, 7);
+	fast_io::io::print(fast_io::out(), "OpenGL");
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::println(fast_io::out(), " INFO :");
 
-	fast_io::io::println(fast_io::out(), "    Vendor                  : ", std::string_view{ reinterpret_cast<const char *>(glGetString(GL_VENDOR)) });
+	// GPU Vendor
+	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
 
-	fast_io::io::println(fast_io::out(), "    Renderer                : ", std::string_view{ reinterpret_cast<const char *>(glGetString(GL_RENDERER)) });
+	#if defined(__GNUC__) || defined(__MINGW64__)	
+		fast_io::io::print(fast_io::out(), "  [", std::string_view{ abi::__cxa_demangle(typeid(glGetString(GL_VENDOR)).name(), nullptr, nullptr, nullptr) }, "]");
+	#else
+		fast_io::io::print(fast_io::out(), "  [", std::string_view{ typeid(glGetString(GL_VENDOR)).name() }, "]");
+	#endif
 
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::print(fast_io::out(), " Vendor : ");
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::println(fast_io::out(), std::string_view{ reinterpret_cast<const char *>(glGetString(GL_VENDOR)) });
+
+	// GPU Name
+	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
+
+	#if defined(__GNUC__) || defined(__MINGW64__)	
+		fast_io::io::print(fast_io::out(), "  [", std::string_view{ abi::__cxa_demangle(typeid(glGetString(GL_RENDERER)).name(), nullptr, nullptr, nullptr) }, "]");
+	#else
+		fast_io::io::print(fast_io::out(), "  [", std::string_view{ typeid(glGetString(GL_RENDERER)).name() }, "]");
+	#endif
+
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::print(fast_io::out(), " Renderer : ");
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::println(fast_io::out(), std::string_view{ reinterpret_cast<const char *>(glGetString(GL_RENDERER)) });
+
+	// OpenGL Version
+	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
+
+	#if defined(__GNUC__) || defined(__MINGW64__)	
+		fast_io::io::print(fast_io::out(), "  [", std::string_view{ abi::__cxa_demangle(typeid(glGetIntegerv(GL_MAJOR_VERSION, 0)).name(), nullptr, nullptr, nullptr) }, "]");
+	#else
+		fast_io::io::print(fast_io::out(), "  [", std::string_view{ typeid(glGetIntegerv(GL_MAJOR_VERSION, 0)).name() }, "]");
+	#endif
+
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::print(fast_io::out(), " Version : ");
 	{
-		GLint glmayorversion = 0, glminorversion = 0;
+		auto glmayorversion = 0, glminorversion = 0;
 		glGetIntegerv(GL_MAJOR_VERSION, &glmayorversion);
 		glGetIntegerv(GL_MINOR_VERSION, &glminorversion);
 		std::string glversion = std::to_string(glmayorversion) + '.' + std::to_string(glminorversion);
 
-		fast_io::io::println(fast_io::out(), "    Version                 : ", glversion);
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		fast_io::io::println(fast_io::out(), glversion);
 	}
 
-	fast_io::io::println(fast_io::out(), "    GLSL Version            : ", std::string_view{ reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)) });
+	// GLslang or GLSL Version
+	{
+		auto glslang_version = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-	fast_io::io::println(fast_io::out(), "    GLAD Version            : ", GLAD_GENERATOR_VERSION);
+		SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
 
-	fast_io::io::print(fast_io::out(), "    Profile                 : ");
+		#if defined(__GNUC__) || defined(__MINGW64__)	
+			fast_io::io::print(fast_io::out(), "  [", std::string_view{ abi::__cxa_demangle(typeid(glslang_version).name(), nullptr, nullptr, nullptr) }, "]");
+		#else
+			fast_io::io::print(fast_io::out(), "  [", std::string_view{ typeid(glslang_version).name() }, "]");
+		#endif
+
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		fast_io::io::print(fast_io::out(), " GLslang Version : ");
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		fast_io::io::println(fast_io::out(), std::string_view{ reinterpret_cast<const char *>(glslang_version) });
+	}
+
+	// GLAD Loader Version
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::print(fast_io::out(), "  Glad Loader Version : ");
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::println(fast_io::out(), GLAD_GENERATOR_VERSION);
+
+	// OpenGL Profile Context
 	{
 		GLint contextflags = 0;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &contextflags);
+
+		SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
+
+		#if defined(__GNUC__) || defined(__MINGW64__)	
+			fast_io::io::print(fast_io::out(), "  [", std::string_view{ abi::__cxa_demangle(typeid(contextflags).name(), nullptr, nullptr, nullptr) }, "]");
+		#else
+			fast_io::io::print(fast_io::out(), "  [", std::string_view{ typeid(contextflags).name() }, "]");
+		#endif
+
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		fast_io::io::print(fast_io::out(), " Profile : ");
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
 		switch (contextflags) {
 			case GL_CONTEXT_CORE_PROFILE_BIT :
@@ -53,10 +124,22 @@ void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
 		}
 	}
 
-	fast_io::io::print(fast_io::out(), "    Accelerated Visual      : ");
+	// Hardware Or Software Accelerated
 	{
-		int accel = 0;
+		auto accel = 0;
 		SDL_GL_GetAttribute(SDL_GL_ACCELERATED_VISUAL, &accel);
+
+		SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
+
+		#if defined(__GNUC__) || defined(__MINGW64__)	
+			fast_io::io::print(fast_io::out(), "  [", std::string_view{ abi::__cxa_demangle(typeid(accel).name(), nullptr, nullptr, nullptr) }, "]");
+		#else
+			fast_io::io::print(fast_io::out(), "  [", std::string_view{ typeid(accel).name() }, "]");
+		#endif
+
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		fast_io::io::print(fast_io::out(), " Accelerated Visual : ");
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
 		if (accel == 1)
 			fast_io::io::println(fast_io::out(), "Hardware");
@@ -64,9 +147,12 @@ void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
 			fast_io::io::println(fast_io::out(), "Software");
 	}
 
-	fast_io::io::print(fast_io::out(), "    Buffer                  : ");
+	// Buffer Type
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::print(fast_io::out(), "  Buffer : ");
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 	{
-		int buff = 0;
+		auto buff = 0;
 		SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &buff);
 
 		if (buff == 1)
@@ -75,32 +161,36 @@ void Patata::Log::OpenGLInfo(YAML::Node CONFIG) {
 			fast_io::io::println(fast_io::out(), "Double");
 	}
 
-	fast_io::io::print(fast_io::out(), "    Vsync                   : ");
-	if (CONFIG["vsync"].as<bool>())
-		fast_io::io::println(fast_io::out(), "Yes");
-	else
-		fast_io::io::println(fast_io::out(), "No");
+	// Vsync
+	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
 
-	fast_io::io::println(fast_io::out(), "\n    Used Extensions");
+	#if defined(__GNUC__) || defined(__MINGW64__)	
+		fast_io::io::print(fast_io::out(), "  [", std::string_view{ abi::__cxa_demangle(typeid(CONFIG).name(), nullptr, nullptr, nullptr) }, "]");
+	#else
+		fast_io::io::print(fast_io::out(), "  [", std::string_view{ typeid(CONFIG).name() }, "]");
+	#endif
 
-	if (strcmp(reinterpret_cast<const char *>(glGetString(GL_VENDOR)), reinterpret_cast<const char *>("ATI Technologies Inc")) != 0) {
-		if (GL_AMD_performance_monitor) {
-			SetConsoleTextAttribute(Terminal, 2);
-			fast_io::io::println(fast_io::out(), "        GL_AMD_perfomance_monitor");
-			SetConsoleTextAttribute(Terminal, 7);
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::print(fast_io::out(), " Vsync : ");
+	if (CONFIG["patata-engine"]["raccoon-renderer"]["vsync"].as<bool>()) {
+		SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		fast_io::io::print(fast_io::out(), "Yes");
+		if (CONFIG["patata-engine"]["raccoon-renderer"]["opengl-adaptative-vsync"].as<bool>()) {
+			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			fast_io::io::print(fast_io::out(), " Adaptative");
 		}
+		fast_io::io::println(fast_io::out());
+	}
+	else {
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN);
+		fast_io::io::println(fast_io::out(), "No");
 	}
 
-	#if DEBUG
-		fast_io::io::println(fast_io::out(), "\n    Available Extensions :");
-		{
-			GLint NumberOfExtensions = 0;
-			glGetIntegerv(GL_NUM_EXTENSIONS, &NumberOfExtensions);
-
-			for (GLint i = 0; i < NumberOfExtensions; i++)
-				fast_io::io::println(fast_io::out(), "        ", std::string_view{ reinterpret_cast<const char *>(glGetStringi(GL_EXTENSIONS, i)) });
-		}
-	#endif	
+	// ImGui Version
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::print(fast_io::out(), "  ImGui Version : ");
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::println(fast_io::out(), PATATA_IMGUI_VERSION);
 
 	fast_io::io::println(fast_io::out());
 }

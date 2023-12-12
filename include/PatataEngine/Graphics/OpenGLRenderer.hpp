@@ -1,11 +1,10 @@
-#include <cstdint>
 #include <SDL.h>
 
 namespace Patata {
 	namespace Graphics {
 		class OpenGLRenderer {
 			public:	
-				OpenGLRenderer(void);
+				OpenGLRenderer(YAML::Node & Config);
 				~OpenGLRenderer(void);
 
 				void OpenGLResizeViewPort(SDL_Window *);

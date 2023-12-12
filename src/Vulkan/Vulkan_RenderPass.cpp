@@ -1,10 +1,5 @@
-#include <vector>
-
-#include <SDL_vulkan.h>
-#include <vulkan/vulkan.hpp>
-
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
-#include "PatataEngine/Log.hpp"
+#include "Log.hpp"
 
 void Patata::Graphics::VulkanRenderer::CreateRenderPass(void) {
 	// Color
@@ -70,5 +65,5 @@ void Patata::Graphics::VulkanRenderer::CreateRenderPass(void) {
 	CreateRenderPassInfo.pDependencies = Dep.data();
 	
 	vk::Result Result = Device.createRenderPass(&CreateRenderPassInfo, nullptr, &RenderPass);
-	Patata::Log::CheckRenderPass(Result);
+	Patata::Log::VulkanCheck("RenderPass", Result);
 }

@@ -24,10 +24,18 @@ if get_option('enable_icon')
   else
     message('Custom Icon: No')
 
-    run_command('cp', 'icon/patata.bmp', join_paths(meson.global_build_root()), check : true)
+    if get_option('buildtype') == 'release' or get_option('buildtype') == 'minsize'
+      run_command('cp', 'icon/patata-release.bmp', join_paths(meson.global_build_root()), check : true)
+    else
+      run_command('cp', 'icon/patata-debug.bmp', join_paths(meson.global_build_root()), check : true)
+    endif
 
     if get_option('game_name') != ''
-      run_command('mv', meson.global_build_root() + '/patata.bmp', meson.global_build_root() + '/' + get_option('game_name') + '.bmp', check : true)
+      if get_option('buildtype') == 'release' or get_option('buildtype') == 'minsize'
+        run_command('mv', meson.global_build_root() + '/patata-release.bmp', meson.global_build_root() + '/' + get_option('game_name') + '.bmp', check : true)
+      else
+        run_command('mv', meson.global_build_root() + '/patata-debug.bmp', meson.global_build_root() + '/' + get_option('game_name') + '.bmp', check : true)
+      endif
 
       run_command('cp', meson.global_build_root() + '/' + get_option('game_name') + '.bmp', meson.global_build_root() + '/../bin', check : true)
     else

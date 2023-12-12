@@ -7,43 +7,37 @@
 // Patata Engine
 #include "PatataEngine/PatataEngine.hpp"
 
-bool Patata::PatataEngine::Input(void) {
+void Patata::Engine::HandleEvent(SDL_Event & Event) {
 	static bool KeyPress = false;
 	static bool FullScreen = false;
+		
+	#if defined(DEBUG)
+	if (bGraphicsAPI == Patata::GraphicsAPI::OpenGL)
+		ImGui_ImplSDL2_ProcessEvent(&Event);
+	#endif
 
-	while (SDL_PollEvent(MainEvent)) {
-		#if defined(DEBUG)
-		if (!bGraphicsAPI)
-			ImGui_ImplSDL2_ProcessEvent(MainEvent);
-		#endif
-
-		switch (MainEvent->type) {
-			case SDL_QUIT: return false; break;
-
-			case SDL_KEYDOWN:
-				if (!KeyPress) {
-					switch (MainEvent->key.keysym.sym) {
-						case SDLK_F11:
-							if (!FullScreen) {
-								FullScreen = true;
-								SDL_SetWindowFullscreen(pWindow->WindowGet(), SDL_WINDOW_FULLSCREEN);
-							}
-							else {
-								FullScreen = false;
-								SDL_SetWindowFullscreen(pWindow->WindowGet(), 0);
-							}
-							break;
-					}
-					KeyPress = true;
+	switch (Event.type) {
+		case SDL_KEYDOWN:
+			if (!KeyPress) {
+				switch (Event.key.keysym.sym) {
+					case SDLK_F11:
+						if (!FullScreen) {
+							FullScreen = true;
+							SDL_SetWindowFullscreen(Info->pWindow, SDL_WINDOW_FULLSCREEN);
+						}
+						else {
+							FullScreen = false;
+							SDL_SetWindowFullscreen(Info->pWindow, 0);
+						}
+						break;
 				}
-				break;
+				KeyPress = true;
+			}
+			break;
 
-			case SDL_KEYUP:
-				if (KeyPress)
-					KeyPress = false;
-				break;
-		}
+		case SDL_KEYUP:
+			if (KeyPress)
+				KeyPress = false;
+			break;
 	}
-
-	return true;
 }

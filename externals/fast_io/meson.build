@@ -1,4 +1,5 @@
 project('fast_io', 'cpp',
+	version : '804d943',
 	default_options : ['cpp_std=c++20'])
 
 meson.get_compiler('c').check_header('stdio.h', required : false)

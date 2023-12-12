@@ -1,0 +1,33 @@
+1 VERSIONINFO
+ FILEVERSION 1,90,0,0
+ PRODUCTVERSION 1,90
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "080904b0"
+		BEGIN
+			VALUE "Comments", "Dear ImGui is a bloat-free graphical user interface library for C++"
+			VALUE "CompanyName", ""
+			VALUE "FileDescription", "Bloat-free Graphical User interface for C++ with minimal dependencies"
+			VALUE "FileVersion", "1, 90, 0, 0"
+			VALUE "InternalName", "ImGui"
+			VALUE "LegalCopyright", "Copyright (c) 2014-2023 Omar Cornut"
+			VALUE "OriginalFilename", "ImGui.dll"
+			VALUE "ProductName", "ImGui"
+			VALUE "ProductVersion", "1, 90"
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x809, 1200
+	END
+END

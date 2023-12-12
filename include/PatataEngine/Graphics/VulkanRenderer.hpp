@@ -5,13 +5,14 @@
 
 #include <yaml-cpp/yaml.h>
 #include <SDL.h>
+
 #include <vulkan/vulkan.hpp>
 
 namespace Patata {
 	namespace Graphics {
 		class VulkanRenderer {
 			public:
-				bool CreateInstance(SDL_Window *, YAML::Node);
+				bool CreateInstance(SDL_Window *&, YAML::Node);
 				uint32_t CreateLogicalDeviceAndCreateQueue(void);
 				void CreateSurface(SDL_Window *, vk::Instance, VkSurfaceKHR *);
 				std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> CreateSwapChain(uint32_t &, YAML::Node);
@@ -21,11 +22,11 @@ namespace Patata {
 				void CreatePipeline(void);
 				void VulkanInfo(YAML::Node CONFIG, std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR>);
 
-				VulkanRenderer(SDL_Window *, YAML::Node);
+				VulkanRenderer(SDL_Window *&, YAML::Node);
 				~VulkanRenderer(void);
 
 			private:
-				vk::Instance VulkanInstance = nullptr;
+				vk::Instance Instance = nullptr;
 				vk::SurfaceKHR Surface = nullptr;
 
 				vk::Queue Queue;
