@@ -41,7 +41,7 @@ void Patata::Engine::InitRenderer(void) {
 		SetupImGUIBackend();
 		#endif
 
-		pGlLoadProc = reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress);
+		GLADloadfunc pGlLoadProc = reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress);
 		if (pGlLoadProc == nullptr) {
 			#if defined(_WIN64)
 			SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);

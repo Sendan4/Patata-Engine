@@ -101,6 +101,11 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 	fast_io::io::println(Bold, "  Loader Version : ", Reset, PATATA_VULKAN_LOADER_VERSION);
 	#endif
 
+	// Vulkan Headers Version
+	#if defined(PATATA_VULKAN_HEADERS_VERSION)
+	fast_io::io::println(Bold, "  Headers Version : ", Reset, PATATA_VULKAN_HEADERS_VERSION);
+	#endif
+
 	// Vulkan Version
 	{
 		#if defined(__GNUC__) || defined(__MINGW64__)	

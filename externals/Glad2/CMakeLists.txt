@@ -12,12 +12,17 @@ include(CheckIncludeFile)
 CHECK_INCLUDE_FILE("stdint.h" HAVE_STDINT_H)
 CHECK_INCLUDE_FILE("inttypes.h" HAVE_INTTYPES_H)
 
-if (SHARED_BUILD AND NOT MSVC)
+if (LIBS_SHARED_BUILD AND NOT MSVC)
 	message(STATUS "Shared Build")
 	add_library(${PROJECT_NAME} SHARED include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
 else()
 	message(STATUS "Static Build")
 	add_library(${PROJECT_NAME} STATIC include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
+
+    if (SHARED_BUILD AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
+		message(STATUS "Build With Position Independent Code")
+	endif()
 endif()
 
 if (NOT MSVC OR MSYS AND CMAKE_SYSTEM_NAME STREQUAL "Windows")

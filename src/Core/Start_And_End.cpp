@@ -5,8 +5,6 @@
 #endif
 
 #include <fast_io.h>
-#include <SDL.h>
-#include <glad/gl.h>
 #include <yaml-cpp/yaml.h>
 
 #if defined(DEBUG)
@@ -75,8 +73,6 @@ Patata::Engine::Engine(void) {
 		else if (GraphicsAPI == "OPENGL")
 			bGraphicsAPI = Patata::GraphicsAPI::OpenGL;
 	}
-
-	MainEvent = new SDL_Event;
 }
 
 #if defined(__GNUC__) || defined(__MINGW64__)

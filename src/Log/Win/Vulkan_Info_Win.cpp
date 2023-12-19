@@ -130,6 +130,14 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 	fast_io::io::println(fast_io::out(), PATATA_VULKAN_LOADER_VERSION);
 	#endif
 
+	// Vulkan Headers Version
+	#if defined(PATATA_VULKAN_HEADERS_VERSION)
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	fast_io::io::print(fast_io::out(), "  Headers Version : ");
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::println(fast_io::out(), PATATA_VULKAN_HEADERS_VERSION);
+	#endif
+
 	// Vulkan Version
 	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
 
@@ -245,11 +253,19 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 	#if defined(DEBUG)
 		SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 		fast_io::io::println(fast_io::out(), "Enabled");
+
+		#if defined(PATATA_VULKAN_VALIDATION_LAYERS_VERSION)
+			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+			fast_io::io::print(fast_io::out(), "  Validation Layer Version : ");
+			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			fast_io::io::println(fast_io::out(), PATATA_VULKAN_VALIDATION_LAYERS_VERSION);
+		#endif
 	#else
 		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 		fast_io::io::println(fast_io::out(), "Disabled");
 	#endif
 	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
 
 	// ImGUI Version
 	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);

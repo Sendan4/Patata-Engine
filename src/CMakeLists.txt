@@ -1,6 +1,5 @@
 file(GLOB_RECURSE Include "${CMAKE_CURRENT_SOURCE_DIR}/../include/PatataEngine/*.hpp")
 
-
 if (DEFINED SHARED_BUILD AND SHARED_BUILD)
 	add_library(${PROJECT_NAME} SHARED)
 	add_library(Patata::Engine-Shared ALIAS ${PROJECT_NAME})
@@ -64,15 +63,6 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}../include/")
 target_include_directories(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/"
-	"${CMAKE_CURRENT_SOURCE_DIR}Log/")
-
-if (USE_EXTERNAL_LIBS)
-	target_include_directories(${PROJECT_NAME} PRIVATE
-		"${CMAKE_BINARY_DIR}/externals/SDL/include"
-		"${CMAKE_CURRENT_SOURCE_DIR}/../externals/Vulkan-Headers/include")
-endif()
-
-target_include_directories(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/Log/")
 
 # Install With CPack
@@ -89,25 +79,14 @@ if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWit
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()
 
-if (NOT MSVC)
-	if (WIN32 AND NOT MSVC OR MSYS)
-		install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../bin/vulkan-1.dll" DESTINATION "${CMAKE_INSTALL_BINDIR}")
-		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")		
-			install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../bin/VkLayer_khronos_validation.dll" DESTINATION "${CMAKE_INSTALL_BINDIR}")
-		endif()
-	endif()
-endif()
-
-install(TARGETS yaml-cpp
-	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
-
-if (SHARED_BUILD)
-	install(TARGETS SDL2main SDL2
+if (USE_EXTERNAL_LIBS)
+	install(TARGETS yaml-cpp
 		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
-else()
-	install(TARGETS SDL2main SDL2-static
+endif()
+
+if (LIBS_SHARED_BUILD)
+	install(TARGETS SDL2main SDL2
 		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()
@@ -123,7 +102,6 @@ endif ()
 if (COMPILER_SUPPORTS_WALL)
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		target_compile_options(${PROJECT_NAME} PRIVATE "/Wall")
-		target_compile_options(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4>)
 	elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 		target_compile_options(${PROJECT_NAME} PRIVATE "-Wall")
 	endif()
@@ -176,15 +154,18 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 	PATATA_FAST_IO_GIT_COMMIT_HASH_SHORT="${Fast_io_COMMIT_SHORT_HASH}")
 
 if (USE_EXTERNAL_LIBS)
-	target_compile_definitions(${PROJECT_NAME} PRIVATE
-	PATATA_VULKAN_LOADER_VERSION="${PATATA_VULKAN_LOADER_VERSION}"
-	PATATA_YAML_CPP_VERSION="${PATATA_YAML-CPP_VERSION}")
+	target_compile_definitions(${PROJECT_NAME} PRIVATE PATATA_YAML_CPP_VERSION="${PATATA_YAML-CPP_VERSION}")
+	if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR MSVC)
+		# Cannot compile Vulkan in Mingw
+		target_compile_definitions(${PROJECT_NAME} PRIVATE
+			PATATA_VULKAN_LOADER_VERSION="${PATATA_VULKAN_LOADER_VERSION}"
+			PATATA_VULKAN_VALIDATION_LAYERS_VERSION="${PATATA_VULKAN_VALIDATION_LAYERS_VERSION}"
+			PATATA_VULKAN_HEADERS_VERSION="${PATATA_VULKAN_HEADERS_VERSION}")
+	endif()
 endif()
 
-if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo" AND USE_EXTERNAL_LIBS)
-	target_compile_definitions(${PROJECT_NAME} PRIVATE
-		PATATA_VULKAN_VALIDATION_LAYERS_VERSION="${PATATA_VULKAN_VALIDATION_LAYERS_VERSION}"
-		PATATA_IMGUI_VERSION="${Imgui_VERSION}")
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+	target_compile_definitions(${PROJECT_NAME} PRIVATE PATATA_IMGUI_VERSION="${Imgui_VERSION}")
 endif()
 
 if (DEFINED GAME_NAME)
@@ -201,44 +182,44 @@ endif()
 if (USE_EXTERNAL_LIBS)
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
-		target_link_libraries(${PROJECT_NAME} PUBLIC vulkan)
+		target_link_libraries(${PROJECT_NAME} PRIVATE vulkan Vulkan::Headers)
 
 		set_target_properties(asm_offset
 			PROPERTIES
 			ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 			LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-	endif()
+	else()
+		# mingw
+		message("")
+		message("  - Vulkan SDK -")
+		find_package(Vulkan REQUIRED)
 
-	#Linux
-	if (LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
-		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-			target_link_libraries(${PROJECT_NAME} PRIVATE
-			VkLayer_khronos_validation
-			-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+		set (VULKANSDK_LIBS_PATH "${Vulkan_LIBRARIES}")
+		string(REPLACE "vulkan-1.lib" "" VULKANSDK_LIBS_PATH ${VULKANSDK_LIBS_PATH})
+		string(STRIP VULKANSDK_LIBS_PATH ${VULKANSDK_LIBS_PATH})
+		message(STATUS "Vulkan Libs Path : ${VULKANSDK_LIBS_PATH}")
 
-			file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/../tools/debug_run_patata_engine.sh"
-				DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-		endif()
-	endif()
-
-	# MSYS2 Vulkan Link
-	if (NOT MSVC AND (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows"))
 		target_link_libraries(${PROJECT_NAME} PUBLIC
 			-lvulkan-1
-			-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+			-L${VULKANSDK_LIBS_PATH})
 
 		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-			target_link_libraries(${PROJECT_NAME} PUBLIC
-				-lVkLayer_khronos_validation
-				-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+			target_compile_definitions(${PROJECT_NAME} PUBLIC VVL_FROM_SDK=1)
 		endif()
+		target_include_directories(${PROJECT_NAME} PRIVATE "${Vulkan_INCLUDE_DIRS}")
 	endif()
 
-	if (SHARED_BUILD)
+	target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../externals/SDL/include")
+
+	if (LIBS_SHARED_BUILD)
 		target_link_libraries(${PROJECT_NAME} PUBLIC SDL2main SDL2::SDL2)
 	else()
-		target_link_libraries(${PROJECT_NAME} PUBLIC SDL2main SDL2-static)
+		if (SHARED_BUILD AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2main SDL2::SDL2)
+		else()
+			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2main SDL2-static)
+		endif()
 
 		if (NOT MSVC)
 			if ((WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows") OR (LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux"))
@@ -248,10 +229,9 @@ if (USE_EXTERNAL_LIBS)
 	endif()
 else()
 	# Package Mananger
-	target_link_libraries(${PROJECT_NAME} PUBLIC
+	target_link_libraries(${PROJECT_NAME} PRIVATE
 		${Vulkan_LIBRARIES}
-		${SDL2_LIBRARIES}
-		Vulkan-Headers)
+		${SDL2_LIBRARIES})
 endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Fast_io Glad2 yaml-cpp)
@@ -275,7 +255,7 @@ if (MSVC)
 		set_target_properties(NightlyMemoryCheck PROPERTIES FOLDER "Engine/Others/yamlcpp")
 
 		#SDL2
-		if (SHARED_BUILD)
+		if (LIBS_SHARED_BUILD)
 			set_target_properties(SDL2 PROPERTIES FOLDER "Engine/Dependencies/SDL2")
 		endif()
 		set_target_properties(SDL2main PROPERTIES FOLDER "Engine/Dependencies/SDL2")
@@ -310,4 +290,4 @@ endif()
 
 set_target_properties(${PROJECT_NAME}
 	PROPERTIES
-	VERSION "0")
+	VERSION "${PATATA_ENGINE_VERSION}")

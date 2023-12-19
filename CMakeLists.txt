@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 3.18)
 message("")
 message("  - Patata Engine -")
 
-option(SHARED_BUILD "Static Or Shared library" ON)
-option(USE_EXTERNAL_LIBS "Sse libraries from external folder insted of system libraries" ON)
+option(SHARED_BUILD "Build static or shared library" ON)
+option(LIBS_SHARED_BUILD "Build and link Shared dependencies" OFF)
+option(USE_EXTERNAL_LIBS "Use libraries from external folder instead of system libraries" ON)
 option(USE_GIT "Grab git information" ON)
 option(USE_CUSTOM_ICON OFF)
 option(ENABLE_ICON "use icon in runtime" ON)
@@ -26,8 +27,7 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set (PATATA_SHARED_BUILD OFF CACHE INTERNAL "...")
-set (PATATA_STATIC_BUILD OFF CACHE INTERNAL "...")
+set (CMAKE_FIND_PACKAGE_TARGETS_GLOBAL TRUE)
 
 if (SHARED_BUILD)
 	set (PATATA_SHARED_BUILD ON CACHE INTERNAL "...")
@@ -213,6 +213,12 @@ if (USE_GIT AND GIT)
 			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/externals/Vulkan-Loader/"
 			OUTPUT_VARIABLE PATATA_VULKAN_LOADER_VERSION
 			OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+		execute_process(
+			COMMAND git describe --tags --abbrev=0
+			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/externals/Vulkan-Headers/"
+			OUTPUT_VARIABLE PATATA_VULKAN_HEADERS_VERSION
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
 		
 		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 			execute_process(
@@ -269,7 +275,7 @@ message(STATUS "Version : ${PATATA_ENGINE_VERSION}")
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 include(CheckSymbolExists)
 
@@ -278,16 +284,15 @@ if (NOT USE_EXTERNAL_LIBS)
 	add_subdirectory(externals/fast_io)
 	find_package(yaml-cpp REQUIRED)
 	find_package(Vulkan REQUIRED)
-	find_package(Vulkan-Headers REQUIRED)
 	add_subdirectory(externals/Glad2)
 	find_package(SDL2 REQUIRED)
 
 	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 		add_subdirectory(externals/imgui)
 
-		find_file(HAVE_IMGUI_VULKAN_H "imgui_impl_vulkan.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/Imgui/imgui/backends")
-		find_file(HAVE_IMGUI_SDL2_H "imgui_impl_sdl2.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/Imgui/imgui/backends")
-		find_file(HAVE_IMGUI_OPENGL3_H "imgui_impl_opengl3.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/Imgui/imgui/backends")
+		find_file(HAVE_IMGUI_VULKAN_H "imgui_impl_vulkan.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/imgui/backends")
+		find_file(HAVE_IMGUI_SDL2_H "imgui_impl_sdl2.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/imgui/backends")
+		find_file(HAVE_IMGUI_OPENGL3_H "imgui_impl_opengl3.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/imgui/backends")
 
 		if (NOT HAVE_IMGUI_VULKAN_H OR NOT HAVE_IMGUI_SDL2_H OR NOT HAVE_IMGUI_OPENGL3_H)
 			message(FATAL_ERROR "Missing Headers")
@@ -337,12 +342,6 @@ if (NOT USE_EXTERNAL_LIBS)
 		if (HAVE_IMGUI_OPENGL3_H)
 			message(STATUS "Looking for imgui_impl_opengl3.h - found")
 		endif()
-	endif()
-
-	check_symbol_exists("vk::createInstance" "${Vulkan_INCLUDE_DIRS}/vulkan/vulkan.hpp" HAS_VKCREATEINSTANCE)
-
-	if (HAS_VKCREATEINSTANCE)
-		message(FATAL_ERROR "vulkan/vulkan.hpp not have vk::createInstance")
 	endif()
 else()
 	# using submodules

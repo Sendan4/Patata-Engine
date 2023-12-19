@@ -20,7 +20,6 @@
 	#endif
 #endif
 
-#include <glad/gl.h>
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
 #include "PatataEngine/Graphics/OpenGLRenderer.hpp"
 
@@ -51,7 +50,6 @@ namespace Patata {
 		private:
 			SDL_Event * MainEvent = nullptr;
 			bool bGraphicsAPI;
-			GLADloadfunc pGlLoadProc = nullptr;
 
 			#if defined(DEBUG)
 				void SetupImGUIBackend(void);

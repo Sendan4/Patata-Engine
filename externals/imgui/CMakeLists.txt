@@ -34,12 +34,17 @@ else()
 	endif()
 endif()
 
-if (SHARED_BUILD AND NOT MSVC)
+if (LIBS_SHARED_BUILD AND NOT MSVC)
 	message(STATUS "Shared Build")
 	add_library(${PROJECT_NAME} SHARED)
 else ()
 	message(STATUS "Static Build")
 	add_library(${PROJECT_NAME} STATIC)
+
+    if (SHARED_BUILD AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
+		message(STATUS "Build With Position Independent Code")
+	endif()
 endif()
 
 if (NOT MSVC OR MSYS AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -101,7 +106,7 @@ else()
 	target_link_libraries(${PROJECT_NAME} PRIVATE
 		${Vulkan_LIBRARIES}
 		${SDL2_LIBRARIES}
-        Vulkan-Headers)
+        Vulkan::Headers)
 endif()
 
 set_target_properties(${PROJECT_NAME}

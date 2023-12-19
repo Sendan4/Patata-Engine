@@ -18,8 +18,6 @@
 	#define PATATA_COMPILER "Old Microsoft Visual C++ (MSVC)"
 #elif _MSC_VER >= 1930
 	#define PATATA_COMPILER "Microsoft Visual C++ (MSVC)"
-#elif
-	#define PATATA_COMPPILER ""
 #endif
 
 #if defined(__GNUC__) || defined(__MINGW64__)
@@ -66,11 +64,14 @@ void Patata::Log::StartPatataLogInfo(void) {
 	#endif
 
 	#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::print(fast_io::out(), " | ");
+
 	if (PATATA_GIT_WORK_DIR_IS_CLEAN == "Staged")
 		SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	else
 		SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), " | ", PATATA_GIT_WORK_DIR_IS_STAGED);
+	fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_STAGED);
 	#endif
 	fast_io::io::println(fast_io::out());
 	#endif
@@ -90,11 +91,14 @@ void Patata::Log::StartPatataLogInfo(void) {
 	#endif
 
 	#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
+	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::print(fast_io::out(), " | ");
+
 	if (PATATA_GIT_WORK_DIR_IS_CLEAN == "Staged")
 		SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	else
 		SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), " | ", PATATA_GIT_WORK_DIR_IS_STAGED);
+	fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_STAGED);
 	#endif
 	fast_io::io::println(fast_io::out());
 	#endif

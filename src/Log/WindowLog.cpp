@@ -2,7 +2,24 @@
 #include <cxxabi.h>
 #endif
 #include <cstdlib>
-#include <cstring>
+
+#ifndef SDL_VIDEO_DRIVER_WAYLAND
+#define SDL_VIDEO_DRIVER_WAYLAND
+#endif
+#if defined(PATATA_LINUX_XORG_SUPPORT)
+#ifndef SDL_VIDEO_DRIVER_X11
+#define SDL_VIDEO_DRIVER_X11
+#endif
+#endif
+#ifndef SDL_VIDEO_DRIVER_MIR
+#define SDL_VIDEO_DRIVER_MIR
+#endif
+#ifndef SDL_VIDEO_DRIVER_KMSDRM
+#define SDL_VIDEO_DRIVER_KMSDRM
+#endif
+#ifndef SDL_VIDEO_DRIVER_VIVANTE
+#define SDL_VIDEO_DRIVER_VIVANTE
+#endif
 
 #include <SDL_syswm.h>
 #include <fast_io.h>
@@ -44,7 +61,7 @@ void Patata::Log::WindowLog(SDL_Window * Window) {
 				#else
 				fast_io::io::println(Bold, "  Window System : ", Reset, "XWayland", Dim, CGREY66, " [(", std::string_view{ typeid(XDG_SESSION_TYPE).name() },") XDG_SESSION_TYPE] ", Reset, std::string_view { XDG_SESSION_TYPE });
 				#endif
-			else
+			else {
 				#if defined(__GNUC__) || defined(__MINGW64__)
 				fast_io::io::println(Bold, "  Window System : ", Reset, "X11", Dim, CGREY66, " [(", std::string_view{ abi::__cxa_demangle(typeid(XDG_SESSION_TYPE).name(), nullptr, nullptr, nullptr) },") XDG_SESSION_TYPE] ", Reset, std::string_view { XDG_SESSION_TYPE });
 				fast_io::io::println(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(WindowInfo.info.x11.window).name(), nullptr, nullptr, nullptr) }, "]", Reset, Bold, " Window Type", Reset);
@@ -54,6 +71,7 @@ void Patata::Log::WindowLog(SDL_Window * Window) {
 				fast_io::io::println(Dim, CGREY66, "  [", std::string_view{ typeid(WindowInfo.info.x11.display).name() }, "]", Reset, Bold, " Window Type", Reset);
 				fast_io::io::println(Dim, CGREY66,"  [", std::string_view{ typeid(WindowInfo.info.x11.surface).name() }, "]", Reset, Bold, " Surface Type", Reset);
 				#endif
+			}
 			break;
 		#endif
 

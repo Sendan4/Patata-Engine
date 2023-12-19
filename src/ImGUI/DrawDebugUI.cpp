@@ -1,4 +1,5 @@
 #include <imgui.h>
+#include <glad/gl.h>
 
 #include "PatataEngine/PatataEngine.hpp"
 
