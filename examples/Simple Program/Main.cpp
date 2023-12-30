@@ -5,13 +5,6 @@
 int main(int argc, char ** argv) {
 	Patata::Engine Patata;
 
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) exit(1);
-
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
     SDL_Window * window = SDL_CreateWindow(
 		#if defined(DEBUG)
 		"Patata Engine | Debug (Development)",
@@ -55,14 +48,7 @@ int main(int argc, char ** argv) {
 
 		Patata.Render();
 	}
-	
-	if(*Patata.pGraphicsAPI == Patata::GraphicsAPI::OpenGL) {
-		SDL_GL_DeleteContext(context);
-		delete context;
-		context = nullptr;
-	}
 
-    SDL_DestroyWindow(window);
-
-    return 0;
+	SDL_DestroyWindow(window);
+	return 0;
 }

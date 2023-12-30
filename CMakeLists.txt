@@ -88,8 +88,9 @@ endif()
 CHECK_INCLUDE_FILE_CXX("cstring" HAVE_CSTRING LANGUAGE CXX)
 CHECK_INCLUDE_FILE_CXX("algorithm" HAVE_IOSTREAM LANGUAGE CXX)
 CHECK_INCLUDE_FILE_CXX("tuple" HAVE_TUPLE LANGUAGE CXX)
+CHECK_INCLUDE_FILE_CXX("cstdlib" HAVE_CSTDLIB LANGUAGE CXX)
 
-if (NOT HAVE_CSTRING OR NOT HAVE_IOSTREAM OR NOT HAVE_TUPLE)
+if (NOT HAVE_CSTRING OR NOT HAVE_IOSTREAM OR NOT HAVE_TUPLE OR NOT HAVE_CSTDLIB)
 	message(FATAL_ERROR "include files missing")
 endif()
 
@@ -131,8 +132,14 @@ endif()
 
 check_type_size("bool" SUPPORT_BOOL LANGUAGE CXX)
 
-if (NOT SUPPORT_BOOL)
-	message(FATAL_ERROR "Not Support Bool")
+if (NOT SUPPORT_INT64_T)
+	message(FATAL_ERROR "Not Support int64_t")
+endif()
+
+check_type_size("const bool *" SUPPORT_CONST_BOOL_P LANGUAGE CXX)
+
+if (NOT SUPPORT_CONST_BOOL_P)
+	message(FATAL_ERROR "Not Support const bool *")
 endif()
 
 check_type_size("const char *" SUPPORT_CONST_CHAR_P LANGUAGE CXX)

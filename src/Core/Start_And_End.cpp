@@ -38,7 +38,7 @@ Patata::Engine::Engine(void) {
 	}
 	catch(const YAML::BadFile & BadFile) {
 		Patata::Log::YamlFileErrorMessage();
-		exit(-1);
+		exit(1);
 	}
 
 	#if defined(__linux__)
@@ -57,6 +57,16 @@ Patata::Engine::Engine(void) {
 				Patata::Log::ErrorMessage("Cannot set enviroment varible SDL_VIDEODRIVER");
 	}
 	#endif
+
+	#if defined(PATATA_FIND_VVL_IN_THE_CURRENT_PATH)
+		#if defined(_WIN64)
+			if(SetEnvironmentVariable("VK_LAYER_PATH", ".") == 0)
+				Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");
+		#else
+			if(setenv("VK_LAYER_PATH", ".", 1) != 0)
+				Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");
+		#endif
+	#endif
 	
 	{
 		std::string GraphicsAPI = Config["patata-engine"]["raccoon-renderer"]["graphics-api"].as<std::string>();
@@ -67,6 +77,27 @@ Patata::Engine::Engine(void) {
 		else if (GraphicsAPI == "OPENGL")
 			bGraphicsAPI = Patata::GraphicsAPI::OpenGL;
 	}
+
+	try {
+		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+			Patata::Log::FatalErrorMessage("SDL2", "Cannot init the video subsystem", Config);
+			throw Patata::RunTimeError("SDL Cannot init the video subsystem");
+		}
+	}
+	catch (const Patata::RunTimeError & Error) { exit(1); }
+
+	try {
+		if (SDL_Init(SDL_INIT_EVENTS) != 0) {
+			Patata::Log::FatalErrorMessage("SDL2", "Cannot init the events subsystem", Config);
+			throw Patata::RunTimeError("SDL Cannot init the events subsystem");
+		}
+	}
+	catch (const Patata::RunTimeError & Error) { exit(1); }
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 }
 
 #if defined(__GNUC__) || defined(__MINGW64__)
@@ -86,5 +117,7 @@ Patata::Engine::~Engine(void) {
 	else {		
 		// OpenGL
 		Patata::Log::DeleteAndLogPtr("OpenGL Renderer", pOpenGLRenderer);
+		SDL_GL_DeleteContext(Info->pOpenGLContext);
+		delete Info->pOpenGLContext;
 	}
 }

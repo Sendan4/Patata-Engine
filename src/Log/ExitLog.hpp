@@ -25,7 +25,7 @@ namespace Patata {
 						fast_io::io::print(Dim, CGREY66, "[", std::string_view{ typeid(*ptr).name() }, "] ");
 					#endif
 
-					fast_io::io::print(Message, " Pointer Removed : ");
+					fast_io::io::print(Bold, Message, Reset, " Pointer Removed : ");
 				#endif
 
 				if (ptr == nullptr) {
@@ -60,7 +60,7 @@ namespace Patata {
 					fast_io::io::println(fast_io::out(), Message, " Already Eliminated Or Null");
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 				#else
-				fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, Message, " Already Eliminated Or Null", Reset);
+				fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, Message, Reset, " Already Eliminated Or Null");
 				#endif
 			}
 		}
@@ -90,7 +90,7 @@ namespace Patata {
 						fast_io::io::print(Dim, CGREY66, "[", std::string_view{ typeid(*ptr).name() }, "] ");
 					#endif
 
-					fast_io::io::print(Message, " Array Pointer Removed : ");
+					fast_io::io::print(Bold, Message, Reset, " Array Pointer Removed : ");
 				#endif
 
 				if (ptr == nullptr) {
@@ -125,7 +125,7 @@ namespace Patata {
 					fast_io::io::println(fast_io::out(), Message, " Already Eliminated Or Null");
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 				#else
-				fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, Message, " Already Eliminated Or Null", Reset);
+				fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, Message, Reset, " Already Eliminated Or Null");
 				#endif
 			}
 		}

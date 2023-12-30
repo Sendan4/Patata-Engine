@@ -18,7 +18,7 @@ namespace Patata {
 
 		// Errors
 		void YamlFileErrorMessage(void);
-		void FatalErrorMessage(const std::string &, const std::string &, YAML::Node);
+		void FatalErrorMessage(const std::string &, const std::string &, YAML::Node &);
 		void ErrorMessage(const std::string &);
 	}
 }

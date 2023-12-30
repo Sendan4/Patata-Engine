@@ -60,4 +60,15 @@ namespace Patata {
 	};
 
 	enum GraphicsAPI : bool { Vulkan = true, OpenGL = false };
+
+	class RunTimeError : public std::exception {
+    	private:
+			std::string message;
+
+    	public:
+	    	RunTimeError(const std::string & msg) : message(msg) {}
+			std::string what (void) {
+    	    	return message;
+    		}
+	};
 }
