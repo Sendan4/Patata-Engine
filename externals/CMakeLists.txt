@@ -12,9 +12,9 @@ set (YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "..." FORCE)
 
 if (LIBS_SHARED_BUILD)
 	set (YAML_BUILD_SHARED_LIBS ON INTERNAL FORCE)
-	message(STATUS "Shared Build")
+	message(STATUS "Library Type : Shared")
 else ()
-	message(STATUS "Static Build")
+	message(STATUS "Library Type : Static")
 endif()
 
 add_subdirectory(yaml-cpp)
@@ -84,11 +84,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 		set (SDL_X11 OFF CACHE INTERNAL "..." FORCE)
 		set (SDL_X11_SHARED OFF CACHE INTERNAL "..." FORCE)
 	endif ()
-
-	set (SDL_WAYLAND ON CACHE INTERNAL "..." FORCE)
-	set (SDL_WAYLAND_SHARED ON CACHE INTERNAL "..." FORCE)
-	set (SDL_WAYLAND_LIBDECOR ON CACHE INTERNAL "..." FORCE)
-	set (SDL_WAYLAND_LIBDECOR_SHARED ON CACHE INTERNAL "..." FORCE)
 endif ()
 
 add_subdirectory(SDL)

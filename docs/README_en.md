@@ -13,8 +13,8 @@
 
 ⚠️ Not ready for use yet
 
-## Ejemplo de su uso
-[Programa de Ejemplo](examples/Simple Program/Main.cpp)
+## Example of its use
+[Example Program](examples/Simple Program/Main.cpp)
 
 ```cpp
 #include <SDL.h>
@@ -104,7 +104,7 @@ int main(int argc, char ** argv) {
 - VkLayer_khronos_validation must be found by Patata if it is compiled with ```USE_EXTERNAL_LIBS```, and it must be in the same directory.
 - Re-do the way Patata can load or accept icons for the window
 
-## Third-party libraries used in this project
+## Dependencies used in this project
 <ul>
 	<li><a href = "http://www.libsdl.org/">SDL2</a></li>
 	<li><a href = "https://www.vulkan.org/">Vulkan</a></li>
@@ -126,6 +126,6 @@ int main(int argc, char ** argv) {
 
 <hr>
 
-## Ifficial Mirrors
+## Official Mirrors
 - [Github](https://github.com/Sendan4/Patata-Engine.git)
 - [Codeberg](https://codeberg.org/Sendan/patata-engine.git)

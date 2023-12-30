@@ -8,8 +8,8 @@
 #include "PatataEngine/PatataEngine.hpp"
 
 void Patata::Engine::HandleEvent(SDL_Event & Event) {
-	static bool KeyPress = false;
-	static bool FullScreen = false;
+	static bool PatataKeyPress = false;
+	static bool PatataFullScreen = false;
 		
 	#if defined(DEBUG)
 	if (bGraphicsAPI == Patata::GraphicsAPI::OpenGL)
@@ -18,26 +18,26 @@ void Patata::Engine::HandleEvent(SDL_Event & Event) {
 
 	switch (Event.type) {
 		case SDL_KEYDOWN:
-			if (!KeyPress) {
+			if (!PatataKeyPress) {
 				switch (Event.key.keysym.sym) {
 					case SDLK_F11:
-						if (!FullScreen) {
-							FullScreen = true;
+						if (!PatataFullScreen) {
+							PatataFullScreen = true;
 							SDL_SetWindowFullscreen(Info->pWindow, SDL_WINDOW_FULLSCREEN);
 						}
 						else {
-							FullScreen = false;
+							PatataFullScreen = false;
 							SDL_SetWindowFullscreen(Info->pWindow, 0);
 						}
 						break;
 				}
-				KeyPress = true;
+				PatataKeyPress = true;
 			}
 			break;
 
 		case SDL_KEYUP:
-			if (KeyPress)
-				KeyPress = false;
+			if (PatataKeyPress)
+				PatataKeyPress = false;
 			break;
 	}
 }

@@ -5,7 +5,6 @@
 #endif
 
 #include <fast_io.h>
-#include <yaml-cpp/yaml.h>
 #include <windows.h>
 
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"

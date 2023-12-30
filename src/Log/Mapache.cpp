@@ -15,7 +15,7 @@ void Patata::Log::StartMapache(void) {
 		SetConsoleOutputCP(CP_UTF8);
 	#endif
 
-	srand(time(nullptr));
+	srand(static_cast<int32_t>(time(nullptr)));
 
 	switch (rand() % 12) {
 		case 1: case 2:

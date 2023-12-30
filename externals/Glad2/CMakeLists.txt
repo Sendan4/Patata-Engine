@@ -13,10 +13,10 @@ CHECK_INCLUDE_FILE("stdint.h" HAVE_STDINT_H)
 CHECK_INCLUDE_FILE("inttypes.h" HAVE_INTTYPES_H)
 
 if (LIBS_SHARED_BUILD AND NOT MSVC)
-	message(STATUS "Shared Build")
+	message(STATUS "Library Type : Shared")
 	add_library(${PROJECT_NAME} SHARED include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
 else()
-	message(STATUS "Static Build")
+	message(STATUS "Library Type : Static")
 	add_library(${PROJECT_NAME} STATIC include/glad/gl.h include/KHR/khrplatform.h src/gl.c)
 
     if (SHARED_BUILD AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

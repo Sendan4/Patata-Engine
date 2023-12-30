@@ -4,7 +4,6 @@
 
 #include <windows.h>
 #include <fast_io.h>
-#include <yaml-cpp/yaml.h>
 #include <glad/gl.h>
 
 // Patata Engine

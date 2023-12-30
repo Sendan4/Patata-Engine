@@ -2,9 +2,9 @@
 #include <cxxabi.h>
 #endif
 
-#include <SDL_vulkan.h>
 #include <fast_io.h>
 
+#include <SDL_vulkan.h>
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
 #include "Log.hpp"
 

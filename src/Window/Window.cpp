@@ -1,5 +1,3 @@
-#include <SDL.h>
-
 #include "PatataEngine/PatataEngine.hpp"
 #include "Log.hpp"
 #include "TerminalColors.hpp"

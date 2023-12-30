@@ -8,7 +8,7 @@ namespace Patata {
 				~OpenGLRenderer(void);
 
 				void OpenGLResizeViewPort(SDL_Window *);
-				void OpenGLSetViewPort(uint64_t, uint64_t);
+				void OpenGLSetViewPort(uint32_t, uint32_t);
 			private:
 		};
 	}

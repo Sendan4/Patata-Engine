@@ -1,23 +1,23 @@
 // OS
 #if __linux__ && !__ANDROID__
-	#define PATATA_OS "Linux"
+#	define PATATA_OS "Linux"
 #elif _WIN64 || _WIN32
-	#define PATATA_OS "Windows"
+#	define PATATA_OS "Windows"
 #endif
 
 // Compiler
 #if __GNUC__
-	#if __MINGW64__
-		#define PATATA_COMPILER "MinGW"
-	#else
-		#define PATATA_COMPILER "GCC"
-	#endif
-#elif __clang__
-	#define PATATA_COMPILER "Clang"
+#	if __clang__
+#		define PATATA_COMPILER "Clang"	
+#	elif __MINGW64__
+#		define PATATA_COMPILER "MinGW"
+#	else
+#		define PATATA_COMPILER "GCC"
+#	endif
 #elif _MSC_VER <= 1929
-	#define PATATA_COMPILER "Old Microsoft Visual C++ (MSVC)"
+#	define PATATA_COMPILER "Old Microsoft Visual C++ (MSVC)"
 #elif _MSC_VER >= 1930
-	#define PATATA_COMPILER "Microsoft Visual C++ (MSVC)"
+#	define PATATA_COMPILER "Microsoft Visual C++ (MSVC)"
 #endif
 
 #if defined(__GNUC__) || defined(__MINGW64__)
@@ -50,57 +50,63 @@ void Patata::Log::StartPatataLogInfo(void) {
 	#endif
 
 	#if defined(PATATA_GIT_HASH_LONG)
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), "  Git Commit Hash Long : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), PATATA_GIT_HASH_LONG, " ");
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		fast_io::io::print(fast_io::out(), "  Git Commit Hash Long : ");
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		fast_io::io::print(fast_io::out(), PATATA_GIT_HASH_LONG, " ");
 
-	#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
-	if (PATATA_GIT_WORK_DIR_IS_CLEAN == "Clean")
-		SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	else
-		SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_CLEAN);
-	#endif
+		#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
+			#if PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL == 1
+				SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			#else
+				SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			#endif
+		fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_CLEAN);
+		#endif
 
-	#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), " | ");
+		#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
+			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			fast_io::io::print(fast_io::out(), " | ");
 
-	if (PATATA_GIT_WORK_DIR_IS_CLEAN == "Staged")
-		SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	else
-		SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_STAGED);
-	#endif
-	fast_io::io::println(fast_io::out());
+			#if PATATA_GIT_WORK_DIR_IS_STAGED_BOOL == 1
+				SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			#else
+				SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			#endif
+			fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_STAGED);
+		#endif
+
+		fast_io::io::println(fast_io::out());
 	#endif
 
 	#if defined(PATATA_GIT_HASH_SHORT)
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), "  Git Commit Hash Short : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), PATATA_GIT_HASH_SHORT, " ");
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		fast_io::io::print(fast_io::out(), "  Git Commit Hash Short : ");
+		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		fast_io::io::print(fast_io::out(), PATATA_GIT_HASH_SHORT, " ");
 
-	#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
-	if (PATATA_GIT_WORK_DIR_IS_CLEAN == "Clean")
-		SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	else
-		SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_CLEAN);
-	#endif
+		#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
+			#if PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL == 1
+				SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			#else
+				SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			#endif
+		fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_CLEAN);
+		#endif
 
-	#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), " | ");
+		#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
+			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			fast_io::io::print(fast_io::out(), " | ");
 
-	if (PATATA_GIT_WORK_DIR_IS_CLEAN == "Staged")
-		SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	else
-		SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_STAGED);
-	#endif
-	fast_io::io::println(fast_io::out());
+			#if PATATA_GIT_WORK_DIR_IS_STAGED_BOOL == 1
+				SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			#else
+				SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			#endif
+			fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_STAGED);
+		#endif
+
+		fast_io::io::println(fast_io::out());
 	#endif
 
 	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);

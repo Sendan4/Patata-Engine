@@ -43,12 +43,13 @@ endif
 lib = library(meson.project_name(),
   source,
   include_directories : [include, include_directories('Log'), include_directories('.')],
-  d_import_dirs : [include],
-  dependencies : [dependencies],
+  d_import_dirs : include,
+  dependencies : dependencies,
+  soversion : meson.project_version(),
   build_by_default : true,
   install : true,
-  link_args : link_arguments,
-  install_dir : join_paths(meson.global_build_root(),'../bin'),
+  cpp_args : cpp_arguments,
+  install_dir : join_paths(meson.global_build_root(), '../bin'),
   install_rpath : '.',
   build_rpath : '.')
 

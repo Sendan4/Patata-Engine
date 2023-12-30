@@ -85,7 +85,7 @@ if (USE_EXTERNAL_LIBS)
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()
 
-if (LIBS_SHARED_BUILD)
+if (LIBS_SHARED_BUILD AND USE_EXTERNAL_LIBS)
 	install(TARGETS SDL2main SDL2
 		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
@@ -99,9 +99,9 @@ if (COMPILER_SUPPORTS_CXX20)
 	endif()
 endif ()
 
-if (COMPILER_SUPPORTS_WALL)
+if (COMPILER_SUPPORTS_W4)
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-		target_compile_options(${PROJECT_NAME} PRIVATE "/Wall")
+		target_compile_options(${PROJECT_NAME} PRIVATE "/W4")
 	elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 		target_compile_options(${PROJECT_NAME} PRIVATE "-Wall")
 	endif()
@@ -150,7 +150,9 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 	PATATA_GIT_HASH_LONG="${PATATA_GIT_HASH_LONG}"
 	PATATA_GIT_HASH_SHORT="${PATATA_GIT_HASH_SHORT}"
 	PATATA_GIT_WORK_DIR_IS_CLEAN="${PATATA_GIT_WORK_DIR_IS_CLEAN}"
+	PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL=${PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL}
 	PATATA_GIT_WORK_DIR_IS_STAGED="${PATATA_GIT_WORK_DIR_IS_STAGED}"
+	PATATA_GIT_WORK_DIR_IS_STAGED_BOOL=${PATATA_GIT_WORK_DIR_IS_STAGED_BOOL}
 	PATATA_FAST_IO_GIT_COMMIT_HASH_SHORT="${Fast_io_COMMIT_SHORT_HASH}")
 
 if (USE_EXTERNAL_LIBS)
@@ -179,10 +181,11 @@ if (DEFINED GAME_VERSION_MAYOR AND DEFINED GAME_VERSION_MINOR AND GAME_VERSION_P
 		PATATA_GAME_VERSION_PATCH=${GAME_VERSION_PATCH})
 endif()
 
+
 if (USE_EXTERNAL_LIBS)
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
-		target_link_libraries(${PROJECT_NAME} PRIVATE vulkan Vulkan::Headers)
+		target_link_libraries(${PROJECT_NAME} PUBLIC vulkan Vulkan::Headers)
 
 		set_target_properties(asm_offset
 			PROPERTIES
@@ -207,18 +210,24 @@ if (USE_EXTERNAL_LIBS)
 		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 			target_compile_definitions(${PROJECT_NAME} PUBLIC VVL_FROM_SDK=1)
 		endif()
-		target_include_directories(${PROJECT_NAME} PRIVATE "${Vulkan_INCLUDE_DIRS}")
+		target_include_directories(${PROJECT_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}")
 	endif()
 
 	target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../externals/SDL/include")
+	if (SHARED_BUILD AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+		target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_VIDEO_DRIVER_WAYLAND)
+		if (XORG_SUPPORT)
+			target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_VIDEO_DRIVER_X11)
+		endif()
+	endif()
 
 	if (LIBS_SHARED_BUILD)
-		target_link_libraries(${PROJECT_NAME} PUBLIC SDL2main SDL2::SDL2)
+		target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
 	else()
 		if (SHARED_BUILD AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
-			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2main SDL2::SDL2)
+			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
 		else()
-			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2main SDL2-static)
+			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2-static)
 		endif()
 
 		if (NOT MSVC)

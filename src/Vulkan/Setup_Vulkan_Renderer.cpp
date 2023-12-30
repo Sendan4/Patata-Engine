@@ -1,9 +1,11 @@
 #if defined(__GNUC__) || defined(__MINGW64__)
 #include <cxxabi.h>
 #endif
+#include <vector>
+#include <tuple>
 
-#include <SDL_vulkan.h>
 #include <fast_io.h>
+#include <SDL_vulkan.h>
 
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
 #include "TerminalColors.hpp"
@@ -52,9 +54,9 @@ Patata::Graphics::VulkanRenderer::~VulkanRenderer(void) {
 	Device.destroyRenderPass(RenderPass);
 	Device.freeCommandBuffers(CommandPool, CommandBuffers);
 	Device.destroyCommandPool(CommandPool);
-//	Device.freeMemory(ImageMemory);
-//	Device.destroyImage(DepthImage);
-//	Device.destroyImageView(ImageView);
+	Device.freeMemory(ImageMemory);
+	Device.destroyImage(DepthImage);
+	//Device.destroyImageView(ImageView);
 	Device.destroySwapchainKHR(SwapChain);
 	Instance.destroySurfaceKHR(Surface);
 	Device.destroy();

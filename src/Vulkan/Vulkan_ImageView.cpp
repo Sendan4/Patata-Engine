@@ -9,7 +9,7 @@
 #include "Log.hpp"
 
 void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFamilyIndex) {
-	/*vk::ImageCreateInfo CreateImageInfo{};
+	vk::ImageCreateInfo CreateImageInfo{};
 	CreateImageInfo.imageType = vk::ImageType::e2D;
 	CreateImageInfo.setExtent(vk::Extent3D {SwapChainExtent.width, SwapChainExtent.height, 1});
 	CreateImageInfo.mipLevels = 1;
@@ -96,9 +96,9 @@ void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFa
 
 		//SwapChainBuffers[i].Views[1] = ImageView;
 
-		//Device.destroyImageView(ImageView);
+		Device.destroyImageView(ImageView);
 
 		//SwapChainBuffers[i].FrameBuffer = ;
 	}
-	fast_io::io::println(fast_io::out(), "");*/
+	fast_io::io::println(fast_io::out(), "");
 }

@@ -98,7 +98,8 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 
 	// Vulkan Loader Version
 	#if defined(PATATA_VULKAN_LOADER_VERSION)
-	fast_io::io::println(Bold, "  Loader Version : ", Reset, PATATA_VULKAN_LOADER_VERSION);
+	if constexpr (strcmp(PATATA_VULKAN_LOADER_VERSION, "undefined") != 0)
+		fast_io::io::println(Bold, "  Loader Version : ", Reset, PATATA_VULKAN_LOADER_VERSION);
 	#endif
 
 	// Vulkan Headers Version

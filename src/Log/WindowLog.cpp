@@ -3,24 +3,6 @@
 #endif
 #include <cstdlib>
 
-#ifndef SDL_VIDEO_DRIVER_WAYLAND
-#define SDL_VIDEO_DRIVER_WAYLAND
-#endif
-#if defined(PATATA_LINUX_XORG_SUPPORT)
-#ifndef SDL_VIDEO_DRIVER_X11
-#define SDL_VIDEO_DRIVER_X11
-#endif
-#endif
-#ifndef SDL_VIDEO_DRIVER_MIR
-#define SDL_VIDEO_DRIVER_MIR
-#endif
-#ifndef SDL_VIDEO_DRIVER_KMSDRM
-#define SDL_VIDEO_DRIVER_KMSDRM
-#endif
-#ifndef SDL_VIDEO_DRIVER_VIVANTE
-#define SDL_VIDEO_DRIVER_VIVANTE
-#endif
-
 #include <SDL_syswm.h>
 #include <fast_io.h>
 
@@ -53,7 +35,7 @@ void Patata::Log::WindowLog(SDL_Window * Window) {
 			#endif
 			break;
 
-		#if defined(PATATA_LINUX_XORG_SUPPORT)
+		#if defined(PATATA_LINUX_XORG_SUPPORT) && defined(SDL_VIDEO_DRIVER_X11)
 		case SDL_SYSWM_X11:
 			if (strcmp(XDG_SESSION_TYPE, "wayland") == 0)
 				#if defined(__GNUC__) || defined(__MINGW64__)

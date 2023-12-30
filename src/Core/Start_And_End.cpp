@@ -5,12 +5,6 @@
 #endif
 
 #include <fast_io.h>
-#include <yaml-cpp/yaml.h>
-
-#if defined(DEBUG)
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_opengl3.h>
-#endif
 
 #if defined(_WIN64)
 	#include <windows.h>
@@ -42,7 +36,7 @@ Patata::Engine::Engine(void) {
 		Config = YAML::LoadFile(strcpy(SDL_GetBasePath(), "patata.yaml"));
 		#endif
 	}
-	catch(const YAML::BadFile) {
+	catch(const YAML::BadFile & BadFile) {
 		Patata::Log::YamlFileErrorMessage();
 		exit(-1);
 	}

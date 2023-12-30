@@ -35,10 +35,10 @@ else()
 endif()
 
 if (LIBS_SHARED_BUILD AND NOT MSVC)
-	message(STATUS "Shared Build")
+	message(STATUS "Library Type : Shared")
 	add_library(${PROJECT_NAME} SHARED)
 else ()
-	message(STATUS "Static Build")
+	message(STATUS "Library Type : Static")
 	add_library(${PROJECT_NAME} STATIC)
 
     if (SHARED_BUILD AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
@@ -80,14 +80,32 @@ target_sources(${PROJECT_NAME} PRIVATE
 if (USE_EXTERNAL_LIBS)
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
-		target_link_libraries(${PROJECT_NAME} PRIVATE vulkan)
-	endif()
+		target_link_libraries(${PROJECT_NAME} PUBLIC vulkan Vulkan::Headers)
 
-	# MSYS2 Vulkan Link
-	if (NOT MSVC AND (WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows"))
-		target_link_libraries(${PROJECT_NAME} PRIVATE
+		set_target_properties(asm_offset
+			PROPERTIES
+			ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+			LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+	else()
+		# mingw
+		message("")
+		message("  - Vulkan SDK -")
+		find_package(Vulkan REQUIRED)
+
+		set (VULKANSDK_LIBS_PATH "${Vulkan_LIBRARIES}")
+		string(REPLACE "vulkan-1.lib" "" VULKANSDK_LIBS_PATH ${VULKANSDK_LIBS_PATH})
+		string(STRIP VULKANSDK_LIBS_PATH ${VULKANSDK_LIBS_PATH})
+		message(STATUS "Vulkan Libs Path : ${VULKANSDK_LIBS_PATH}")
+
+		target_link_libraries(${PROJECT_NAME} PUBLIC
 			-lvulkan-1
-			-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+			-L${VULKANSDK_LIBS_PATH})
+
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+			target_compile_definitions(${PROJECT_NAME} PUBLIC VVL_FROM_SDK=1)
+		endif()
+		target_include_directories(${PROJECT_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}")
 	endif()
 
 	if (SHARED_BUILD)

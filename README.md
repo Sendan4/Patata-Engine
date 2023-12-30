@@ -103,7 +103,7 @@ int main(int argc, char ** argv) {
 - VkLayer_khronos_validation debe ser encontrado por Patata si este se compila con ```USE_EXTERNAL_LIBS```, y este debe de estar en su mismo directorio.
 - ReHacer la forma en la que patata puede cargar o aceptar iconos para la ventana
 
-## Librerias de terceros usadas en este proyecto
+## Dependencias usadas en este proyecto
 <ul>
 	<li><a href = "http://www.libsdl.org/">SDL2</a></li>
 	<li><a href = "https://www.vulkan.org/">Vulkan</a></li>

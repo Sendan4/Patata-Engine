@@ -7,18 +7,20 @@
 
 // Compiler
 #if __GNUC__
-	#if __MINGW64__
-		#define PATATA_COMPILER "MinGW"
-	#else
-		#define PATATA_COMPILER "GCC"
-	#endif
-#elif __clang__
-	#define PATATA_COMPILER "Clang"
+#	if __clang__
+#		define PATATA_COMPILER "Clang"	
+#	elif __MINGW64__
+#		define PATATA_COMPILER "MinGW"
+#	else
+#		define PATATA_COMPILER "GCC"
+#	endif
 #elif _MSC_VER <= 1929
-	#define PATATA_COMPILER "Old Microsoft Visual C++ (MSVC)"
+#	define PATATA_COMPILER "Old Microsoft Visual C++ (MSVC)"
 #elif _MSC_VER >= 1930
-	#define PATATA_COMPILER "Microsoft Visual C++ (MSVC)"
+#	define PATATA_COMPILER "Microsoft Visual C++ (MSVC)"
 #endif
+
+#include <cstring>
 
 #include <fast_io.h>
 
@@ -29,62 +31,61 @@
 void Patata::Log::StartPatataLogInfo(void) {
 	fast_io::io::println(LightSalmon3, Bold, PATATA_ENGINE_NAME, Reset, Bold, " INFO", Reset);
 	
-	#if defined(PATATA_GIT_BRANCH)
-	fast_io::io::println(Bold, "  Git Branch : ", Reset, PATATA_GIT_BRANCH);
-	#endif
+	if constexpr (PATATA_GIT_BRANCH)
+		fast_io::io::println(Bold, "  Git Branch : ", Reset, PATATA_GIT_BRANCH);
 
 	#if defined(PATATA_GIT_HASH_LONG)
 		fast_io::io::print(Bold, "  Git Commit Hash Long", Reset, " : ", Reset, PATATA_GIT_HASH_LONG);
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
-			if (PATATA_GIT_WORK_DIR_IS_CLEAN == "Clean")
+			#if PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL == 1
 				fast_io::io::print(Chartreuse1);
-			else
+			#else
 				fast_io::io::print(BLightGoldenRod1);
+			#endif
 			fast_io::io::print(" ", PATATA_GIT_WORK_DIR_IS_CLEAN);
 		#endif
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
 			fast_io::io::print(Reset, " | ");
 
-			if (PATATA_GIT_WORK_DIR_IS_STAGED == "Staged")
+			#if PATATA_GIT_WORK_DIR_IS_STAGED_BOOL == 1
 				fast_io::io::print(Chartreuse1);
-			else
+			#else
 				fast_io::io::print(BLightGoldenRod1);
+			#endif
 	
 			fast_io::io::print(PATATA_GIT_WORK_DIR_IS_STAGED);
 		#endif
 
-	fast_io::io::println(Reset);
+		fast_io::io::println(Reset);
 	#endif
 
 	#if defined(PATATA_GIT_HASH_SHORT)
 	fast_io::io::print(Bold, "  Git Commit Hash Short", Reset, " : ", PATATA_GIT_HASH_SHORT);
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
-			if (PATATA_GIT_WORK_DIR_IS_CLEAN == "Clean")
+			#if PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL == 1
 				fast_io::io::print(Chartreuse1);
-			else
+			#else
 				fast_io::io::print(BLightGoldenRod1);
+			#endif
 			fast_io::io::print(" ", PATATA_GIT_WORK_DIR_IS_CLEAN);
 		#endif
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
 			fast_io::io::print(Reset, " | ");
 
-			if (PATATA_GIT_WORK_DIR_IS_STAGED == "Staged")
+			#if PATATA_GIT_WORK_DIR_IS_STAGED_BOOL == 1
 				fast_io::io::print(Chartreuse1);
-			else
+			#else
 				fast_io::io::print(BLightGoldenRod1);
+			#endif
 	
 			fast_io::io::print(PATATA_GIT_WORK_DIR_IS_STAGED);
 		#endif
 
 	fast_io::io::println(Reset);
-	#endif
-
-	#if defined(PATATA_GIT_COMMIT_AUTHOR_AND_TIME)
-	fast_io::io::println(Bold, "  Git Commit Author And Date : ", Reset, PATATA_GIT_COMMIT_AUTHOR_AND_TIME);
 	#endif
 
 	fast_io::io::println(Bold, "  Build Date : ", Reset, __DATE__, " ", __TIME__);
@@ -105,7 +106,9 @@ void Patata::Log::StartPatataLogInfo(void) {
 	fast_io::io::println(Bold, "  SDL Version : ", Reset, sdlversion.major, ".", sdlversion.minor, ".", sdlversion.patch);
 
 	#if defined(PATATA_YAML_CPP_VERSION)
+	if constexpr (strcmp(PATATA_YAML_CPP_VERSION, "undefined") != 0)
 		fast_io::io::println(Bold , "  Yaml-Cpp Version : ", Reset, PATATA_YAML_CPP_VERSION);
 	#endif
+
 	fast_io::io::println("");
 }
