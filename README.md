@@ -95,7 +95,6 @@ int main(int argc, char ** argv) {
 - [X] Crear un logo o simbolo
 
 ## Para Hacer
-- VkLayer_khronos_validation debe ser encontrado por Patata si este se compila con ```USE_EXTERNAL_LIBS```, y este debe de estar en su mismo directorio.
 - ReHacer la forma en la que patata puede cargar o aceptar iconos para la ventana
 
 ## Dependencias usadas en este proyecto
