@@ -1,12 +1,12 @@
+#define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <PatataEngine/PatataEngine.hpp>
 
 int main(int argc, char ** argv) {
-    Patata::Engine Patata;
+	Patata::Engine Patata;
 
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) exit(1);
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) exit(1);
 
-	// Le hare un Wrapper a esto proximamente
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -50,7 +50,7 @@ int main(int argc, char ** argv) {
 				break;
 			}
 		}
-		
+
 		// Your Render Functions
 
 		Patata.Render();
@@ -62,7 +62,7 @@ int main(int argc, char ** argv) {
 		context = nullptr;
 	}
 
-	SDL_DestroyWindow(window);
+    SDL_DestroyWindow(window);
 
-	return 0;
+    return 0;
 }

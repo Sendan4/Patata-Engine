@@ -1,7 +1,7 @@
-project('Game', 'cpp',
+project('MyFurryGame', 'cpp',
     default_options : ['buildtype=release'])
 
-if get_option('use_external_libs') == true
+if get_option('use_external_libs') == true and build_machine.system() != 'windows'
   cmake = import('cmake')
 
   buildtypeforcmake = ''
@@ -32,14 +32,6 @@ if get_option('use_external_libs') == true
       { 'SDL_X11_SHARED' : false })
   endif
 
-  if build_machine.system() == 'linux'
-    sdl2_opt.add_cmake_defines(
-      { 'SDL_WAYLAND' : true },
-      { 'SDL_WAYLAND_SHARED' : true },
-      { 'SDL_WAYLAND_LIBDECOR' : true},
-      { 'SDL_WAYLAND_LIBDECOR_SHARED' : true})
-  endif
-
   sdl2 = cmake.subproject('SDL', options : sdl2_opt)
   sdl2_dep = sdl2.dependency('SDL2')
 else
@@ -49,19 +41,16 @@ else
 endif
 
 Patata_Engine_dep = subproject('patata-engine').get_variable('Patata_Engine_dep')
-# For Debug builds
+dependencies = [sdl2_dep, Patata_Engine_dep]
+
 if get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized'
   add_project_arguments('-DDEBUG=1', language : 'cpp')
 endif
 
-# game_name is required to use use_custom_icon and icon_path
-
 executable(meson.project_name(),
   'Main.cpp',
-  include_directories : include_directories('subprojects/patata-engine/externals/Glad2/include'),
-  dependencies : [Patata_Engine_dep, sdl2_dep],
+  dependencies : dependencies,
   build_by_default : true,
   install : true,
-  install_dir : join_paths(meson.global_build_root(),'../bin'),
-  install_rpath : '.',
-  build_rpath : '.')
+  install_dir : join_paths(meson.global_build_root(), '../bin'),
+  install_rpath : '.')
