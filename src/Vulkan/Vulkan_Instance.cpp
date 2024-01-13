@@ -1,12 +1,13 @@
-#if defined(__GNUC__) || defined(__MINGW64__)
+#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
 #include <cxxabi.h>
 #endif
 
 #include <fast_io.h>
 
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
-#include <SDL_vulkan.h>
 #include "Log.hpp"
+
+#include <SDL_vulkan.h>
 
 #if defined(_WIN64)
 #include <windows.h>
@@ -28,10 +29,14 @@
 #define PATATA_GAME_VERSION_PATCH 0
 #endif
 
+#define PATATA_GAME_VERSION VK_MAKE_VERSION(PATATA_GAME_VERSION_MAYOR, PATATA_GAME_VERSION_MINOR, PATATA_GAME_VERSION_PATCH)
+#define PATATA_ENGINE_VERSION_VK VK_MAKE_VERSION(PATATA_ENGINE_VERSION_MAYOR, PATATA_ENGINE_VERSION_MINOR, PATATA_ENGINE_VERSION_PATCH)
+
 bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window *& WINDOW, YAML::Node CONFIG) {
-	vk::ApplicationInfo PatataEngineInfo(PATATA_GAME_NAME, VK_MAKE_VERSION(PATATA_GAME_VERSION_MAYOR, PATATA_GAME_VERSION_MINOR, PATATA_GAME_VERSION_PATCH),
-										PATATA_ENGINE_NAME, VK_MAKE_VERSION(PATATA_ENGINE_VERSION_MAYOR, PATATA_ENGINE_VERSION_MINOR, PATATA_ENGINE_VERSION_PATCH),
-										VK_API_VERSION_1_3);
+	vk::ApplicationInfo PatataEngineInfo(
+		PATATA_GAME_NAME, PATATA_GAME_VERSION,
+		PATATA_ENGINE_NAME, PATATA_ENGINE_VERSION_VK,
+		VK_API_VERSION_1_3);
 
 	// Layers
 	#if defined(DEBUG)
@@ -40,8 +45,10 @@ bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window *& WINDOW, YAML
 	#endif
 
 	// Get Extensions 
-	// Array -> 1 debe ser iniciado desde aqui.
-	// Array -> 0 SDL Extensions // Array -> 1 My extensions
+	// Array -> 2 debe ser iniciado desde aqui para indicar la cantidad de extensiones a usar
+	// Array -> 1 SDL Extensions // Array -> 2 My extensions
+	// Por alguna razon, aqui hay que comenzar a contar desde 1 cuando se inicia un array con valores, eso es raro.
+	// mas abajo se comienza a contar desde 0, como tiene que ser.
 	uint32_t extensionInstanceCount[2] { 0, 1 };
 
 	// SDL por alguna razon develve un numero extra en el conteo de extensiones
@@ -56,8 +63,7 @@ bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window *& WINDOW, YAML
 	// Desde aqui se deben agregar las otras extensiones, desde el conteo que devuelve SDL en adelante
 	pExtensionInstanceNames[extensionInstanceCount[0]] = "VK_KHR_get_physical_device_properties2";
 
-	Patata::Log::VulkanList(pExtensionInstanceNames,
-		extensionInstanceCount[1] - 1, found_extensions, "Instance Extensions");
+	Patata::Log::VulkanList(pExtensionInstanceNames, extensionInstanceCount[1] - 1, found_extensions, "Instance Extensions");
 
 	// Create Instance
 	vk::InstanceCreateInfo InstanceInfo({}, &PatataEngineInfo,

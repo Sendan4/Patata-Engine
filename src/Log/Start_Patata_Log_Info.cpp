@@ -45,9 +45,9 @@ void Patata::Log::StartPatataLogInfo(void) {
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
 			#if PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL == 1
-				fast_io::io::print(PATATA_TERM_COLOR_YELLOW);
-			#else
 				fast_io::io::print(PATATA_TERM_COLOR_GREEN);
+			#else
+				fast_io::io::print(PATATA_TERM_COLOR_YELLOW);
 			#endif
 			fast_io::io::print(" ", PATATA_GIT_WORK_DIR_IS_CLEAN);
 		#endif
@@ -75,9 +75,9 @@ void Patata::Log::StartPatataLogInfo(void) {
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
 			#if PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL == 1
-				fast_io::io::print(PATATA_TERM_COLOR_YELLOW);
-			#else
 				fast_io::io::print(PATATA_TERM_COLOR_GREEN);
+			#else
+				fast_io::io::print(PATATA_TERM_COLOR_YELLOW);
 			#endif
 			fast_io::io::print(" ", PATATA_GIT_WORK_DIR_IS_CLEAN);
 		#endif
