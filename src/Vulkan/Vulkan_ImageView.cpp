@@ -29,13 +29,13 @@ void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFa
 		#if defined(_WIN64)
 			fast_io::io::println(fast_io::out(), "DepthImage For BindImageMemory : ", vk::to_string(Result));
 		#else
-			fast_io::io::println(Bold, "DepthImage For BindImageMemory : ", Reset, BLightGoldenRod1, vk::to_string(Result), Reset);
+			fast_io::io::println(PATATA_TERM_BOLD, "DepthImage For BindImageMemory : ", PATATA_TERM_RESET, PATATA_TERM_COLOR_YELLOW, vk::to_string(Result), PATATA_TERM_RESET);
 		#endif
 	else
 		#if defined(_WIN64)
 			fast_io::io::println(fast_io::out(), "DepthImage For BindImageMemory : ", vk::to_string(Result));
 		#else
-			fast_io::io::println(Bold, "DepthImage For BindImageMemory : ", Reset, Chartreuse1, vk::to_string(Result), Reset);
+			fast_io::io::println(PATATA_TERM_BOLD, "DepthImage For BindImageMemory : ", PATATA_TERM_RESET, PATATA_TERM_COLOR_GREEN, vk::to_string(Result), PATATA_TERM_RESET);
 		#endif
 
 	// create Depht and color Image

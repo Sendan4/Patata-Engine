@@ -1,11 +1,11 @@
 #include <fast_io.h>
 
-#include "Log.hpp"
 #if defined(_WIN64)
 	#include <windows.h>
-#else
-	#include "TerminalColors.hpp"
 #endif
+
+#include "Log.hpp"
+#include "TerminalColors.hpp"
 
 void Patata::Log::FatalErrorMessage(const std::string & Title, const std::string & Message, YAML::Node & CONFIG) {
 	std::string PatataErrorTitle = "Patata Engine - ";
@@ -17,26 +17,30 @@ void Patata::Log::FatalErrorMessage(const std::string & Title, const std::string
 	#if defined(_WIN64)
 	{
 		HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
+		DWORD mode = 0;
+		GetConsoleMode(Terminal, &mode);
+		SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
 
-		SetConsoleTextAttribute(Terminal, 12);
-		fast_io::io::perr(fast_io::out(), "ERROR FATAL: ");
-		SetConsoleTextAttribute(Terminal, 7);
-		fast_io::io::perrln(fast_io::out(), Message);
+		fast_io::io::perr(fast_io::out(), "ERROR FATAL : " , Message);
+
+		SetConsoleMode(Terminal, mode);
 	}
 	#else
-		fast_io::io::perrln(Bold, FindianRed1, "ERROR FATAL: ", Reset, Message);
+		fast_io::io::perrln(PATATA_TERM_BOLD, PATATA_TERM_COLOR_RED, "ERROR FATAL : ", PATATA_TERM_RESET, Message);
 	#endif
 }
 
 void Patata::Log::ErrorMessage(const std::string & Message) {
 	#if defined(_WIN64)
 		HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(Terminal, 12);
-		fast_io::io::perr(fast_io::out(), "ERROR: ");
-		SetConsoleTextAttribute(Terminal, 7);
+		DWORD mode = 0;
+		GetConsoleMode(Terminal, &mode);
+		SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
 
-		fast_io::io::perrln(fast_io::out(), Message);
+		fast_io::io::perr(fast_io::out(), "ERROR FATAL : " , Message);
+
+		SetConsoleMode(Terminal, mode);
 	#else
-		fast_io::io::perrln(Bold, FindianRed1, "ERROR: ", Reset, Message);
+		fast_io::io::perrln(PATATA_TERM_BOLD, PATATA_TERM_COLOR_RED, "ERROR : ", PATATA_TERM_RESET, Message);
 	#endif
 }

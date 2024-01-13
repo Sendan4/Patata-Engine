@@ -4,7 +4,7 @@
 	#ifdef SHARED_LIBRARY_EXPORT_DEFINE
 		#define PATATA_API __declspec(dllexport)
 	#else
-		#define PATATA_API __declspec(dllimport)
+		#define PATATA_API
 	#endif
 #elif defined(__linux__)
 	#define PATATA_API __attribute__((visibility("default")))
@@ -36,8 +36,8 @@ namespace Patata {
 			const bool * pGraphicsAPI = &bGraphicsAPI;
 			EngineInfo * Info = new EngineInfo;
 
-			PATATA_API Engine (void);
-			PATATA_API ~Engine (void);
+			PATATA_API Engine(void);
+			PATATA_API ~Engine(void);
 			
 			PATATA_API uint64_t GetWindowFlags(void);
 			PATATA_API void HandleEvent(SDL_Event &);

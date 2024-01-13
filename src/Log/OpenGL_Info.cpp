@@ -1,5 +1,4 @@
-#include <cstring>
-#if defined(__GNUC__) || defined(__MINGW64__)
+#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
 #include <cxxabi.h>
 #endif
 
@@ -11,28 +10,47 @@
 #include "Log.hpp"
 
 void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
-	fast_io::io::println(Bold, FSteelBlue1, "OpenGL ", Reset, Bold, "INFO");
+	fast_io::io::println(PATATA_TERM_BOLD,
+		PATATA_TERM_COLOR_BLUE,
+		"OpenGL ",
+		PATATA_TERM_RESET,
+		PATATA_TERM_RESET,
+		"INFO");
 
 	// GPU Vendor
 	{
 		auto Vendor = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(Vendor).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(Vendor).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(glGetString(Vendor)).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(glGetString(Vendor)).name() }, "]",
 		#endif
-		fast_io::io::println(Bold, " Vendor : ", Reset, std::string_view{ Vendor });
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Vendor : ",
+			PATATA_TERM_RESET,
+			std::string_view{ Vendor });
 	}
 
 	// GPU Name
 	{
 		auto Name = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(Name).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(Name).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(glGetString(Name)).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(glGetString(Name)).name() }, "]",
 		#endif
-		fast_io::io::println(Bold, " Renderer : ", Reset, std::string_view{ Name });
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Renderer : ",
+			PATATA_TERM_RESET,
+			std::string_view{ Name });
 	}
 
 	// OpenGL Version
@@ -42,54 +60,63 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 		glGetIntegerv(GL_MINOR_VERSION, &glminorversion);
 		std::string glversion = std::to_string(glmayorversion) + '.' + std::to_string(glminorversion);
 
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(glmayorversion).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(glmayorversion).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(glGetString(glmayorversion)).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(glGetString(glmayorversion)).name() }, "]",
 		#endif
-
-		fast_io::io::println(Bold, " Version : ", Reset, glversion);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Version : ",
+			PATATA_TERM_RESET,
+			glversion);
 	}
 
 	// GLslang or GLSL Version
 	{
 		auto GLslang = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(GLslang).name(), nullptr, nullptr, nullptr) }, "]", Reset);
-		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(glGetString(GLslang)).name() }, "]", Reset);
-		#endif
 
-		fast_io::io::println(Bold, " GLslang Version : ", Reset, std::string_view{ GLslang });
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(GLslang).name(), nullptr, nullptr, nullptr) }, "]",
+		#else
+			"  [", std::string_view{ typeid(glGetString(GLslang)).name() }, "]",
+		#endif
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" GLslang Version : ",
+			PATATA_TERM_RESET,
+			std::string_view{ GLslang });
 	}
 
 	// GLAD Loader Version
-	fast_io::io::println(Bold, "  GLAD Loader Version : ", Reset, GLAD_GENERATOR_VERSION);
+	fast_io::io::println(PATATA_TERM_BOLD, "  GLAD Loader Version : ", PATATA_TERM_RESET, GLAD_GENERATOR_VERSION);
 
 	{
 		GLint contextflags = 0;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &contextflags);
 
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(contextflags).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(contextflags).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(glGetString(contextflags)).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(glGetString(contextflags)).name() }, "]",
 		#endif
-
-		fast_io::io::print(Bold, " Profile : ", Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Profile : ",
+			PATATA_TERM_RESET);
 
 		switch (contextflags) {
-			case GL_CONTEXT_CORE_PROFILE_BIT :
-				fast_io::io::println("Core");
-				break;
+			case GL_CONTEXT_CORE_PROFILE_BIT : fast_io::io::println("Core"); break;
 
-			case GL_CONTEXT_COMPATIBILITY_PROFILE_BIT :
-				fast_io::io::println("Compatibility");
-				break;
+			case GL_CONTEXT_COMPATIBILITY_PROFILE_BIT : fast_io::io::println("Compatibility"); break;
 
-			default :
-				fast_io::io::println("Unknown");
-				break;
+			default : fast_io::io::println("Unknown"); break;
 		}
 	}
 
@@ -98,13 +125,17 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 		GLint accel = 0;
 		SDL_GL_GetAttribute(SDL_GL_ACCELERATED_VISUAL, &accel);
 
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(accel).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(accel).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(glGetString(accel)).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(glGetString(accel)).name() }, "]",
 		#endif
-
-		fast_io::io::print(Bold, " Accelerated Visual : ", Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Accelerated Visual : ",
+			PATATA_TERM_RESET);
 
 		if (accel == 1)
 			fast_io::io::println("Hardware");
@@ -117,13 +148,17 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 		GLint buff = 0;
 		SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &buff);
 
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(buff).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(buff).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(glGetString(buff)).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(glGetString(buff)).name() }, "]",
 		#endif
-
-		fast_io::io::print(Bold, " Buffer : ", Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Buffer : ",
+			PATATA_TERM_RESET);
 
 		if (buff == 1)
 			fast_io::io::println("Double");
@@ -133,26 +168,30 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 
 	// Vsync
 	{
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(CONFIG).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(CONFIG).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(glGetString(CONFIG)).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(glGetString(CONFIG)).name() }, "]",
 		#endif
-
-		fast_io::io::print(Bold, " Vsync : ", Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Vsync : ",
+			PATATA_TERM_RESET);
 
 		if (CONFIG["patata-engine"]["raccoon-renderer"]["vsync"].as<bool>()) {
-			fast_io::io::print(Chartreuse1, "Yes", Reset);
+			fast_io::io::print(PATATA_TERM_COLOR_GREEN, "Yes", PATATA_TERM_RESET);
 			if (CONFIG["patata-engine"]["raccoon-renderer"]["opengl-adaptative-vsync"].as<bool>())
-				fast_io::io::print(Dim, " Adaptative");
-			fast_io::io::println(Reset);
+				fast_io::io::print(PATATA_TERM_DIM, " Adaptative");
+			fast_io::io::println(PATATA_TERM_RESET);
 		}
-		else fast_io::io::println(BLightGoldenRod1, "No", Reset, "\n");
+		else fast_io::io::println(PATATA_TERM_COLOR_YELLOW, "No", PATATA_TERM_RESET, "\n");
 	}
 
 	// ImGui Version
 	#if defined(PATATA_IMGUI_VERSION)
-	fast_io::io::println(Bold, "  ImGui Version : ", Reset, PATATA_IMGUI_VERSION);
+	fast_io::io::println(PATATA_TERM_BOLD, "  ImGui Version : ", PATATA_TERM_RESET, PATATA_IMGUI_VERSION);
 	#endif
 
 	/*
@@ -175,5 +214,5 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 		}*/
 	#endif	
 
-	fast_io::io::println(Reset);
+	fast_io::io::println(PATATA_TERM_RESET);
 }

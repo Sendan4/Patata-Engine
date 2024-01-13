@@ -24,8 +24,7 @@ uint32_t Patata::Graphics::VulkanRenderer::CreateLogicalDeviceAndCreateQueue(voi
 
 	const char * DeviceExtensions[] = {
 		"VK_KHR_swapchain",
-		"VK_KHR_driver_properties",
-		"VK_KHR_maintenance4"
+		"VK_KHR_driver_properties"
 	};
 
 	vk::DeviceCreateInfo DeviceCreateInfo{};

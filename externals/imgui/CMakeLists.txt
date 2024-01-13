@@ -77,6 +77,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"backends/imgui_impl_sdl2.cpp"
 	"backends/imgui_impl_opengl3.cpp")
 
+target_include_directories(${PROJECT_NAME} PRIVATE "../SDL/include")
+
 if (USE_EXTERNAL_LIBS)
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -108,10 +110,14 @@ if (USE_EXTERNAL_LIBS)
 		target_include_directories(${PROJECT_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}")
 	endif()
 
-	if (SHARED_BUILD)
-		target_link_libraries(${PROJECT_NAME} PRIVATE SDL2main SDL2::SDL2)
+	if (LIBS_SHARED_BUILD)
+		target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
 	else()
-		target_link_libraries(${PROJECT_NAME} PRIVATE SDL2main SDL2-static)
+		if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
+		else()
+			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2-static)
+		endif()
 
 		if (NOT MSVC)
 				if ((WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Windows") OR (LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux"))

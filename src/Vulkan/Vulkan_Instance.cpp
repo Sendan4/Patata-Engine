@@ -4,16 +4,15 @@
 
 #include <fast_io.h>
 
-#include <SDL_vulkan.h>
 #include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include <SDL_vulkan.h>
 #include "Log.hpp"
 
 #if defined(_WIN64)
 #include <windows.h>
-#else
-#include "TerminalColors.hpp"
 #endif
 
+#include "TerminalColors.hpp"
 #include "ExitLog.hpp"
 
 #ifndef PATATA_GAME_NAME
@@ -30,48 +29,63 @@
 #endif
 
 bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window *& WINDOW, YAML::Node CONFIG) {
-	// Get Extensions
-	uint32_t extensionInstanceCount = 0;
-
-	SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, nullptr);
-	//extensionInstanceCount++;
-
-	const char ** pExtensionInstanceNames = new const char * [extensionInstanceCount];
-
-	bool found_extensions = static_cast<bool>(SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount, pExtensionInstanceNames));
-
-	Patata::Log::VulkanList(pExtensionInstanceNames, extensionInstanceCount - 1, found_extensions, "Instance Extensions");
-
 	vk::ApplicationInfo PatataEngineInfo(PATATA_GAME_NAME, VK_MAKE_VERSION(PATATA_GAME_VERSION_MAYOR, PATATA_GAME_VERSION_MINOR, PATATA_GAME_VERSION_PATCH),
 										PATATA_ENGINE_NAME, VK_MAKE_VERSION(PATATA_ENGINE_VERSION_MAYOR, PATATA_ENGINE_VERSION_MINOR, PATATA_ENGINE_VERSION_PATCH),
 										VK_API_VERSION_1_3);
 
+	// Layers
 	#if defined(DEBUG)
-	const char * layer = { "VK_LAYER_KHRONOS_validation" };
+	const char * layer { "VK_LAYER_KHRONOS_validation" };
+	Patata::Log::VulkanList(&layer, 0, true, "Layers");
 	#endif
 
-	vk::InstanceCreateInfo InstanceInfo = vk::InstanceCreateInfo()
-		.setPApplicationInfo(&PatataEngineInfo)
+	// Get Extensions 
+	// Array -> 1 debe ser iniciado desde aqui.
+	// Array -> 0 SDL Extensions // Array -> 1 My extensions
+	uint32_t extensionInstanceCount[2] { 0, 1 };
+
+	// SDL por alguna razon develve un numero extra en el conteo de extensiones
+	SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount[0], nullptr);
+
+	extensionInstanceCount[1] += extensionInstanceCount[0];
+
+	const char ** pExtensionInstanceNames = new const char * [extensionInstanceCount[1]];
+
+	bool found_extensions = SDL_Vulkan_GetInstanceExtensions(WINDOW, &extensionInstanceCount[0], pExtensionInstanceNames);
+
+	// Desde aqui se deben agregar las otras extensiones, desde el conteo que devuelve SDL en adelante
+	pExtensionInstanceNames[extensionInstanceCount[0]] = "VK_KHR_get_physical_device_properties2";
+
+	Patata::Log::VulkanList(pExtensionInstanceNames,
+		extensionInstanceCount[1] - 1, found_extensions, "Instance Extensions");
+
+	// Create Instance
+	vk::InstanceCreateInfo InstanceInfo({}, &PatataEngineInfo,
 		#if defined(DEBUG)
-		.setEnabledLayerCount(1)
-		.setPpEnabledLayerNames(&layer)
+		1, &layer,
+		#else
+		0, nullptr,
 		#endif
-		.setEnabledExtensionCount(extensionInstanceCount)
-		.setPpEnabledExtensionNames(pExtensionInstanceNames);
+		extensionInstanceCount[1], pExtensionInstanceNames);
+
 
 	vk::Result Result;
 	try	{
-		// Posible Error
 		Result = vk::createInstance(&InstanceInfo, nullptr, &Instance);
-		//throw(vk::Result::eErrorIncompatibleDriver);
 		Patata::Log::VulkanCheck("Instance", Result);
 	}
-	catch (vk::Result & Error) {
+	catch (const vk::Result & Error) {
 		Patata::Log::FatalErrorMessage("Vulkan Error", vk::to_string(Error), CONFIG);
-		throw("Vulkan Instance Fail");
+		return false;
 	}
 
 	Patata::Log::DeleteAndLogArrPtr("Instance Extensions", pExtensionInstanceNames);
+
+	#if defined(_WIN64)
+	fast_io::io::println(fast_io::out());
+	#else
+	fast_io::io::println("");
+	#endif
 
 	return true; 
 }

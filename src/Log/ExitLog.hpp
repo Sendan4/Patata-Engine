@@ -7,60 +7,67 @@ namespace Patata {
 				ptr = nullptr;
 
 				#if defined(_WIN64)
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY);
-
-					#if defined(__GNUC__) || defined(__MINGW64__)
-						fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ");
+					fast_io::io::print(fast_io::out(),
+						PATATA_TERM_COLOR_GRAY0,
+					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ");
 					#else
-						fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(*ptr).name() }, "] ");
+						"[(Pointer) ", std::string_view{ typeid(*ptr).name() }, "] ");
 					#endif
 
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-
-					fast_io::io::print(fast_io::out(), Message, " Pointer Removed : ");
+					fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, Message, " : ", PATATA_TERM_RESET);
 				#else
-					#if defined(__GNUC__) || defined(__MINGW64__)
-						fast_io::io::print(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ", Reset);
+					fast_io::io::print(PATATA_TERM_DIM,
+						PATATA_TERM_COLOR_GRAY0,
+					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ",
 					#else
-						fast_io::io::print(Dim, CGREY66, "[", std::string_view{ typeid(*ptr).name() }, "] ");
+						"[(Pointer) ", std::string_view{ typeid(*ptr).name() }, "] ",
 					#endif
+						PATATA_TERM_RESET);
 
-					fast_io::io::print(Bold, Message, Reset, " Pointer Removed : ");
+					fast_io::io::print(PATATA_TERM_BOLD, Message, " : ", PATATA_TERM_RESET);
 				#endif
 
 				if (ptr == nullptr) {
 					#if defined(_WIN64)
-						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-						fast_io::io::println(fast_io::out(), "Success");
-						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+						fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_GREEN, "Deleted", PATATA_TERM_RESET);
 					#else
-						fast_io::io::println(Chartreuse1, "Success", Reset);
+						fast_io::io::println(PATATA_TERM_COLOR_GREEN, "Deleted", PATATA_TERM_RESET);
 					#endif
 				}
 				else {
 					#if defined(_WIN64)
-						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-		fast_io::io::println(fast_io::out(), "Fail");
-						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+						fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_YELLOW, "Has Not Been Deleted", PATATA_TERM_RESET);
 					#else
-						fast_io::io::println(BLightGoldenRod1, "Fail", Reset);
+						fast_io::io::println(PATATA_TERM_COLOR_YELLOW, "Has Not Been Deleted", PATATA_TERM_RESET);
 					#endif
 				}
 			}
 			else {
 				#if defined(_WIN64)
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY);
-					#if defined(__GNUC__) || defined(__MINGW64__)
-						fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ");
+					fast_io::io::print(fast_io::out(),
+						PATATA_TERM_COLOR_GRAY0,
+					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ");
 					#else
-						fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(ptr).name() }, "] ");
+						"[(Pointer) ", std::string_view{ typeid(ptr).name() }, "] ");
 					#endif
 
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-					fast_io::io::println(fast_io::out(), Message, " Already Eliminated Or Null");
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+					fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, Message, PATATA_TERM_COLOR_YELLOW, " Is Already Eliminated Or Null");
 				#else
-				fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, Message, Reset, " Already Eliminated Or Null");
+					fast_io::io::println(PATATA_TERM_DIM,
+						PATATA_TERM_COLOR_GRAY0,
+						#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+						"[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ",
+						#else
+						"[", std::string_view{ typeid(ptr).name() }, "] ",
+						#endif
+						PATATA_TERM_RESET,
+						PATATA_TERM_BOLD,
+						Message,
+						PATATA_TERM_RESET,
+						" Already Eliminated Or Null");
 				#endif
 			}
 		}
@@ -72,60 +79,67 @@ namespace Patata {
 				ptr = nullptr;
 
 				#if defined(_WIN64)
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY);
-
-					#if defined(__GNUC__) || defined(__MINGW64__)
-						fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ");
+					fast_io::io::print(fast_io::out(),
+						PATATA_TERM_COLOR_GRAY0,
+					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ");
 					#else
-						fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(*ptr).name() }, "] ");
+						"[(Pointer) ", std::string_view{ typeid(*ptr).name() }, "] ");
 					#endif
 
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-
-					fast_io::io::print(fast_io::out(), Message, " Array Pointer Removed : ");
+					fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, Message, " : ", PATATA_TERM_RESET);
 				#else
-					#if defined(__GNUC__) || defined(__MINGW64__)
-						fast_io::io::print(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ", Reset);
+					fast_io::io::print(PATATA_TERM_DIM,
+						PATATA_TERM_COLOR_GRAY0,
+					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+						"[(Array Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ",
 					#else
-						fast_io::io::print(Dim, CGREY66, "[", std::string_view{ typeid(*ptr).name() }, "] ");
+						"[(Array Pointer) ", std::string_view{ typeid(*ptr).name() }, "] ",
 					#endif
+						PATATA_TERM_RESET);
 
-					fast_io::io::print(Bold, Message, Reset, " Array Pointer Removed : ");
+					fast_io::io::print(PATATA_TERM_BOLD, Message, " : ", PATATA_TERM_RESET);
 				#endif
 
 				if (ptr == nullptr) {
 					#if defined(_WIN64)
-						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-						fast_io::io::println(fast_io::out(), "Success");
-						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+						fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_GREEN, "Deleted", PATATA_TERM_RESET);
 					#else
-						fast_io::io::println(Chartreuse1, "Success", Reset);
+						fast_io::io::println(PATATA_TERM_COLOR_GREEN, "Deleted", PATATA_TERM_RESET);
 					#endif
 				}
 				else {
 					#if defined(_WIN64)
-						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-						fast_io::io::println(fast_io::out(), "Fail");
-						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+						fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_YELLOW, "Has Not Been Deleted", PATATA_TERM_RESET);
 					#else
-						fast_io::io::println(BLightGoldenRod1, "Fail", Reset);
+						fast_io::io::println(PATATA_TERM_COLOR_YELLOW, "Has Not Been Deleted", PATATA_TERM_RESET);
 					#endif
 				}
 			}
 			else {
 				#if defined(_WIN64)
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY);
-					#if defined(__GNUC__) || defined(__MINGW64__)
-						fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ");
+					fast_io::io::print(fast_io::out(),
+						PATATA_TERM_COLOR_GRAY0,
+					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ");
 					#else
-						fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(ptr).name() }, "] ");
+						"[(Pointer) ", std::string_view{ typeid(ptr).name() }, "] ");
 					#endif
 
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-					fast_io::io::println(fast_io::out(), Message, " Already Eliminated Or Null");
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+					fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, Message, PATATA_TERM_COLOR_YELLOW, " Is Already Eliminated Or Null");
 				#else
-				fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, Message, Reset, " Already Eliminated Or Null");
+					fast_io::io::println(PATATA_TERM_DIM,
+						PATATA_TERM_COLOR_GRAY0,
+						#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+						"[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ",
+						#else
+						"[", std::string_view{ typeid(ptr).name() }, "] ",
+						#endif
+						PATATA_TERM_RESET,
+						PATATA_TERM_BOLD,
+						Message,
+						PATATA_TERM_RESET,
+						" Already Eliminated Or Null");
 				#endif
 			}
 		}

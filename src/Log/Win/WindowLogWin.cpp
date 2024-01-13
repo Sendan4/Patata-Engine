@@ -10,22 +10,25 @@
 
 // Patata Engine
 #include "Log.hpp"
+#include "TerminalColors.hpp"
 
 void Patata::Log::WindowLog(SDL_Window * Window) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD mode = 0;
+	GetConsoleMode(Terminal, &mode);
+	SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
 	#if defined(__GNUC__) || defined(__MINGW64__)	
-		fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(Window).name(), nullptr, nullptr, nullptr) }, "] ");
+		fast_io::io::print(fast_io::out(),
+			PATATA_TERM_COLOR_GRAY0,
+			"[", std::string_view{ abi::__cxa_demangle(typeid(Window).name(), nullptr, nullptr, nullptr) }, "] ");
 	#else
-		fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(Window).name() }, "] ");
+		fast_io::io::print(fast_io::out(),
+			PATATA_TERM_COLOR_GRAY0,
+			"[", std::string_view{ typeid(Window).name() }, "] ");
 	#endif
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN);
-	fast_io::io::print(fast_io::out(), "Window ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	fast_io::io::println(fast_io::out(), "INFO :");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_PATATA, "Window ", PATATA_TERM_COLOR_WHITE, "INFO :");
 
 	SDL_SysWMinfo WindowInfo;
 	SDL_VERSION(&WindowInfo.version);
@@ -33,35 +36,30 @@ void Patata::Log::WindowLog(SDL_Window * Window) {
 	
 	switch(WindowInfo.subsystem) {
 		case SDL_SYSWM_WINDOWS:
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			fast_io::io::print(fast_io::out(), "  Window System : ");
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			fast_io::io::println(fast_io::out(), "Windows");
+			fast_io::io::println(fast_io::out(), "  Window System : ", PATATA_TERM_COLOR_GRAY1, "Windows");
 
-			SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
 			#if defined(__GNUC__) || defined(__MINGW64__)	
-				fast_io::io::print(fast_io::out(), "  [", std::string_view{ abi::__cxa_demangle(typeid(WindowInfo.info.win.window).name(), nullptr, nullptr, nullptr) }, "]");
+				fast_io::io::print(fast_io::out(),
+					PATATA_TERM_COLOR_GRAY0,
+					"  [", std::string_view{ abi::__cxa_demangle(typeid(WindowInfo.info.win.window).name(), nullptr, nullptr, nullptr) }, "]");
 			#else
-				fast_io::io::print(fast_io::out(), "  [", std::string_view{ typeid(WindowInfo.info.win.window).name() }, "]");
+				fast_io::io::print(fast_io::out(),
+					PATATA_TERM_COLOR_GRAY0,
+					"  [", std::string_view{ typeid(WindowInfo.info.win.window).name() }, "]");
 			#endif
 
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			fast_io::io::println(fast_io::out(), " Window Type\n");
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, " Window Type");
 			break;
 
 		case SDL_SYSWM_WINRT:
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			fast_io::io::print(fast_io::out(), "  Window System : ");
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			fast_io::io::println(fast_io::out(), "WinRT");
+			fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Window System : ", PATATA_TERM_COLOR_GRAY1, "WinRT");
 			break;
 
 		default : case SDL_SYSWM_UNKNOWN:
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			fast_io::io::print(fast_io::out(), "  Window System : ");
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			fast_io::io::println(fast_io::out(), "Unknown");
+			fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Window System : ", PATATA_TERM_COLOR_YELLOW, "Unknown");
 			break;
 	}
+
+	fast_io::io::println(fast_io::out(), PATATA_TERM_RESET);
+	SetConsoleMode(Terminal, mode);
 }

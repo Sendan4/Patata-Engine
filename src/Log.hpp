@@ -14,7 +14,7 @@ namespace Patata {
 
 		// Vulkan Setup
 		void VulkanCheck(const std::string &, const vk::Result &);
-		void VulkanList(const char *List[], const unsigned int &, bool, const std::string &);
+		void VulkanList(const char *List[], const size_t &, const bool &, const std::string &);
 
 		// Errors
 		void YamlFileErrorMessage(void);

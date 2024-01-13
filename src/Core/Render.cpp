@@ -1,4 +1,4 @@
-#if defined(__GNUC__) || defined(__MINGW64__)
+#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
 #include <cxxabi.h>
 #endif
 
@@ -6,19 +6,21 @@
 #include <fast_io.h>
 #if defined(_WIN64)
 #include <windows.h>
-#else
-#include "TerminalColors.hpp"
 #endif
 
 // Patata Engine
 #include "PatataEngine/PatataEngine.hpp"
 #include "Log.hpp"
+#include "TerminalColors.hpp"
 
 void Patata::Engine::InitRenderer(void) {
 	Patata::Log::WindowLog(Info->pWindow);
 
 	#if defined(_WIN64)
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD mode = 0;
+	GetConsoleMode(Terminal, &mode);
+	SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
 	#endif
 
 	if (bGraphicsAPI == Patata::GraphicsAPI::Vulkan) {
@@ -44,78 +46,134 @@ void Patata::Engine::InitRenderer(void) {
 		GLADloadfunc pGlLoadProc = reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress);
 		if (pGlLoadProc == nullptr) {
 			#if defined(_WIN64)
-			SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
-			#if defined(__GNUC__) || defined(__MINGW64__)
-			fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ");
+			fast_io::io::println(fast_io::out(),
+				PATATA_TERM_COLOR_GRAY0,
+			#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+				"[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ",
 			#else
-			fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(pGlLoadProc).name() }, "] ");
+				"[", std::string_view{ typeid(pGlLoadProc).name() }, "] ",
 			#endif
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			fast_io::io::print(fast_io::out(), "Obtaining The SDL Process Address For Glad Loader :");
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_INTENSITY);
-			fast_io::io::println(fast_io::out(), "Fail");
+				PATATA_TERM_COLOR_WHITE,
+				"Obtaining The SDL Process Address For Glad Loader :",
+				PATATA_TERM_COLOR_YELLOW,
+				"Fail");
 			#else			
-			fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, "Obtaining The SDL Process Address For Glad Loader : ", Reset, BLightGoldenRod1, "Fail", Reset);
+			fast_io::io::println(PATATA_TERM_DIM,
+				PATATA_TERM_COLOR_GRAY0,
+				#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+				"[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ",
+				#else
+				"[", std::string_view{ typeid(pGlLoadProc).name() }, "] ",
+				#endif
+				PATATA_TERM_RESET,
+				PATATA_TERM_BOLD,
+				"Obtaining The SDL Process Address For Glad Loader : ",
+				PATATA_TERM_RESET,
+				PATATA_TERM_COLOR_YELLOW,
+				"Fail",
+				PATATA_TERM_RESET);
 			#endif
 		}
 		else {
 			#if defined(_WIN64)
-			SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
-			#if defined(__GNUC__) || defined(__MINGW64__)
-			fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ");
+			fast_io::io::println(fast_io::out(),
+				PATATA_TERM_COLOR_GRAY0,
+			#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+				"[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ",
 			#else
-			fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(pGlLoadProc).name() }, "] ");
+				"[", std::string_view{ typeid(pGlLoadProc).name() }, "] ",
 			#endif
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			fast_io::io::print(fast_io::out(), "Obtaining The SDL Process Address For Glad Loader : ");
-			SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			fast_io::io::println(fast_io::out(), "Success");
+				PATATA_TERM_COLOR_WHITE,
+				"Obtaining The SDL Process Address For Glad Loader : ",
+				PATATA_TERM_COLOR_GREEN,
+				"Success");
 			#else			
-			fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, "Obtaining The SDL Process Address For Glad Loader : ", Reset, Chartreuse1, "Success", Reset);
+			fast_io::io::println(PATATA_TERM_DIM,
+				PATATA_TERM_COLOR_GRAY0,
+				#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+				"[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ",
+				#else
+				"[", std::string_view{ typeid(pGlLoadProc).name() }, "] ",
+				#endif
+				PATATA_TERM_RESET,
+				PATATA_TERM_BOLD,
+				"Obtaining The SDL Process Address For Glad Loader : ",
+				PATATA_TERM_RESET,
+				PATATA_TERM_COLOR_GREEN,
+				"Success",
+				PATATA_TERM_RESET);
 			#endif
 		}
 	    
 		if (!gladLoadGL(pGlLoadProc)) {
 			#if defined(_WIN64)
-			SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
+			fast_io::io::println(fast_io::out(),
+				PATATA_TERM_COLOR_GRAY0,
 			#if defined(__GNUC__) || defined(__MINGW64__)
-			fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ");
+				"[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ",
 			#else
-			fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(pGlLoadProc).name() }, "] ");
+				"[", std::string_view{ typeid(pGlLoadProc).name() }, "] ",
 			#endif
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			fast_io::io::print(fast_io::out(), "Glad Loader Load OpenGL Functions : ");
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_INTENSITY);
-			fast_io::io::println(fast_io::out(), "Fail");
+				PATATA_TERM_COLOR_WHITE,
+				"Glad Loader Load OpenGL Functions : ",
+				PATATA_TERM_COLOR_YELLOW,
+				"Fail",
+				PATATA_TERM_RESET, "\n");
 			#else			
-			fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, "Glad Loader Load OpenGL Functions : ", Reset, BLightGoldenRod1, "Fail", Reset);
+			fast_io::io::println(PATATA_TERM_DIM,
+				PATATA_TERM_COLOR_GRAY0,
+				#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+				"[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ",
+				#else
+				"[", std::string_view{ typeid(pGlLoadProc).name() }, "] ",
+				#endif
+				PATATA_TERM_RESET,
+				PATATA_TERM_BOLD,
+				"Glad Loader Load OpenGL Functions : ",
+				PATATA_TERM_RESET,
+				PATATA_TERM_COLOR_YELLOW,
+				"Fail",
+				PATATA_TERM_RESET);
 			#endif
 		}
 		else {
 			#if defined(_WIN64)
-			SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
+			fast_io::io::println(fast_io::out(),
+				PATATA_TERM_COLOR_GRAY0,
 			#if defined(__GNUC__) || defined(__MINGW64__)
-			fast_io::io::print(fast_io::out(), "[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ");
+				"[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ",
 			#else
-			fast_io::io::print(fast_io::out(), "[", std::string_view{ typeid(pGlLoadProc).name() }, "] ");
+				"[", std::string_view{ typeid(pGlLoadProc).name() }, "] ",
 			#endif
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-			fast_io::io::print(fast_io::out(), "Glad Loader Load OpenGL Functions : ");
-			SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			fast_io::io::println(fast_io::out(), "Success");
-			fast_io::io::println(fast_io::out());
+				PATATA_TERM_COLOR_WHITE,
+				"Glad Loader Load OpenGL Functions : ",
+				PATATA_TERM_COLOR_GREEN,
+				"Success",
+				PATATA_TERM_RESET, "\n");
 			#else
-			#if defined(__GNUC__) || defined(__MINGW64__)
-				fast_io::io::println(Dim, CGREY66, "[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ", Reset, Bold, "Glad Loader Load OpenGL Functions : ", Reset, Chartreuse1, "Success", Reset);
-			#else
-			fast_io::io::println(Dim, "[", std::string_view{ typeid(pGlLoadProc).name() }, "] ", Bold, "Glad Loader-Generator Load OpenGL Functions : ", Reset, Chartreuse1, "Success", Reset);
-			#endif
-			fast_io::io::println("");
-			#endif
+			fast_io::io::println(PATATA_TERM_DIM,
+				PATATA_TERM_COLOR_GRAY0,
+				#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+				"[", std::string_view{ abi::__cxa_demangle(typeid(pGlLoadProc).name(), nullptr, nullptr, nullptr) }, "] ",
+				#else
+				"[", std::string_view{ typeid(pGlLoadProc).name() }, "] ",
+				#endif
+				PATATA_TERM_RESET,
+				PATATA_TERM_BOLD,
+				"Glad Loader Load OpenGL Functions : ",
+				PATATA_TERM_RESET,
+				PATATA_TERM_COLOR_GREEN,
+				"Success",
+				PATATA_TERM_RESET, "\n");
+			#endif	
 		}
 
 		pOpenGLRenderer = new Patata::Graphics::OpenGLRenderer(Config);
 	}
+
+	#if defined(_WIN64)
+	SetConsoleMode(Terminal, mode);
+	#endif
 }
 
 #if defined(DEBUG)

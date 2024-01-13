@@ -1,16 +1,17 @@
-#if defined(__APPLE__) || defined(__linux__) || defined(__unix__)
-	// Foreground
-	#define FindianRed1 "\033[38;5;203m"
-	#define FSteelBlue1 "\033[38;5;75m"
-	#define Chartreuse1 "\033[38;5;118m"
-	#define CSalmon1 "\033[38;5;209m"
-	#define LightSalmon3 "\033[38;5;173m"
-	#define CGREY66 "\033[38;5;248m"
-	// Background
-	#define BLightGoldenRod1 "\033[38;5;227m"
+// Foreground
+#define PATATA_TERM_COLOR_PATATA "\033[38;5;130m"
+#define PATATA_TERM_COLOR_WHITE "\033[38;5;15m"
+#define PATATA_TERM_COLOR_RED "\033[38;5;203m"
+#define PATATA_TERM_COLOR_BLUE "\033[38;5;75m"
+#define PATATA_TERM_COLOR_GREEN "\033[38;5;118m"
+#define PATATA_TERM_COLOR_YELLOW "\033[38;5;227m"
+#define PATATA_TERM_COLOR_GRAY0 "\033[38;5;245m"
+#define PATATA_TERM_COLOR_GRAY1 "\033[38;5;250m"
 
-	// Otros
-	#define Bold "\033[1m"
-	#define Reset "\033[0m"
-	#define Dim "\e[2m"
+// Others
+// Bold And Dim not supported in Windows
+#if !defined(_WIN64)
+	#define PATATA_TERM_BOLD "\033[1m"
+	#define PATATA_TERM_DIM "\e[2m"
 #endif
+#define PATATA_TERM_RESET "\033[0m"

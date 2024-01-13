@@ -2,15 +2,6 @@
 #include "Log.hpp"
 
 std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> Patata::Graphics::VulkanRenderer::CreateSwapChain(uint32_t &GraphicsQueueFamilyIndex, YAML::Node CONFIG) {
-	std::vector <vk::SurfaceFormatKHR> Formats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
-
-	for (uint16_t i = 0; i < Formats.size(); i++)
-		if (Formats[i].format == vk::Format::eB8G8R8A8Unorm)
-			ColorFormat = vk::Format::eB8G8R8A8Unorm;
-		else if (Formats[i].format == vk::Format::eUndefined)
-			ColorFormat = Formats[i].format;
-
-	SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
 	std::vector <vk::PresentModeKHR> PresentModes = PhysicalDevice.getSurfacePresentModesKHR(Surface);
 	std::vector <vk::SurfaceFormatKHR> SurfaceFormats = PhysicalDevice.getSurfaceFormatsKHR(Surface);
 
@@ -34,6 +25,8 @@ std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> Patata::Graphics::
 
 	SurfaceFormat = SurfaceFormats[0];
 
+	vk::SurfaceCapabilitiesKHR SurfaceCapabilities = PhysicalDevice.getSurfaceCapabilitiesKHR(Surface);
+
 	//vk::Viewport Viewport = vk::Viewport(0.0f, 0.0f, static_cast<float>(SurfaceCapabilities.currentExtent.width), static_cast<float>(SurfaceCapabilities.currentExtent.height), 0, 1.0f);
 
 	vk::SwapchainCreateInfoKHR SwapChainCreateInfo{};
@@ -55,5 +48,5 @@ std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> Patata::Graphics::
 
 	Patata::Log::VulkanCheck("SwapChain", Result);	
 
-	return {PresentMode, ColorFormat, SurfaceFormat.colorSpace};
+	return {PresentMode, vk::Format::eUndefined, SurfaceFormat.colorSpace};
 }

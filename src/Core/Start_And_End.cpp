@@ -42,30 +42,24 @@ Patata::Engine::Engine(void) {
 	}
 
 	#if defined(__linux__)
-	{
-		/*
-		if (strcmp(getenv("XDG_CURRENT_DESKTOP"), "GNOME") == 0)
-			if (setenv("LIBDECOR_PLUGIN_DIR", SDL_GetBasePath(), 1) != 0)
-				Patata::Log::ErrorMessage("Cannot set enviroment varible LIBDECOR_PLUGIN_DIR");*/
-
-		/*
-		if (setenv("VK_LAYER_PATH", SDL_GetBasePath(), 1) != 0)
-			Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");*/
-
-		if (Config["patata-engine"]["prefer-wayland"].as<bool>())
-			if(setenv("SDL_VIDEODRIVER", "wayland", 1) != 0)
-				Patata::Log::ErrorMessage("Cannot set enviroment varible SDL_VIDEODRIVER");
-	}
+	if (Config["patata-engine"]["prefer-wayland"].as<bool>())
+		if(setenv("SDL_VIDEODRIVER", "wayland", 1) != 0)
+			Patata::Log::ErrorMessage("Cannot set enviroment varible SDL_VIDEODRIVER");
 	#endif
 
 	#if defined(PATATA_FIND_VVL_IN_THE_CURRENT_PATH)
 		#if defined(_WIN64)
-			if(SetEnvironmentVariable("VK_LAYER_PATH", ".") == 0)
+			if(SetEnvironmentVariable("VK_LAYER_PATH", SDL_GetBasePath()) == 0)
 				Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");
 		#else
-			if(setenv("VK_LAYER_PATH", ".", 1) != 0)
+			if(setenv("VK_LAYER_PATH", SDL_GetBasePath(), 1) != 0)
 				Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");
 		#endif
+	#endif
+
+	#if defined(PATATA_FIND_VVL_FROM_SDK) && defined(_WIN64)
+		if(SetEnvironmentVariable("VK_LAYER_PATH", PATATA_VVL_SDK_PATH) == 0)
+			Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");
 	#endif
 	
 	{
@@ -78,21 +72,15 @@ Patata::Engine::Engine(void) {
 			bGraphicsAPI = Patata::GraphicsAPI::OpenGL;
 	}
 
-	try {
-		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-			Patata::Log::FatalErrorMessage("SDL2", "Cannot init the video subsystem", Config);
-			throw Patata::RunTimeError("SDL Cannot init the video subsystem");
-		}
+	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+		Patata::Log::FatalErrorMessage("SDL2", "Cannot init the video subsystem", Config);
+		throw Patata::RunTimeError("SDL Cannot init the video subsystem");
 	}
-	catch (const Patata::RunTimeError & Error) { exit(1); }
 
-	try {
-		if (SDL_Init(SDL_INIT_EVENTS) != 0) {
-			Patata::Log::FatalErrorMessage("SDL2", "Cannot init the events subsystem", Config);
-			throw Patata::RunTimeError("SDL Cannot init the events subsystem");
-		}
+	if (SDL_Init(SDL_INIT_EVENTS) != 0) {
+		Patata::Log::FatalErrorMessage("SDL2", "Cannot init the events subsystem", Config);
+		throw Patata::RunTimeError("SDL Cannot init the events subsystem");
 	}
-	catch (const Patata::RunTimeError & Error) { exit(1); }
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -103,10 +91,12 @@ Patata::Engine::Engine(void) {
 #if defined(__GNUC__) || defined(__MINGW64__)
 #include <cxxabi.h>
 #endif
+
 #if defined(_WIN64)
-#else
-#include "TerminalColors.hpp"
+#include <Windows.h>
 #endif
+
+#include "TerminalColors.hpp"
 #include "ExitLog.hpp"
 
 Patata::Engine::~Engine(void) {
@@ -118,6 +108,6 @@ Patata::Engine::~Engine(void) {
 		// OpenGL
 		Patata::Log::DeleteAndLogPtr("OpenGL Renderer", pOpenGLRenderer);
 		SDL_GL_DeleteContext(Info->pOpenGLContext);
-		delete Info->pOpenGLContext;
+		Patata::Log::DeleteAndLogPtr("OpenGL Context", Info->pOpenGLContext);
 	}
 }

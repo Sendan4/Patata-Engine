@@ -156,9 +156,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 	PATATA_FAST_IO_GIT_COMMIT_HASH_SHORT="${Fast_io_COMMIT_SHORT_HASH}")
 
 if (USE_EXTERNAL_LIBS)
-	target_compile_definitions(${PROJECT_NAME} PRIVATE
-		PATATA_YAML_CPP_VERSION="${PATATA_YAML-CPP_VERSION}"
-		PATATA_FIND_VVL_IN_THE_CURRENT_PATH)
+	target_compile_definitions(${PROJECT_NAME} PRIVATE PATATA_YAML_CPP_VERSION="${PATATA_YAML-CPP_VERSION}")
+
 	if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR MSVC)
 		# Cannot compile Vulkan in Mingw
 		target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -183,8 +182,13 @@ if (DEFINED GAME_VERSION_MAYOR AND DEFINED GAME_VERSION_MINOR AND GAME_VERSION_P
 		PATATA_GAME_VERSION_PATCH=${GAME_VERSION_PATCH})
 endif()
 
+find_package(Msys)
 
 if (USE_EXTERNAL_LIBS)
+	if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR MSVC) 
+		add_dependencies(${PROJECT_NAME} vvl)
+	endif()
+
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
 		target_link_libraries(${PROJECT_NAME} PUBLIC vulkan Vulkan::Headers)
@@ -194,6 +198,10 @@ if (USE_EXTERNAL_LIBS)
 			ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 			LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+			target_compile_definitions(${PROJECT_NAME} PRIVATE PATATA_FIND_VVL_IN_THE_CURRENT_PATH)
+		endif()
 	else()
 		# mingw
 		message("")
@@ -201,18 +209,26 @@ if (USE_EXTERNAL_LIBS)
 		find_package(Vulkan REQUIRED)
 
 		set (VULKANSDK_LIBS_PATH "${Vulkan_LIBRARIES}")
-		string(REPLACE "vulkan-1.lib" "" VULKANSDK_LIBS_PATH ${VULKANSDK_LIBS_PATH})
+		string(REPLACE "/vulkan-1.lib" "" VULKANSDK_LIBS_PATH ${VULKANSDK_LIBS_PATH})
 		string(STRIP VULKANSDK_LIBS_PATH ${VULKANSDK_LIBS_PATH})
+
 		message(STATUS "Vulkan Libs Path : ${VULKANSDK_LIBS_PATH}")
 
 		target_link_libraries(${PROJECT_NAME} PUBLIC
 			-lvulkan-1
 			-L${VULKANSDK_LIBS_PATH})
 
-		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-			target_compile_definitions(${PROJECT_NAME} PUBLIC VVL_FROM_SDK=1)
-		endif()
 		target_include_directories(${PROJECT_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}")
+
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+			set (VULKANSDK_VVL_PATH "${Vulkan_LIBRARIES}")
+			string(REPLACE "/Lib/vulkan-1.lib" "" VULKANSDK_VVL_PATH ${VULKANSDK_VVL_PATH})
+			string(STRIP VULKANSDK_VVL_PATH ${VULKANSDK_VVL_PATH})
+			set (VULKANSDK_VVL_PATH "${VULKANSDK_VVL_PATH}/Bin")
+			message(STATUS "Validation Layer Path : ${VULKANSDK_VVL_PATH}")
+
+			target_compile_definitions(${PROJECT_NAME} PRIVATE PATATA_FIND_VVL_FROM_SDK PATATA_VVL_SDK_PATH="${VULKANSDK_VVL_PATH}")
+		endif()
 	endif()
 
 	target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../externals/SDL/include")
@@ -226,7 +242,7 @@ if (USE_EXTERNAL_LIBS)
 	if (LIBS_SHARED_BUILD)
 		target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
 	else()
-		if (SHARED_BUILD AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+		if (CMAKE_SYSTEM_NAME STREQUAL "Windows")	
 			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
 		else()
 			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2-static)
@@ -266,7 +282,7 @@ if (MSVC)
 		set_target_properties(NightlyMemoryCheck PROPERTIES FOLDER "Engine/Others/yamlcpp")
 
 		#SDL2
-		if (LIBS_SHARED_BUILD)
+		if (TARGET SDL2)
 			set_target_properties(SDL2 PROPERTIES FOLDER "Engine/Dependencies/SDL2")
 		endif()
 		set_target_properties(SDL2main PROPERTIES FOLDER "Engine/Dependencies/SDL2")

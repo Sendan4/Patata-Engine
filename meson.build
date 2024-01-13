@@ -213,10 +213,6 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
       { 'BUILD_WSI_XLIB_SUPPORT' : false })
   endif
 
-  if build_machine.system() == 'linux'
-    vk_opt.add_cmake_defines({ 'BUILD_WSI_WAYLAND_SUPPORT' : true })
-  endif
-
   if build_machine.system() == 'windows'
     vk_opt.add_cmake_defines({ 'CMAKE_SHARED_LIBRARY_PREFIX' : ''})
   endif
@@ -224,25 +220,15 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
   vk = cmake.subproject('Vulkan-Loader', options : vk_opt)
   Vulkan = vk.dependency('vulkan')
 
-  vkh_opt = cmake.subproject_options()
-  vkh_opt.add_cmake_defines(
-    { 'BUILD_TESTS' : false },
-    { 'CMAKE_INSTALL_PREFIX' : join_paths(meson.global_build_root(), '../bin') },
-    { 'CMAKE_INSTALL_LIBDIR' : '.' },
-    { 'CMAKE_BUILD_TYPE' : buildtypeforcmake })
-  vkh = cmake.subproject('Vulkan-Headers', options : vkh_opt)
-  Vulkan_Headers = vkh.dependency('Vulkan-Headers')
-
   sdl2_opt = cmake.subproject_options()
   sdl2_opt.add_cmake_defines(
-    { 'CMAKE_INSTALL_PREFIX' : join_paths(meson.global_build_root(), '../bin') },
+    { 'CMAKE_INSTALL_PREFIX' : join_paths(meson.global_build_root(), '../bin/') },
     { 'CMAKE_INSTALL_LIBDIR' : '.' },
     { 'CMAKE_BUILD_TYPE' : buildtypeforcmake },
     { 'SDL_TEST' : false },
-    { 'SDL_DIRECTX' : false },
-    { 'SDL_RENDER_D3D' : false },
     { 'SDL_OPENGLES' : false },
-    { 'SDL_SHARED' : true }, { 'SDL_STATIC' : false })
+    { 'SDL_SHARED' : true },
+    { 'SDL_STATIC' : false })
 
   if build_machine.system() == 'windows'
     sdl2_opt.add_cmake_defines({ 'CMAKE_SHARED_LIBRARY_PREFIX' : ''})
@@ -292,10 +278,6 @@ else
 endif
 
 dependencies = [Vulkan, Fast_io_dep, sdl2_dep, yamlcpp, Glad2_dep]
-
-if get_option('use_external_libs') == true and build_machine.system() != 'windows'
-  dependencies += [Vulkan_Headers]
-endif
 
 if (get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized')
   if build_machine.system() == 'linux'

@@ -32,10 +32,6 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
       { 'BUILD_WSI_XLIB_SUPPORT' : false })
   endif
 
-  if build_machine.system() == 'linux'
-    vk_opt.add_cmake_defines({ 'BUILD_WSI_WAYLAND_SUPPORT' : true })
-  endif
-
   vk = cmake.subproject('Vulkan-Loader', options : vk_opt)
   Vulkan = vk.dependency('vulkan')
 
@@ -45,10 +41,9 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
     { 'CMAKE_INSTALL_LIBDIR' : '.' },
     { 'CMAKE_BUILD_TYPE' : buildtypeforcmake },
     { 'SDL_TEST' : false },
-    { 'SDL_DIRECTX' : false },
-    { 'SDL_RENDER_D3D' : false },
     { 'SDL_OPENGLES' : false },
-    { 'SDL_SHARED' : true }, { 'SDL_STATIC' : false })
+    { 'SDL_SHARED' : true },
+    { 'SDL_STATIC' : false })
 
   if get_option('xorg_support') == false
     sdl2_opt.add_cmake_defines(
@@ -56,19 +51,8 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
       { 'SDL_X11_SHARED' : false })
   endif
 
-  vkh_opt = cmake.subproject_options()
-  vkh_opt.add_cmake_defines(
-    { 'BUILD_TESTS' : false },
-    { 'CMAKE_INSTALL_PREFIX' : join_paths(meson.global_build_root(), '../bin') },
-    { 'CMAKE_INSTALL_LIBDIR' : '.' },
-    { 'CMAKE_BUILD_TYPE' : buildtypeforcmake })
-  vkh = cmake.subproject('Vulkan-Headers', options : vkh_opt)
-  Vulkan_Headers = vkh.dependency('Vulkan-Headers')
-
   sdl2 = cmake.subproject('SDL', options : sdl2_opt)
   sdl2_dep = sdl2.dependency('SDL2')
-
-  dependencies += [Vulkan_Headers]
 else
     sdl2_dep = dependency('sdl2',
         required : true,

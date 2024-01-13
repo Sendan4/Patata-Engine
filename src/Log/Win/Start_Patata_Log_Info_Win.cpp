@@ -30,48 +30,41 @@
 // Patata Engine
 #include "PatataEngine/PatataEngine.hpp"
 #include "Log.hpp"
+#include "TerminalColors.hpp"
 
 void Patata::Log::StartPatataLogInfo(void) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD mode = 0;
+	GetConsoleMode(Terminal, &mode);
+	SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
 	UINT defaultOutputCP = GetConsoleOutputCP();
 	SetConsoleOutputCP(CP_UTF8);
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN);
-	fast_io::io::print(fast_io::out(), PATATA_ENGINE_NAME);
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	fast_io::io::println(fast_io::out(), " INFO : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_PATATA, PATATA_ENGINE_NAME, PATATA_TERM_COLOR_WHITE, " INFO : ");
 	
 	#if defined(PATATA_GIT_BRANCH)
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), "  Git Branch : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_GIT_BRANCH, " ");
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Git Branch : ", PATATA_TERM_COLOR_GRAY1, PATATA_GIT_BRANCH, " ");
 	#endif
 
 	#if defined(PATATA_GIT_HASH_LONG)
-		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-		fast_io::io::print(fast_io::out(), "  Git Commit Hash Long : ");
-		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		fast_io::io::print(fast_io::out(), PATATA_GIT_HASH_LONG, " ");
+		fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Git Commit Hash Long : ", PATATA_TERM_COLOR_GRAY1, PATATA_GIT_HASH_LONG, " ");
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
 			#if PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL == 1
-				SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_GREEN);
 			#else
-				SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_YELLOW);
 			#endif
 		fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_CLEAN);
 		#endif
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			fast_io::io::print(fast_io::out(), " | ");
+			fast_io::io::print(fast_io::out(), PATATA_TERM_RESET, " | ");
 
 			#if PATATA_GIT_WORK_DIR_IS_STAGED_BOOL == 1
-				SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_GREEN);
 			#else
-				SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_YELLOW);
 			#endif
 			fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_STAGED);
 		#endif
@@ -80,28 +73,24 @@ void Patata::Log::StartPatataLogInfo(void) {
 	#endif
 
 	#if defined(PATATA_GIT_HASH_SHORT)
-		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-		fast_io::io::print(fast_io::out(), "  Git Commit Hash Short : ");
-		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		fast_io::io::print(fast_io::out(), PATATA_GIT_HASH_SHORT, " ");
+		fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Git Commit Hash Short : ", PATATA_TERM_COLOR_GRAY1, PATATA_GIT_HASH_SHORT, " ");
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_CLEAN)
 			#if PATATA_GIT_WORK_DIR_IS_CLEAN_BOOL == 1
-				SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_GREEN);
 			#else
-				SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_YELLOW);
 			#endif
 		fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_CLEAN);
 		#endif
 
 		#if defined(PATATA_GIT_WORK_DIR_IS_STAGED)
-			SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			fast_io::io::print(fast_io::out(), " | ");
+			fast_io::io::print(fast_io::out(), PATATA_TERM_RESET, " | ");
 
 			#if PATATA_GIT_WORK_DIR_IS_STAGED_BOOL == 1
-				SetConsoleTextAttribute(Terminal, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_GREEN);
 			#else
-				SetConsoleTextAttribute(Terminal,FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+				fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_YELLOW);
 			#endif
 			fast_io::io::print(fast_io::out(), PATATA_GIT_WORK_DIR_IS_STAGED);
 		#endif
@@ -109,81 +98,56 @@ void Patata::Log::StartPatataLogInfo(void) {
 		fast_io::io::println(fast_io::out());
 	#endif
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), "  Build Date : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), __DATE__, " ", __TIME__);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Build Date : ", PATATA_TERM_COLOR_GRAY1, __DATE__, " ", __TIME__);
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out(), "  Version : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_ENGINE_VERSION);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Version : ", PATATA_TERM_COLOR_GRAY1, PATATA_ENGINE_VERSION);
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), "  Compiler : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out() , "[" , PATATA_COMPILER_PROGRAM, "]");
-	SetConsoleTextAttribute(Terminal, 7);
-	fast_io::io::println(fast_io::out(), " ", PATATA_COMPILER, " ", PATATA_COMPILER_VERSION);
+	fast_io::io::println(fast_io::out(),
+		PATATA_TERM_COLOR_WHITE,
+		"  Compiler : ",
+		PATATA_TERM_COLOR_GRAY0,
+		"[" , PATATA_COMPILER_PROGRAM, "]",
+		PATATA_TERM_COLOR_GRAY1,
+		" ", PATATA_COMPILER,
+		" ", PATATA_COMPILER_VERSION);
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), "  Build System : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY);
-	fast_io::io::print(fast_io::out() , "[" , PATATA_BUILD_SYSTEM_GENERATOR);
+	fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Build System : ", PATATA_TERM_COLOR_GRAY0, "[" , PATATA_BUILD_SYSTEM_GENERATOR);
 	#if defined(PATATA_BUILD_SYSTEM_GENERATOR_VERSION)
 		fast_io::io::print(fast_io::out() , " ", PATATA_BUILD_SYSTEM_GENERATOR_VERSION, "] ");
 	#else
 		fast_io::io::print(fast_io::out() , "] ");
 	#endif
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_BUILD_SYSTEM, " ", PATATA_BUILD_SYSTEM_VERSION);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_GRAY1, PATATA_BUILD_SYSTEM, " ", PATATA_BUILD_SYSTEM_VERSION);
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), "  Build Type : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_BUILD_TYPE);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Build Type : ", PATATA_TERM_COLOR_GRAY1, PATATA_BUILD_TYPE);
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), "  Operating System : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_OS);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Operating System : ", PATATA_TERM_COLOR_GRAY1, PATATA_OS);
 
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), "  CPU Architecture Type : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_ARCH);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  CPU Architecture Type : ", PATATA_TERM_COLOR_GRAY1, PATATA_ARCH);
 
 	#if defined(PATATA_FAST_IO_GIT_COMMIT_HASH_SHORT)
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), "  Fast IO Git Commit Hash Short : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_FAST_IO_GIT_COMMIT_HASH_SHORT);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Fast IO Git Commit Hash Short : ", PATATA_TERM_COLOR_GRAY1, PATATA_FAST_IO_GIT_COMMIT_HASH_SHORT);
 	#endif
-
 	{
 		SDL_version sdlversion;
 		SDL_VERSION(&sdlversion);
 
-		SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		fast_io::io::print(fast_io::out(), "  SDL Version : ");
-		SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		fast_io::io::println(fast_io::out(), sdlversion.major, ".", sdlversion.minor, ".", sdlversion.patch);
+		fast_io::io::println(fast_io::out(),
+			PATATA_TERM_COLOR_WHITE,
+			"  SDL Version : ",
+			PATATA_TERM_COLOR_GRAY1,
+			sdlversion.major, ".", sdlversion.minor, ".", sdlversion.patch);
 	}
 
 	#if defined(PATATA_YAML_CPP_VERSION)
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), "  Yaml-Cpp Version : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_YAML_CPP_VERSION);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Yaml-Cpp Version : ", PATATA_TERM_COLOR_GRAY1, PATATA_YAML_CPP_VERSION);
 	#endif
 	
 	#if defined(PATATA_GAME_NAME)
-	SetConsoleTextAttribute(Terminal, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::print(fast_io::out(), "  Game Name : ");
-	SetConsoleTextAttribute(Terminal, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	fast_io::io::println(fast_io::out(), PATATA_GAME_NAME);
+	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Game Name : ", PATATA_TERM_COLOR_GRAY1, PATATA_GAME_NAME);
 	#endif
 
 	SetConsoleOutputCP(defaultOutputCP);
-	fast_io::io::println(fast_io::out());
+	fast_io::io::println(fast_io::out(), PATATA_TERM_RESET);
+	SetConsoleMode(Terminal, mode);
 }

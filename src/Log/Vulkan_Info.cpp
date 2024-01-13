@@ -1,5 +1,4 @@
-#include <cstring>
-#if defined(__GNUC__) || defined(__MINGW64__)
+#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
 #include <cxxabi.h>
 #endif
 
@@ -9,7 +8,13 @@
 #include "TerminalColors.hpp"
 
 void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> SWAPCHAIN_INFO) {
-	fast_io::io::println("\n", FindianRed1, Bold, "Vulkan ", Reset, Bold, "INFO", Reset);
+	fast_io::io::println("\n", PATATA_TERM_COLOR_RED,
+		PATATA_TERM_BOLD,
+		"Vulkan ",
+		PATATA_TERM_RESET,
+		PATATA_TERM_BOLD,
+		"INFO",
+		PATATA_TERM_RESET);
 
 	vk::PhysicalDeviceProperties PhysicalDeviceProperties = PhysicalDevice.getProperties();
 	const uint32_t VulkanVersion = PhysicalDeviceProperties.apiVersion;
@@ -18,106 +23,128 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 	{
 		std::string Vendor;
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : Vendor = "Intel"; break;
+			case 32902 : Vendor = "Intel Corporation"; break;
 			case 4098 : Vendor = "AMD (Advanced Micro Devices, Inc.)"; break;
 			case 4318 : Vendor = "Nvidia (NVIDIA Corporation)"; break;
 		}
 
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(PhysicalDeviceProperties).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(PhysicalDeviceProperties).name() }, "]",
 		#endif
-
-		fast_io::io::print(Bold, " Vendor : ", Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Vendor : ",
+			PATATA_TERM_RESET);
 
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : fast_io::io::println(FSteelBlue1, Vendor, Reset); break;
-			case 4098 : fast_io::io::println(FindianRed1, Vendor, Reset); break;
-			case 4318 : fast_io::io::println(Chartreuse1, Vendor, Reset); break;
+			case 32902 : fast_io::io::println(PATATA_TERM_COLOR_BLUE, Vendor, PATATA_TERM_RESET); break;
+			case 4098 : fast_io::io::println(PATATA_TERM_COLOR_RED, Vendor, PATATA_TERM_RESET); break;
+			case 4318 : fast_io::io::println(PATATA_TERM_COLOR_GREEN, Vendor, PATATA_TERM_RESET); break;
 		}
 	}
 	
 	// Vulkan Hardware Vendor
 	{
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(PhysicalDeviceProperties.vendorID).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(PhysicalDeviceProperties.vendorID).name() }, "]",
 		#endif
-
-		fast_io::io::print(Bold, " VendorID : ", Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" VendorID : ",
+			PATATA_TERM_RESET);
 
 		// Hexadecimal VendorID
-		fast_io::io::print(Dim, CGREY66, "[Hex] ", Reset);
+		fast_io::io::print(PATATA_TERM_DIM, PATATA_TERM_COLOR_GRAY0, "[Hex] ", PATATA_TERM_RESET);
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : fast_io::io::print(FSteelBlue1); break;
-			case 4098 : fast_io::io::print(FindianRed1); break;
-			case 4318 : fast_io::io::print(Chartreuse1); break;
+			case 32902 : fast_io::io::print(PATATA_TERM_COLOR_BLUE); break;
+			case 4098 : fast_io::io::print(PATATA_TERM_COLOR_RED); break;
+			case 4318 : fast_io::io::print(PATATA_TERM_COLOR_GREEN); break;
 		}
-		fast_io::io::print(fast_io::mnp::hex(PhysicalDeviceProperties.vendorID), Reset,  " ");
+		fast_io::io::print(fast_io::mnp::hex(PhysicalDeviceProperties.vendorID), PATATA_TERM_RESET,  " ");
 
 		// Decimal VendorID
-		fast_io::io::print(Dim, CGREY66, "[Dec] ", Reset);
+		fast_io::io::print(PATATA_TERM_DIM, PATATA_TERM_COLOR_GRAY0, "[Dec] ", PATATA_TERM_RESET);
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : fast_io::io::print(FSteelBlue1); break;
-			case 4098 : fast_io::io::print(FindianRed1); break;
-			case 4318 : fast_io::io::print(Chartreuse1); break;
+			case 32902 : fast_io::io::print(PATATA_TERM_COLOR_BLUE); break;
+			case 4098 : fast_io::io::print(PATATA_TERM_COLOR_RED); break;
+			case 4318 : fast_io::io::print(PATATA_TERM_COLOR_GREEN); break;
 		}
 		fast_io::io::println(PhysicalDeviceProperties.vendorID);
 	}
 
 	// Device Type
 	{
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(PhysicalDeviceProperties).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(PhysicalDeviceProperties).name() }, "]",
 		#endif
-
-		fast_io::io::println(Bold, " Type : ", Reset, vk::to_string(PhysicalDeviceProperties.deviceType), Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Type : ",
+			PATATA_TERM_RESET,
+			vk::to_string(PhysicalDeviceProperties.deviceType));
 	}
 
 	// Device Name | GPU Vendor
 	{		
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(PhysicalDeviceProperties).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(PhysicalDeviceProperties).name() }, "]",
 		#endif
-
-		fast_io::io::print(Bold, " Name : ", Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Name : ",
+			PATATA_TERM_RESET);
 
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : fast_io::io::print(FSteelBlue1); break;
-			case 4098 : fast_io::io::print(FindianRed1); break;
-			case 4318 : fast_io::io::print(Chartreuse1); break;
+			case 32902 : fast_io::io::print(PATATA_TERM_COLOR_BLUE); break;
+			case 4098 : fast_io::io::print(PATATA_TERM_COLOR_RED); break;
+			case 4318 : fast_io::io::print(PATATA_TERM_COLOR_GREEN); break;
 		}
-		fast_io::io::println(std::string_view{ PhysicalDeviceProperties.deviceName }, Reset);
+		fast_io::io::println(std::string_view{ PhysicalDeviceProperties.deviceName }, PATATA_TERM_RESET);
 	}
 
 	// Vulkan Loader Version
 	#if defined(PATATA_VULKAN_LOADER_VERSION)
-	if constexpr (strcmp(PATATA_VULKAN_LOADER_VERSION, "undefined") != 0)
-		fast_io::io::println(Bold, "  Loader Version : ", Reset, PATATA_VULKAN_LOADER_VERSION);
+	if (strcmp(PATATA_VULKAN_LOADER_VERSION, "undefined") != 0)
+		fast_io::io::println(PATATA_TERM_BOLD, "  Loader Version : ", PATATA_TERM_RESET, PATATA_VULKAN_LOADER_VERSION);
 	#endif
 
 	// Vulkan Headers Version
 	#if defined(PATATA_VULKAN_HEADERS_VERSION)
-	fast_io::io::println(Bold, "  Headers Version : ", Reset, PATATA_VULKAN_HEADERS_VERSION);
+	fast_io::io::println(PATATA_TERM_BOLD, "  Headers Version : ", PATATA_TERM_RESET, PATATA_VULKAN_HEADERS_VERSION);
 	#endif
 
 	// Vulkan Version
 	{
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties.apiVersion).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties.apiVersion).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(PhysicalDeviceProperties.apiVersion).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(PhysicalDeviceProperties.apiVersion).name() }, "]",
 		#endif
-			
-		fast_io::io::print(Bold, " Vulkan Version : ", Reset);
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Vulkan Version : ",
+			PATATA_TERM_RESET);
 
 		std::string vk_version = std::to_string(VK_VERSION_MAJOR(VulkanVersion)) + '.' + std::to_string(VK_VERSION_MINOR(VulkanVersion)) + '.' + std::to_string(VK_VERSION_PATCH(VulkanVersion)) + '.' + std::to_string(VK_API_VERSION_VARIANT(VulkanVersion));
+
 		fast_io::io::println(vk_version);
 	}
 
@@ -129,76 +156,127 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 
 	// Driver Version
 	{
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties.driverVersion).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(PhysicalDeviceProperties.driverVersion).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(PhysicalDeviceProperties.driverVersion).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(PhysicalDeviceProperties.driverVersion).name() }, "]",
 		#endif
-
-		fast_io::io::println(Bold, " Driver Version : ", Reset, VK_VERSION_MAJOR(PhysicalDeviceProperties.driverVersion), ".", VK_VERSION_MINOR(PhysicalDeviceProperties.driverVersion), ".", VK_VERSION_PATCH(PhysicalDeviceProperties.driverVersion), ".", VK_API_VERSION_VARIANT(PhysicalDeviceProperties.driverVersion));
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Driver Version : ",
+			PATATA_TERM_RESET,
+			VK_VERSION_MAJOR(PhysicalDeviceProperties.driverVersion), ".",
+			VK_VERSION_MINOR(PhysicalDeviceProperties.driverVersion), ".",
+			VK_VERSION_PATCH(PhysicalDeviceProperties.driverVersion), ".",
+			VK_API_VERSION_VARIANT(PhysicalDeviceProperties.driverVersion));
 	}
 
 	// Vulkan Version
 	{
-		#if defined(__GNUC__) || defined(__MINGW64__)	
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(CONFIG).name(), nullptr, nullptr, nullptr) }, " && ", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, "]", Reset);
+		fast_io::io::print(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(CONFIG).name(), nullptr, nullptr, nullptr) }, " && ", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, "]",
 		#else
-			fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(CONFIG).name() }, " && ", std::string_view{ typeid(SwapChain).name() }, "]", Reset);
+			"  [", std::string_view{ typeid(CONFIG).name() }, " && ", std::string_view{ typeid(SwapChain).name() }, "]",
 		#endif
-
-		fast_io::io::print(Bold, " Vsync : ");
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Vsync : ");
 
 		if ((std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eMailbox || std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eFifo) && CONFIG["patata-engine"]["raccoon-renderer"]["vsync"].as<bool>())
-			fast_io::io::println(Reset, Chartreuse1, "Yes", Reset);
+			fast_io::io::println(PATATA_TERM_COLOR_GREEN, "Yes", PATATA_TERM_RESET);
 		else if (std::get<0>(SWAPCHAIN_INFO) == vk::PresentModeKHR::eImmediate && !CONFIG["patata-engine"]["raccoon-renderer"]["vsync"].as<bool>())
-			fast_io::io::println(Reset, BLightGoldenRod1, "No", Reset);
+			fast_io::io::println(PATATA_TERM_COLOR_YELLOW, "No", PATATA_TERM_RESET);
 	}
 
 	// SwapChain Present Mode
-	#if defined(__GNUC__) || defined(__MINGW64__)	
-		fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, " -> ", std::string_view{ abi::__cxa_demangle(typeid(std::get<0>(SWAPCHAIN_INFO)).name(), nullptr, nullptr, nullptr) }, "]", Reset);
-	#else
-		fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(SwapChain).name() }, " <- ", std::string_view{ typeid(std::get<0>(SWAPCHAIN_INFO)).name() }, "]", Reset);
-	#endif
-	fast_io::io::println(Bold, " Present Mode : ", Reset, vk::to_string(std::get<0>(SWAPCHAIN_INFO)));
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, " -> ", std::string_view{ abi::__cxa_demangle(typeid(std::get<0>(SWAPCHAIN_INFO)).name(), nullptr, nullptr, nullptr) }, "]",
+		#else
+			"  [", std::string_view{ typeid(SwapChain).name() }, " <- ", std::string_view{ typeid(std::get<0>(SWAPCHAIN_INFO)).name() }, "]",
+		#endif
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Present Mode : ",
+			PATATA_TERM_RESET,
+			vk::to_string(std::get<0>(SWAPCHAIN_INFO)));
 
 	// SwapChain Images
-	#if defined(__GNUC__) || defined(__MINGW64__)	
-		fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, "]", Reset);
-	#else
-		fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(SwapChain).name() }, "]", Reset);
-	#endif
-	fast_io::io::println(Bold, " Images : ", Reset, SwapChainBuffers.size());
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, "]",
+		#else
+			"  [", std::string_view{ typeid(SwapChain).name() }, "]",
+		#endif
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Images : ",
+			PATATA_TERM_RESET,
+			SwapChainBuffers.size());
 
 	// SwapChain Image Color Format
-	#if defined(__GNUC__) || defined(__MINGW64__)	
-		fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, " -> ", std::string_view{ abi::__cxa_demangle(typeid(std::get<1>(SWAPCHAIN_INFO)).name(), nullptr, nullptr, nullptr) }, "]", Reset);
-	#else
-		fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(SwapChain).name() }, " <- ", std::string_view{ typeid(std::get<1>(SWAPCHAIN_INFO)).name() }, "]", Reset);
-	#endif
-	fast_io::io::println(Bold, " Image Color Format : ", Reset, vk::to_string(std::get<1>(SWAPCHAIN_INFO)));
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, " -> ", std::string_view{ abi::__cxa_demangle(typeid(std::get<1>(SWAPCHAIN_INFO)).name(), nullptr, nullptr, nullptr) }, "]",
+		#else
+			"  [", std::string_view{ typeid(SwapChain).name() }, " <- ", std::string_view{ typeid(std::get<1>(SWAPCHAIN_INFO)).name() }, "]",
+		#endif
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Image Color Format : ",
+			PATATA_TERM_RESET,
+			vk::to_string(std::get<1>(SWAPCHAIN_INFO)));
 
 	// SwapChain Image Color Space
-	#if defined(__GNUC__) || defined(__MINGW64__)	
-		fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, " -> ", std::string_view{ abi::__cxa_demangle(typeid(std::get<2>(SWAPCHAIN_INFO)).name(), nullptr, nullptr, nullptr) }, "]", Reset);
-	#else
-		fast_io::io::print(Dim, CGREY66, "  [", std::string_view{ typeid(SwapChain).name() }, " <- ", std::string_view{ typeid(std::get<2>(SWAPCHAIN_INFO)).name() }, "]", Reset);
-	#endif
-	fast_io::io::println(Bold, " Image Color Space : ", Reset, vk::to_string(std::get<2>(SWAPCHAIN_INFO)));
+		fast_io::io::println(PATATA_TERM_DIM,
+			PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+			"  [", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, " -> ", std::string_view{ abi::__cxa_demangle(typeid(std::get<2>(SWAPCHAIN_INFO)).name(), nullptr, nullptr, nullptr) }, "]",
+		#else
+			"  [", std::string_view{ typeid(SwapChain).name() }, " <- ", std::string_view{ typeid(std::get<2>(SWAPCHAIN_INFO)).name() }, "]",
+		#endif
+			PATATA_TERM_RESET,
+			PATATA_TERM_BOLD,
+			" Image Color Space : ",
+			PATATA_TERM_RESET,
+			vk::to_string(std::get<2>(SWAPCHAIN_INFO)));
 
 	#if defined(DEBUG)
-		fast_io::io::println(Bold, "  Validation Layer : ", Reset, Chartreuse1, "Enabled", Reset);
+		fast_io::io::println(PATATA_TERM_BOLD,
+			"  Validation Layer : ",
+			PATATA_TERM_RESET,
+			PATATA_TERM_COLOR_GREEN,
+			"Enabled",
+			PATATA_TERM_RESET);
 
-		// Vulkan Loader Version
+		// Vulkan Validation Layer Version
 		#if defined(PATATA_VULKAN_VALIDATION_LAYERS_VERSION)
-		fast_io::io::println(Bold, "  Validation Layer Version : ", Reset, PATATA_VULKAN_VALIDATION_LAYERS_VERSION);
+		fast_io::io::println(PATATA_TERM_BOLD,
+			"  Validation Layer Version : ",
+			PATATA_TERM_RESET,
+			PATATA_VULKAN_VALIDATION_LAYERS_VERSION);
 		#endif
 	#else
-		fast_io::io::println(Bold, "  Validation Layer : ", Reset, BLightGoldenRod1, "Disabled", Reset);
+		fast_io::io::println(PATATA_TERM_BOLD,
+			"  Validation Layer : ",
+			PATATA_TERM_RESET,
+			PATATA_TERM_COLOR_YELLOW,
+			"Disabled",
+			PATATA_TERM_RESET);
 	#endif
 
 	#if defined(PATATA_IMGUI_VERSION)
-		fast_io::io::println(Bold, "  Imgui Version : ", Reset, PATATA_IMGUI_VERSION);
+		fast_io::io::println(PATATA_TERM_BOLD,
+			"  Imgui Version : ",
+			PATATA_TERM_RESET,
+			PATATA_IMGUI_VERSION);
 	#endif
 		fast_io::io::println("");
 }
