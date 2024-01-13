@@ -13,7 +13,6 @@
 ⚠️ Aun no esta listo para su uso
 
 ## Ejemplo de su uso
-[Programa de Ejemplo](examples/Simple Program/Main.cpp)
 
 ```cpp
 #define SDL_MAIN_HANDLED
