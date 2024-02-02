@@ -24,7 +24,8 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
     { 'BUILD_TESTS' : false },
     { 'CMAKE_INSTALL_PREFIX' : join_paths(meson.global_build_root(), '../bin') },
     { 'CMAKE_INSTALL_LIBDIR' : '.' },
-    { 'CMAKE_BUILD_TYPE' : buildtypeforcmake })
+    { 'CMAKE_BUILD_TYPE' : buildtypeforcmake },
+    { 'USE_GAS' : true})
 
   if get_option('xorg_support') == false
     vk_opt.add_cmake_defines(

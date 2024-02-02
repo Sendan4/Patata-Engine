@@ -24,7 +24,7 @@ void Patata::Engine::SetupImGUIBackend(void) {
 			ImGuiStyle * style = &ImGui::GetStyle();
 			style->FrameBorderSize = 0;
 
-			ImGui_ImplSDL2_InitForOpenGL(Info->pWindow, Info->pOpenGLContext);
+			ImGui_ImplSDL2_InitForOpenGL(GameWindow, GameGLContext);
 			ImGui_ImplOpenGL3_Init("#version 130");
 			break;
 	}

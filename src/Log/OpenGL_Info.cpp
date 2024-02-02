@@ -78,7 +78,7 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 	{
 		auto GLslang = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-		fast_io::io::print(PATATA_TERM_DIM,
+		fast_io::io::println(PATATA_TERM_DIM,
 			PATATA_TERM_COLOR_GRAY0,
 		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
 			"  [", std::string_view{ abi::__cxa_demangle(typeid(GLslang).name(), nullptr, nullptr, nullptr) }, "]",

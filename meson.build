@@ -3,7 +3,7 @@ project('Patata_Engine',
   version : '1',
   #  meson_version : '>=1.3.0',
   default_options : [
-  'buildtype=release',
+    'buildtype=release',
     'cpp_std=c++20',
     'werror=false',
     'warning_level=2'],
@@ -205,7 +205,8 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
     { 'BUILD_TESTS' : false },
     { 'CMAKE_INSTALL_PREFIX' : join_paths(meson.global_build_root(), '../bin') },
     { 'CMAKE_INSTALL_LIBDIR' : '.' },
-    { 'CMAKE_BUILD_TYPE' : buildtypeforcmake })
+    { 'CMAKE_BUILD_TYPE' : buildtypeforcmake },
+    { 'USE_GAS' : true})
 
   if get_option('xorg_support') == false
     vk_opt.add_cmake_defines(
@@ -228,7 +229,14 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
     { 'SDL_TEST' : false },
     { 'SDL_OPENGLES' : false },
     { 'SDL_SHARED' : true },
-    { 'SDL_STATIC' : false })
+    { 'SDL_STATIC' : false },
+    { 'SDL_FILE' : false },
+    { 'SDL_LOCALE' : false },
+    { 'SDL_POWER' : false },
+    { 'SDL_RENDER' : false},
+    { 'SDL_SENSOR' : false },
+    { 'SDL_TIMERS' : false},
+    { 'SDL_ATOMIC' : false })
 
   if build_machine.system() == 'windows'
     sdl2_opt.add_cmake_defines({ 'CMAKE_SHARED_LIBRARY_PREFIX' : ''})
@@ -238,7 +246,7 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
     sdl2_opt.add_cmake_defines(
       { 'SDL_X11' : false }, 
       { 'SDL_X11_SHARED' : false })
-
+  else
     add_project_arguments('-DPATATA_LINUX_XORG_SUPPORT=1', language : 'cpp')
   endif
 
@@ -275,6 +283,8 @@ else
   yamlcpp = dependency('yaml-cpp',
     static : false,
     required : true)
+
+  add_project_arguments('-DPATATA_LINUX_XORG_SUPPORT=1', language : 'cpp')
 endif
 
 dependencies = [Vulkan, Fast_io_dep, sdl2_dep, yamlcpp, Glad2_dep]

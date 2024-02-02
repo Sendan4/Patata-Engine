@@ -158,5 +158,9 @@ void Patata::Log::StartPatataLogInfo(void) {
 		fast_io::io::println(PATATA_TERM_BOLD, "  Yaml-Cpp Version : ", PATATA_TERM_RESET, PATATA_YAML_CPP_VERSION);
 	#endif
 
+	#if defined(PATATA_GAME_NAME)
+	fast_io::io::println(PATATA_TERM_BOLD, "  Game Name : ", PATATA_TERM_RESET, PATATA_GAME_NAME);
+	#endif
+
 	fast_io::io::println("");
 }

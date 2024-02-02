@@ -1,4 +1,4 @@
-project('MyFurryGame', 'cpp',
+project('example', 'cpp',
     default_options : ['buildtype=release'])
 
 if get_option('use_external_libs') == true and build_machine.system() != 'windows'
@@ -21,10 +21,16 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
     { 'CMAKE_INSTALL_LIBDIR' : '.' },
     { 'CMAKE_BUILD_TYPE' : buildtypeforcmake },
     { 'SDL_TEST' : false },
-    { 'SDL_DIRECTX' : false },
-    { 'SDL_RENDER_D3D' : false },
     { 'SDL_OPENGLES' : false },
-    { 'SDL_SHARED' : true }, { 'SDL_STATIC' : false })
+    { 'SDL_SHARED' : true },
+    { 'SDL_STATIC' : false },
+    { 'SDL_FILE' : false },
+    { 'SDL_LOCALE' : false },
+    { 'SDL_POWER' : false },
+    { 'SDL_RENDER' : false},
+    { 'SDL_SENSOR' : false },
+    { 'SDL_TIMERS' : false},
+    { 'SDL_ATOMIC' : false })
 
   if get_option('xorg_support') == false
     sdl2_opt.add_cmake_defines(
@@ -36,7 +42,6 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
   sdl2_dep = sdl2.dependency('SDL2')
 else
   sdl2_dep = dependency('sdl2',
-    #version : '>=2.28.4',
     required : true)
 endif
 

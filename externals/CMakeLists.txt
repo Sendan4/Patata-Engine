@@ -74,7 +74,21 @@ else ()
 	set(SDL_SHARED ON CACHE INTERNAL "..." FORCE)
 	set(SDL_STATIC OFF CACHE INTERNAL "..." FORCE)
 endif ()
-set(SDL_TEST OFF CACHE INTERNAL "..." FORCE)
+
+set(SDL_UNUSED_SUBSYSTEMS
+    File
+    Locale 
+	Power
+	Render
+	Sensor
+	Timers
+	Atomic)
+foreach(_SUB ${SDL_UNUSED_SUBSYSTEMS})
+	string(TOUPPER ${_SUB} _OPT)
+	set(SDL_${_OPT} OFF CACHE INTERNAL "..." FORCE)
+endforeach()
+
+set (SDL_TEST OFF CACHE INTERNAL "..." FORCE)
 set (SDL_DIRECTX OFF CACHE INTERNAL "..." FORCE)
 set (SDL_RENDER_D3D OFF CACHE INTERNAL "..." FORCE)
 set (SDL_OPENGLES OFF CACHE INTERNAL "..." FORCE)

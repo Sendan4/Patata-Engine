@@ -25,7 +25,7 @@
 	#define GAME_CONFIG_FILE_NAME "patata.yaml"
 #endif
 
-Patata::Engine::Engine(void) {
+Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowWidth, const uint32_t & WindowHeight) {
 	Patata::Log::StartMapache();
 	Patata::Log::StartPatataLogInfo();
 	
@@ -35,6 +35,7 @@ Patata::Engine::Engine(void) {
 		#else
 		Config = YAML::LoadFile(strcpy(SDL_GetBasePath(), "patata.yaml"));
 		#endif
+	
 	}
 	catch(const YAML::BadFile & BadFile) {
 		Patata::Log::YamlFileErrorMessage();
@@ -86,6 +87,11 @@ Patata::Engine::Engine(void) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	CreateGameWindow(WindowTitle, WindowWidth, WindowHeight);
+	SetWindowIcon();
+
+	InitRenderer();
 }
 
 #if defined(__GNUC__) || defined(__MINGW64__)
@@ -107,7 +113,9 @@ Patata::Engine::~Engine(void) {
 	else {		
 		// OpenGL
 		Patata::Log::DeleteAndLogPtr("OpenGL Renderer", pOpenGLRenderer);
-		SDL_GL_DeleteContext(Info->pOpenGLContext);
-		Patata::Log::DeleteAndLogPtr("OpenGL Context", Info->pOpenGLContext);
+		SDL_GL_DeleteContext(*GameGLContext);
+		Patata::Log::DeleteAndLogPtr("OpenGL Context", GameGLContext);
 	}
+
+	SDL_DestroyWindow(GameWindow);
 }

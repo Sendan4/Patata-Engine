@@ -23,11 +23,11 @@ void Patata::Engine::HandleEvent(SDL_Event & Event) {
 					case SDLK_F11:
 						if (!PatataFullScreen) {
 							PatataFullScreen = true;
-							SDL_SetWindowFullscreen(Info->pWindow, SDL_WINDOW_FULLSCREEN);
+							SDL_SetWindowFullscreen(GameWindow, SDL_WINDOW_FULLSCREEN);
 						}
 						else {
 							PatataFullScreen = false;
-							SDL_SetWindowFullscreen(Info->pWindow, 0);
+							SDL_SetWindowFullscreen(GameWindow, 0);
 						}
 						break;
 				}

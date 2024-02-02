@@ -4,6 +4,7 @@
 
 #include <glad/gl.h>
 #include <fast_io.h>
+#include <SDL.h>
 #if defined(_WIN64)
 #include <windows.h>
 #endif
@@ -14,7 +15,7 @@
 #include "TerminalColors.hpp"
 
 void Patata::Engine::InitRenderer(void) {
-	Patata::Log::WindowLog(Info->pWindow);
+	Patata::Log::WindowLog(GameWindow);
 
 	#if defined(_WIN64)
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -24,12 +25,13 @@ void Patata::Engine::InitRenderer(void) {
 	#endif
 
 	if (bGraphicsAPI == Patata::GraphicsAPI::Vulkan) {
-		pVulkanRenderer = new Patata::Graphics::VulkanRenderer(Info->pWindow, Config);
+		// Vulkan
+		pVulkanRenderer = new Patata::Graphics::VulkanRenderer(GameWindow, Config);
 	}
 	else if (bGraphicsAPI == Patata::GraphicsAPI::OpenGL) {
 		// OpenGL
-		Info->pOpenGLContext = new SDL_GLContext;
-		*Info->pOpenGLContext = SDL_GL_CreateContext(Info->pWindow);
+		GameGLContext = new SDL_GLContext;
+		*GameGLContext = SDL_GL_CreateContext(GameWindow);
 
 		if (Config["patata-engine"]["raccoon-renderer"]["vsync"].as<bool>()) {
 			if (Config["patata-engine"]["raccoon-renderer"]["opengl-adaptative-vsync"].as<bool>())
@@ -200,7 +202,7 @@ void Patata::Engine::Render(void) {
 			ImGuiEndFrame();
 			#endif
 
-			SDL_GL_SwapWindow(Info->pWindow);
+			SDL_GL_SwapWindow(GameWindow);
 			break;
 	}
 }

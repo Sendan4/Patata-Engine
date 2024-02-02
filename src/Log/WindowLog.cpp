@@ -87,7 +87,7 @@ void Patata::Log::WindowLog(SDL_Window * Window) {
 					" [(", std::string_view{ typeid(XDG_SESSION_TYPE).name() },
 					#endif
 					") XDG_SESSION_TYPE] ",
-					Reset,
+					PATATA_TERM_RESET,
 					std::string_view { XDG_SESSION_TYPE });
 			else {
 				fast_io::io::println(PATATA_TERM_BOLD,
@@ -102,7 +102,7 @@ void Patata::Log::WindowLog(SDL_Window * Window) {
 					" [(", std::string_view{ typeid(XDG_SESSION_TYPE).name() },
 					#endif
 					") XDG_SESSION_TYPE] ",
-					Reset,
+					PATATA_TERM_RESET,
 					std::string_view { XDG_SESSION_TYPE });
 
 				fast_io::io::println(PATATA_TERM_DIM,
