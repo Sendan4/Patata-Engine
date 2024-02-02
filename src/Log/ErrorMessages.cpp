@@ -44,3 +44,18 @@ void Patata::Log::ErrorMessage(const std::string & Message) {
 		fast_io::io::perrln(PATATA_TERM_BOLD, PATATA_TERM_COLOR_RED, "ERROR : ", PATATA_TERM_RESET, Message);
 	#endif
 }
+
+void Patata::Log::WarningMessage(const std::string & Message) {
+	#if defined(_WIN64)
+		HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
+		DWORD mode = 0;
+		GetConsoleMode(Terminal, &mode);
+		SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
+
+		fast_io::io::perr(fast_io::out(), "WARNING : " , Message);
+
+		SetConsoleMode(Terminal, mode);
+	#else
+		fast_io::io::perrln(PATATA_TERM_BOLD, PATATA_TERM_COLOR_YELLOW, "WARNING : ", PATATA_TERM_RESET, Message);
+	#endif
+}

@@ -52,10 +52,40 @@ void Patata::Engine::CreateGameWindow(const std::string & Title, const uint32_t 
         SDL_WINDOWPOS_CENTERED,
     	WindowWidth, WindowHeight,
         flags);
+
+	if (!GameWindow) {
+		Patata::Log::FatalErrorMessage("Window cannot be created", SDL_GetError(), Config);
+		exit(1);
+	}
 }
 
+#include <SDL_syswm.h>
+
 void Patata::Engine::SetWindowIcon(void) {
-	SDL_Surface * Icon = SDL_LoadBMP(PATATA_GAME_ICON_FILE);
-	SDL_SetWindowIcon(GameWindow, Icon);
-	SDL_FreeSurface(Icon);
+	#if defined(_WIN64)
+		SDL_Surface * Icon = SDL_LoadBMP(PATATA_GAME_ICON_FILE);
+
+		if (Icon == nullptr)
+			Patata::Log::ErrorMessage("Icon cannot be loaded");
+
+		SDL_SetWindowIcon(GameWindow, Icon);
+		SDL_FreeSurface(Icon);
+	#else
+		SDL_SysWMinfo WindowInfo;
+		SDL_VERSION(&WindowInfo.version);
+		SDL_GetWindowWMInfo(GameWindow, &WindowInfo);
+
+		if (WindowInfo.subsystem == SDL_SYSWM_WAYLAND) {
+			Patata::Log::WarningMessage("Dynamic icons are not supported in Wayland");
+		}
+		else {
+			SDL_Surface * Icon = SDL_LoadBMP(PATATA_GAME_ICON_FILE);
+
+			if (Icon == nullptr)
+				Patata::Log::ErrorMessage("Icon cannot be loaded");
+
+			SDL_SetWindowIcon(GameWindow, Icon);
+			SDL_FreeSurface(Icon);
+		}
+	#endif
 }
