@@ -3,18 +3,29 @@
 #endif
 
 #include <fast_io.h>
+#ifndef YAML_CPP_API
+#define YAML_CPP_API
+#endif
+#include <yaml-cpp/yaml.h>
+#include <vulkan/vulkan.hpp>
+#include <SDL.h>
 
-#include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
 #include "TerminalColors.hpp"
 
-void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> SWAPCHAIN_INFO) {
-	fast_io::io::println("\n", PATATA_TERM_COLOR_RED,
+void Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> SWAPCHAIN_INFO) {
+	fast_io::io::println("\n",
 		PATATA_TERM_BOLD,
-		"Vulkan ",
+		PATATA_TERM_COLOR_PATATA,
+		"Raccoon Renderer ",
 		PATATA_TERM_RESET,
-		PATATA_TERM_BOLD,
-		"INFO",
-		PATATA_TERM_RESET);
+		"INFO");
+
+	fast_io::io::println(PATATA_TERM_BOLD,
+		"  Graphics Backend : ",
+		PATATA_TERM_RESET,
+		PATATA_TERM_COLOR_RED,
+		"Vulkan");
 
 	vk::PhysicalDeviceProperties PhysicalDeviceProperties = PhysicalDevice.getProperties();
 	const uint32_t VulkanVersion = PhysicalDeviceProperties.apiVersion;
@@ -23,9 +34,9 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 	{
 		std::string Vendor;
 		switch (PhysicalDeviceProperties.vendorID) {
-			case 32902 : Vendor = "Intel Corporation"; break;
-			case 4098 : Vendor = "AMD (Advanced Micro Devices, Inc.)"; break;
-			case 4318 : Vendor = "Nvidia (NVIDIA Corporation)"; break;
+			case 32902 : Vendor = "Intel"; break;
+			case 4098 : Vendor = "AMD"; break;
+			case 4318 : Vendor = "Nvidia"; break;
 		}
 
 		fast_io::io::print(PATATA_TERM_DIM,
@@ -37,7 +48,7 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 		#endif
 			PATATA_TERM_RESET,
 			PATATA_TERM_BOLD,
-			" Vendor : ",
+			" Device Vendor : ",
 			PATATA_TERM_RESET);
 
 		switch (PhysicalDeviceProperties.vendorID) {
@@ -58,11 +69,11 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 		#endif
 			PATATA_TERM_RESET,
 			PATATA_TERM_BOLD,
-			" VendorID : ",
+			" Device VendorID : ",
 			PATATA_TERM_RESET);
 
 		// Hexadecimal VendorID
-		fast_io::io::print(PATATA_TERM_DIM, PATATA_TERM_COLOR_GRAY0, "[Hex] ", PATATA_TERM_RESET);
+		fast_io::io::print(PATATA_TERM_DIM, PATATA_TERM_COLOR_GRAY0, "[Hexadecimal] ", PATATA_TERM_RESET);
 		switch (PhysicalDeviceProperties.vendorID) {
 			case 32902 : fast_io::io::print(PATATA_TERM_COLOR_BLUE); break;
 			case 4098 : fast_io::io::print(PATATA_TERM_COLOR_RED); break;
@@ -71,7 +82,7 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 		fast_io::io::print(fast_io::mnp::hex(PhysicalDeviceProperties.vendorID), PATATA_TERM_RESET,  " ");
 
 		// Decimal VendorID
-		fast_io::io::print(PATATA_TERM_DIM, PATATA_TERM_COLOR_GRAY0, "[Dec] ", PATATA_TERM_RESET);
+		fast_io::io::print(PATATA_TERM_DIM, PATATA_TERM_COLOR_GRAY0, "[Decimal] ", PATATA_TERM_RESET);
 		switch (PhysicalDeviceProperties.vendorID) {
 			case 32902 : fast_io::io::print(PATATA_TERM_COLOR_BLUE); break;
 			case 4098 : fast_io::io::print(PATATA_TERM_COLOR_RED); break;
@@ -91,7 +102,7 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 		#endif
 			PATATA_TERM_RESET,
 			PATATA_TERM_BOLD,
-			" Type : ",
+			" Device Type : ",
 			PATATA_TERM_RESET,
 			vk::to_string(PhysicalDeviceProperties.deviceType));
 	}
@@ -107,7 +118,7 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 		#endif
 			PATATA_TERM_RESET,
 			PATATA_TERM_BOLD,
-			" Name : ",
+			" Device Name : ",
 			PATATA_TERM_RESET);
 
 		switch (PhysicalDeviceProperties.vendorID) {
@@ -178,9 +189,21 @@ void Patata::Graphics::VulkanRenderer::VulkanInfo(YAML::Node CONFIG, std::tuple 
 		fast_io::io::print(PATATA_TERM_DIM,
 			PATATA_TERM_COLOR_GRAY0,
 		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-			"  [", std::string_view{ abi::__cxa_demangle(typeid(CONFIG).name(), nullptr, nullptr, nullptr) }, " && ", std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) }, "]",
+			"  [",
+			std::string_view{ abi::__cxa_demangle(typeid(SwapChain).name(), nullptr, nullptr, nullptr) },
+			" -> ",
+			std::string_view{ abi::__cxa_demangle(typeid(std::get<0>(SWAPCHAIN_INFO)).name(), nullptr, nullptr, nullptr) },
+			" && ",
+			std::string_view{ abi::__cxa_demangle(typeid(CONFIG).name(), nullptr, nullptr, nullptr) },
+			"]",
 		#else
-			"  [", std::string_view{ typeid(CONFIG).name() }, " && ", std::string_view{ typeid(SwapChain).name() }, "]",
+			"  [",
+			std::string_view{ typeid(SwapChain).name() },
+			" -> ",
+			std::string_view{ typeid(std::get<0>(SWAPCHAIN_INFO)).name() },
+			" && ",
+			std::string_view{ typeid(CONFIG).name() },
+			"]",
 		#endif
 			PATATA_TERM_RESET,
 			PATATA_TERM_BOLD,

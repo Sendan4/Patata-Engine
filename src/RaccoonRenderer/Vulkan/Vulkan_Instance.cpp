@@ -4,7 +4,7 @@
 
 #include <fast_io.h>
 
-#include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
 #include "Log.hpp"
 
 #include <SDL_vulkan.h>
@@ -32,7 +32,7 @@
 #define PATATA_GAME_VERSION VK_MAKE_VERSION(PATATA_GAME_VERSION_MAYOR, PATATA_GAME_VERSION_MINOR, PATATA_GAME_VERSION_PATCH)
 #define PATATA_ENGINE_VERSION_VK VK_MAKE_VERSION(PATATA_ENGINE_VERSION_MAYOR, PATATA_ENGINE_VERSION_MINOR, PATATA_ENGINE_VERSION_PATCH)
 
-bool Patata::Graphics::VulkanRenderer::CreateInstance(SDL_Window *& WINDOW, YAML::Node CONFIG) {
+bool Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateInstance(SDL_Window *& WINDOW, YAML::Node & CONFIG) {
 	vk::ApplicationInfo PatataEngineInfo(
 		PATATA_GAME_NAME, PATATA_GAME_VERSION,
 		PATATA_ENGINE_NAME, PATATA_ENGINE_VERSION_VK,

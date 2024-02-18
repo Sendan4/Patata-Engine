@@ -4,18 +4,28 @@
 
 #include <fast_io.h>
 #include <glad/gl.h>
+#ifndef YAML_CPP_API
+#define YAML_CPP_API
+#endif
+#include <yaml-cpp/yaml.h>
+#include <SDL.h>
+#include <vulkan/vulkan.hpp>
 
-// Patata Engine
 #include "TerminalColors.hpp"
 #include "Log.hpp"
 
 void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 	fast_io::io::println(PATATA_TERM_BOLD,
-		PATATA_TERM_COLOR_BLUE,
-		"OpenGL ",
-		PATATA_TERM_RESET,
+		PATATA_TERM_COLOR_PATATA,
+		"Raccoon Renderer ",
 		PATATA_TERM_RESET,
 		"INFO");
+
+	fast_io::io::println(PATATA_TERM_BOLD,
+		"  Graphics Backend : ",
+		PATATA_TERM_RESET,
+		PATATA_TERM_COLOR_BLUE,
+		"OpenGL");
 
 	// GPU Vendor
 	{
@@ -30,7 +40,7 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 		#endif
 			PATATA_TERM_RESET,
 			PATATA_TERM_BOLD,
-			" Vendor : ",
+			" Device Vendor : ",
 			PATATA_TERM_RESET,
 			std::string_view{ Vendor });
 	}
@@ -48,7 +58,7 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 		#endif
 			PATATA_TERM_RESET,
 			PATATA_TERM_BOLD,
-			" Renderer : ",
+			" Device Name : ",
 			PATATA_TERM_RESET,
 			std::string_view{ Name });
 	}
@@ -69,7 +79,7 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 		#endif
 			PATATA_TERM_RESET,
 			PATATA_TERM_BOLD,
-			" Version : ",
+			" OpenGL Version : ",
 			PATATA_TERM_RESET,
 			glversion);
 	}

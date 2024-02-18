@@ -1,5 +1,3 @@
-#include <cstring>
-#include <algorithm>
 #if defined(__linux__)
 #include <cstdlib>
 #endif
@@ -30,12 +28,7 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
 	Patata::Log::StartPatataLogInfo();
 	
 	try {
-		#if defined(PATATA_GAME_NAME)
 		Config = YAML::LoadFile(strcpy(SDL_GetBasePath(), GAME_CONFIG_FILE_NAME));
-		#else
-		Config = YAML::LoadFile(strcpy(SDL_GetBasePath(), "patata.yaml"));
-		#endif
-	
 	}
 	catch(const YAML::BadFile & BadFile) {
 		Patata::Log::YamlFileErrorMessage();
@@ -62,16 +55,6 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
 		if(SetEnvironmentVariable("VK_LAYER_PATH", PATATA_VVL_SDK_PATH) == 0)
 			Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");
 	#endif
-	
-	{
-		std::string GraphicsAPI = Config["patata-engine"]["raccoon-renderer"]["graphics-api"].as<std::string>();
-		std::transform(GraphicsAPI.begin(), GraphicsAPI.end(), GraphicsAPI.begin(), ::toupper);
-
-		if (GraphicsAPI == "VULKAN")
-			bGraphicsAPI = Patata::GraphicsAPI::Vulkan;
-		else if (GraphicsAPI == "OPENGL")
-			bGraphicsAPI = Patata::GraphicsAPI::OpenGL;
-	}
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		Patata::Log::FatalErrorMessage("SDL2", "Cannot init the video subsystem", Config);
@@ -87,11 +70,28 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+	SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
 
-	CreateGameWindow(WindowTitle, WindowWidth, WindowHeight);
-	SetWindowIcon();
+	std::string GraphicsAPI = Config["patata-engine"]["raccoon-renderer"]["graphics-backend"].as<std::string>();
+	std::transform(GraphicsAPI.begin(), GraphicsAPI.end(), GraphicsAPI.begin(), ::toupper);
 
-	InitRenderer();
+	bool backend = true;
+	if (GraphicsAPI == "VULKAN")
+		backend = Patata::Graphics::Backend::Vulkan;
+	else if (GraphicsAPI == "OPENGL")
+		backend = Patata::Graphics::Backend::OpenGL;
+
+	CreateGameWindow(WindowTitle, WindowWidth, WindowHeight, backend);
+	#if defined(USE_ICON)
+		SetWindowIcon();
+	#endif
+
+	RaccoonRenderer = new Patata::Graphics::RaccoonRenderer(Config, GameWindow, backend);
+
+	#if defined(DEBUG)
+	SetupImGUIBackend();
+	#endif
 }
 
 #if defined(__GNUC__) || defined(__MINGW64__)
@@ -106,16 +106,7 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
 #include "ExitLog.hpp"
 
 Patata::Engine::~Engine(void) {
-	if (bGraphicsAPI) {
-		// Vulkan
-		Patata::Log::DeleteAndLogPtr("Vulkan Renderer", pVulkanRenderer);
-	} 
-	else {		
-		// OpenGL
-		Patata::Log::DeleteAndLogPtr("OpenGL Renderer", pOpenGLRenderer);
-		SDL_GL_DeleteContext(*GameGLContext);
-		Patata::Log::DeleteAndLogPtr("OpenGL Context", GameGLContext);
-	}
+	Patata::Log::DeleteAndLogPtr("Raccoon Renderer", RaccoonRenderer);
 
 	SDL_DestroyWindow(GameWindow);
 }

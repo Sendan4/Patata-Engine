@@ -1,5 +1,5 @@
 project('imgui', 'cpp',
-  version : '1.90',
+  version : '1.90.2-docking',
   meson_version : '>=1.2.0')
 
 dependencies = []
@@ -17,24 +17,6 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
   elif get_option('buildtype') == 'minsize'
     buildtypeforcmake = 'MinSizeRel'
   endif
-
-  vk_opt = cmake.subproject_options()
-  vk_opt.add_cmake_defines(
-    { 'UPDATE_DEPS' : true },
-    { 'BUILD_TESTS' : false },
-    { 'CMAKE_INSTALL_PREFIX' : join_paths(meson.global_build_root(), '../bin') },
-    { 'CMAKE_INSTALL_LIBDIR' : '.' },
-    { 'CMAKE_BUILD_TYPE' : buildtypeforcmake },
-    { 'USE_GAS' : true})
-
-  if get_option('xorg_support') == false
-    vk_opt.add_cmake_defines(
-      { 'BUILD_WSI_XCB_SUPPORT' : false },
-      { 'BUILD_WSI_XLIB_SUPPORT' : false })
-  endif
-
-  vk = cmake.subproject('Vulkan-Loader', options : vk_opt)
-  Vulkan = vk.dependency('vulkan')
 
   sdl2_opt = cmake.subproject_options()
   sdl2_opt.add_cmake_defines(
@@ -60,11 +42,11 @@ else
         static : false,
         version : '>=2.24.1',
         modules : ['SDL2::SDL2'])
-
-    Vulkan = dependency('Vulkan',
-        static : false,
-        required : true)
 endif
+
+Vulkan = dependency('Vulkan',
+    static : false,
+    required : true)
 
 dependencies += [Vulkan, sdl2_dep]
 

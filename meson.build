@@ -47,6 +47,7 @@ if (cpp.has_link_argument('-ffast-math'))
 endif
 
 cpp.check_header('cstdint', required : true)
+
 uint16_t = cpp.has_type('uint16_t', prefix : '#include <cstdint>')
 uint32_t = cpp.has_type('uint32_t', prefix : '#include <cstdint>')
 uint64_t = cpp.has_type('uint64_t', prefix : '#include <cstdint>')
@@ -58,12 +59,24 @@ const_char_p = cpp.has_type('const char *')
 const_char_p = cpp.has_type('bool')
 const_char_p = cpp.has_type('const bool *')
 string = cpp.has_type('std::string', prefix : '#include <string>')
-cpp.check_header('cstring', required : true)
+
 cpp.has_function('strcmp')
+
 cpp.check_header('cstdlib', required : true)
+
 if build_machine.system() == 'linux'
   cpp.has_function('getenv')
   cpp.has_function('setenv')
+endif
+if cpp.get_id() == 'gcc'
+  cpp.check_header('cxxabi.h', required : true)
+endif
+
+cpp.check_header('tuple', required : true)
+
+c = meson.get_compiler('c')
+if target_machine.system() == 'windows'
+  c.check_header('windows.h', required : true)
 endif
 
 if get_option('use_git')
@@ -164,19 +177,6 @@ elif (get_option('buildtype') == 'minsize')
   add_project_arguments('-DPATATA_BUILD_TYPE="Minimal Size Release"', language : 'cpp')
 endif
 
-if cpp.get_id() == 'gcc'
-  cpp.check_header('cxxabi.h', required : true)
-endif
-
-cpp.check_header('algorithm', required : true)
-cpp.check_header('cstring', required : true)
-cpp.check_header('tuple', required : true)
-
-c = meson.get_compiler('c')
-if target_machine.system() == 'windows'
-  c.check_header('windows.h', required : true)
-endif
-
 Fast_io_dep = subproject('fast_io').get_variable('fast_io_dep')
 Glad2_dep = subproject('Glad2').get_variable('Glad2_dep')
 
@@ -198,28 +198,6 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
   elif get_option('buildtype') == 'minsize'
     buildtypeforcmake = 'MinSizeRel'
   endif
-
-  vk_opt = cmake.subproject_options()
-  vk_opt.add_cmake_defines(
-    { 'UPDATE_DEPS' : true },
-    { 'BUILD_TESTS' : false },
-    { 'CMAKE_INSTALL_PREFIX' : join_paths(meson.global_build_root(), '../bin') },
-    { 'CMAKE_INSTALL_LIBDIR' : '.' },
-    { 'CMAKE_BUILD_TYPE' : buildtypeforcmake },
-    { 'USE_GAS' : true})
-
-  if get_option('xorg_support') == false
-    vk_opt.add_cmake_defines(
-      { 'BUILD_WSI_XCB_SUPPORT' : false }, 
-      { 'BUILD_WSI_XLIB_SUPPORT' : false })
-  endif
-
-  if build_machine.system() == 'windows'
-    vk_opt.add_cmake_defines({ 'CMAKE_SHARED_LIBRARY_PREFIX' : ''})
-  endif
-
-  vk = cmake.subproject('Vulkan-Loader', options : vk_opt)
-  Vulkan = vk.dependency('vulkan')
 
   sdl2_opt = cmake.subproject_options()
   sdl2_opt.add_cmake_defines(
@@ -270,10 +248,6 @@ if get_option('use_external_libs') == true and build_machine.system() != 'window
   yamlcpp_proj = cmake.subproject('yaml-cpp', options : yamlcpp_opt)
   yamlcpp = yamlcpp_proj.dependency('yaml-cpp')
 else
-  Vulkan = dependency('Vulkan',
-    static : false,
-    required : true)
-
   sdl2_dep = dependency('sdl2',
     required : true,
     static : false,
@@ -286,6 +260,10 @@ else
 
   add_project_arguments('-DPATATA_LINUX_XORG_SUPPORT=1', language : 'cpp')
 endif
+
+Vulkan = dependency('Vulkan',
+  static : false,
+  required : true)
 
 dependencies = [Vulkan, Fast_io_dep, sdl2_dep, yamlcpp, Glad2_dep]
 

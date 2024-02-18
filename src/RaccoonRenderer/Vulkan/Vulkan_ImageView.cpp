@@ -1,6 +1,6 @@
 #include <fast_io.h>
 
-#include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
 #if defined(_WIN64)
 	#include <windows.h>
 #else
@@ -8,7 +8,7 @@
 #endif
 #include "Log.hpp"
 
-void Patata::Graphics::VulkanRenderer::CreateImageView(uint32_t &GraphicsQueueFamilyIndex) {
+void Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateImageView(uint32_t &GraphicsQueueFamilyIndex) {
 	vk::ImageCreateInfo CreateImageInfo{};
 	CreateImageInfo.imageType = vk::ImageType::e2D;
 	CreateImageInfo.setExtent(vk::Extent3D {SwapChainExtent.width, SwapChainExtent.height, 1});

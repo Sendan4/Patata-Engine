@@ -10,15 +10,12 @@
 	#define PATATA_API __attribute__((visibility("default")))
 #endif
 
-#include "PatataEngine/Graphics/VulkanRenderer.hpp"
-#include "PatataEngine/Graphics/OpenGLRenderer.hpp"
+#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
 
 namespace Patata {
-
 	class Engine {
 		public:
 			YAML::Node Config;
-			const bool * pGraphicsAPI = &bGraphicsAPI;
 
 			PATATA_API Engine(const std::string &, const uint32_t &, const uint32_t &);
 			PATATA_API ~Engine(void);
@@ -26,18 +23,15 @@ namespace Patata {
 			PATATA_API void HandleEvent(SDL_Event &);
 			PATATA_API void Render(void);
 
-			Patata::Graphics::VulkanRenderer * pVulkanRenderer = nullptr;
-			Patata::Graphics::OpenGLRenderer * pOpenGLRenderer = nullptr;
-
 		private:
 			SDL_Event * MainEvent = nullptr;
 			SDL_Window * GameWindow = nullptr;
-			SDL_GLContext * GameGLContext = nullptr;
-			bool bGraphicsAPI;
+			Patata::Graphics::RaccoonRenderer * RaccoonRenderer = nullptr;
 
-			void CreateGameWindow(const std::string &, const uint32_t &, const uint32_t &);
-			void SetWindowIcon(void);
-			void InitRenderer(void);
+			void CreateGameWindow(const std::string &, const uint32_t &, const uint32_t &, const bool &);
+			#if defined(USE_ICON)
+				void SetWindowIcon(void);
+			#endif
 
 			#if defined(DEBUG)
 				void SetupImGUIBackend(void);
@@ -47,7 +41,9 @@ namespace Patata {
 			#endif
 	};
 
-	enum GraphicsAPI : bool { Vulkan = true, OpenGL = false };
+	namespace Graphics {
+		enum Backend : bool { Vulkan = true, OpenGL = false };
+	}
 
 	class RunTimeError : public std::exception {
     	private:

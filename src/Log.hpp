@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef YAML_CPP_API
 #define YAML_CPP_API
 #endif
@@ -18,7 +20,7 @@ namespace Patata {
 
 		// Errors
 		void YamlFileErrorMessage(void);
-		void FatalErrorMessage(const std::string &, const std::string &, YAML::Node &);
+		void FatalErrorMessage(const std::string &, const std::string &, const YAML::Node &);
 		void ErrorMessage(const std::string &);
 		void WarningMessage(const std::string &);
 	}

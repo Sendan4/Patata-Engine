@@ -17,7 +17,19 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 	GetConsoleMode(Terminal, &mode);
 	SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
 
-	fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_BLUE, "OpenGL", PATATA_TERM_COLOR_WHITE, " INFO :");
+	fast_io::io::println(fast_io::out(),
+		PATATA_TERM_COLOR_PATATA,
+		"Raccoon Renderer",
+		PATATA_TERM_COLOR_WHITE,
+		" INFO :");
+
+	// Backend
+	fast_io::io::println(fast_io::out(),
+		PATATA_TERM_COLOR_WHITE,
+		"  Graphics Backend : ",
+		PATATA_TERM_COLOR_BLUE,
+		"OpenGL",
+		PATATA_TERM_RESET);
 
 	// GPU Vendor
 	#if defined(__GNUC__) || defined(__MINGW64__)	
@@ -32,7 +44,7 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 
 	fast_io::io::println(fast_io::out(),
 		PATATA_TERM_COLOR_WHITE,
-		" Vendor : ",
+		" Device Vendor : ",
 		PATATA_TERM_COLOR_GRAY1,
 		std::string_view{ reinterpret_cast<const char *>(glGetString(GL_VENDOR)) });
 
@@ -49,7 +61,7 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 
 	fast_io::io::println(fast_io::out(),
 		PATATA_TERM_COLOR_WHITE,
-		" Renderer : ",
+		" Device Name : ",
 		PATATA_TERM_COLOR_GRAY1,
 		std::string_view{ reinterpret_cast<const char *>(glGetString(GL_RENDERER)) });
 

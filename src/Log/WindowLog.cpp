@@ -7,6 +7,12 @@
 #include <fast_io.h>
 
 // Patata Engine
+#ifndef YAML_CPP_API
+#define YAML_CPP_API
+#endif
+#include <yaml-cpp/yaml.h>
+#include <SDL.h>
+#include <vulkan/vulkan.hpp>
 #include "Log.hpp"
 #include "TerminalColors.hpp"
 
@@ -22,9 +28,7 @@ void Patata::Log::WindowLog(SDL_Window * Window) {
 		PATATA_TERM_BOLD,
 		"Window ",
 		PATATA_TERM_RESET,
-		PATATA_TERM_BOLD,
-		"INFO",
-		PATATA_TERM_RESET);
+		"INFO");
 
 	SDL_SysWMinfo WindowInfo;
 	SDL_VERSION(&WindowInfo.version);

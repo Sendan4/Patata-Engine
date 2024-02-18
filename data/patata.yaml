@@ -6,7 +6,7 @@ patata-engine :
   prefer-wayland : true
 
   raccoon-renderer :
-    graphics-api : Vulkan
+    graphics-backend : Vulkan
     # Vulkan or OpenGL
 
     vsync : true

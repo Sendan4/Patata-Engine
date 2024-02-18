@@ -23,6 +23,12 @@
 #include <fast_io.h>
 
 // Patata Engine
+#ifndef YAML_CPP_API
+#define YAML_CPP_API
+#endif
+#include <yaml-cpp/yaml.h>
+#include <SDL.h>
+#include <vulkan/vulkan.hpp>
 #include "Log.hpp"
 #include "TerminalColors.hpp"
 

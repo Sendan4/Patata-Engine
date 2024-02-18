@@ -1,20 +1,27 @@
 #include <SDL.h>
+#ifndef YAML_CPP_API
+#define YAML_CPP_API
+#endif
+#include <yaml-cpp/yaml.h>
+#include <vulkan/vulkan.hpp>
 
 #include "PatataEngine/PatataEngine.hpp"
 #include "Log.hpp"
 #include "TerminalColors.hpp"
 
-#if defined(PATATA_GAME_NAME)
-	#define PATATA_GAME_ICON_FILE PATATA_GAME_NAME ".bmp"
-#else
-	#if defined(DEBUG)
-		#define PATATA_GAME_ICON_FILE "icon-debug.bmp"
+#if defined(USE_ICON)
+	#if defined(PATATA_GAME_NAME)
+		#define PATATA_GAME_ICON_FILE PATATA_GAME_NAME ".bmp"
 	#else
-		#define PATATA_GAME_ICON_FILE "icon-release.bmp"
+		#if defined(DEBUG)
+			#define PATATA_GAME_ICON_FILE "icon-debug.bmp"
+		#else
+			#define PATATA_GAME_ICON_FILE "icon-release.bmp"
+		#endif
 	#endif
 #endif
 
-void Patata::Engine::CreateGameWindow(const std::string & Title, const uint32_t & WindowWidth, const uint32_t & WindowHeight) {
+void Patata::Engine::CreateGameWindow(const std::string & Title, const uint32_t & WindowWidth, const uint32_t & WindowHeight, const bool & backend) {
 	std::string PatataWindowTitle;
 
 	if (!Title.empty())
@@ -42,7 +49,7 @@ void Patata::Engine::CreateGameWindow(const std::string & Title, const uint32_t 
 
 	uint32_t flags = 0;
 
-	if (bGraphicsAPI)
+	if (backend)
 		flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_VULKAN | SDL_WINDOW_ALLOW_HIGHDPI;
 	else flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI; 
 
@@ -57,8 +64,11 @@ void Patata::Engine::CreateGameWindow(const std::string & Title, const uint32_t 
 		Patata::Log::FatalErrorMessage("Window cannot be created", SDL_GetError(), Config);
 		exit(1);
 	}
+
+	Patata::Log::WindowLog(GameWindow);
 }
 
+#if defined(USE_ICON)
 #include <SDL_syswm.h>
 
 void Patata::Engine::SetWindowIcon(void) {
@@ -67,6 +77,7 @@ void Patata::Engine::SetWindowIcon(void) {
 
 		if (Icon == nullptr)
 			Patata::Log::ErrorMessage("Icon cannot be loaded");
+		else SDL_SetWindowIcon(GameWindow, Icon);
 
 		SDL_SetWindowIcon(GameWindow, Icon);
 		SDL_FreeSurface(Icon);
@@ -83,9 +94,10 @@ void Patata::Engine::SetWindowIcon(void) {
 
 			if (Icon == nullptr)
 				Patata::Log::ErrorMessage("Icon cannot be loaded");
+			else SDL_SetWindowIcon(GameWindow, Icon);
 
-			SDL_SetWindowIcon(GameWindow, Icon);
 			SDL_FreeSurface(Icon);
 		}
 	#endif
 }
+#endif

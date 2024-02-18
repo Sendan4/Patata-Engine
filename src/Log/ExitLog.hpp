@@ -10,9 +10,9 @@ namespace Patata {
 					fast_io::io::print(fast_io::out(),
 						PATATA_TERM_COLOR_GRAY0,
 					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ");
+						"[", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ");
 					#else
-						"[(Pointer) ", std::string_view{ typeid(*ptr).name() }, "] ");
+						"[", std::string_view{ typeid(*ptr).name() }, "] ");
 					#endif
 
 					fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, Message, " : ", PATATA_TERM_RESET);
@@ -20,9 +20,9 @@ namespace Patata {
 					fast_io::io::print(PATATA_TERM_DIM,
 						PATATA_TERM_COLOR_GRAY0,
 					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ",
+						"[", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ",
 					#else
-						"[(Pointer) ", std::string_view{ typeid(*ptr).name() }, "] ",
+						"[", std::string_view{ typeid(*ptr).name() }, "] ",
 					#endif
 						PATATA_TERM_RESET);
 
@@ -49,9 +49,9 @@ namespace Patata {
 					fast_io::io::print(fast_io::out(),
 						PATATA_TERM_COLOR_GRAY0,
 					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ");
+						"[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ");
 					#else
-						"[(Pointer) ", std::string_view{ typeid(ptr).name() }, "] ");
+						"[", std::string_view{ typeid(ptr).name() }, "] ");
 					#endif
 
 					fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, Message, PATATA_TERM_COLOR_YELLOW, " Is Already Eliminated Or Null");
@@ -67,7 +67,9 @@ namespace Patata {
 						PATATA_TERM_BOLD,
 						Message,
 						PATATA_TERM_RESET,
-						" Already Eliminated Or Null");
+						PATATA_TERM_COLOR_YELLOW,
+						" Already Eliminated Or Null"
+						PATATA_TERM_RESET);
 				#endif
 			}
 		}
@@ -82,9 +84,9 @@ namespace Patata {
 					fast_io::io::print(fast_io::out(),
 						PATATA_TERM_COLOR_GRAY0,
 					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ");
+						"[", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ");
 					#else
-						"[(Pointer) ", std::string_view{ typeid(*ptr).name() }, "] ");
+						"[", std::string_view{ typeid(*ptr).name() }, "] ");
 					#endif
 
 					fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, Message, " : ", PATATA_TERM_RESET);
@@ -92,9 +94,9 @@ namespace Patata {
 					fast_io::io::print(PATATA_TERM_DIM,
 						PATATA_TERM_COLOR_GRAY0,
 					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-						"[(Array Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ",
+						"[", std::string_view{ abi::__cxa_demangle(typeid(*ptr).name(), nullptr, nullptr, nullptr) }, "] ",
 					#else
-						"[(Array Pointer) ", std::string_view{ typeid(*ptr).name() }, "] ",
+						"[", std::string_view{ typeid(*ptr).name() }, "] ",
 					#endif
 						PATATA_TERM_RESET);
 
@@ -121,9 +123,9 @@ namespace Patata {
 					fast_io::io::print(fast_io::out(),
 						PATATA_TERM_COLOR_GRAY0,
 					#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-						"[(Pointer) ", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ");
+						"[", std::string_view{ abi::__cxa_demangle(typeid(ptr).name(), nullptr, nullptr, nullptr) }, "] ");
 					#else
-						"[(Pointer) ", std::string_view{ typeid(ptr).name() }, "] ");
+						"[", std::string_view{ typeid(ptr).name() }, "] ");
 					#endif
 
 					fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, Message, PATATA_TERM_COLOR_YELLOW, " Is Already Eliminated Or Null");
@@ -139,7 +141,9 @@ namespace Patata {
 						PATATA_TERM_BOLD,
 						Message,
 						PATATA_TERM_RESET,
-						" Already Eliminated Or Null");
+						PATATA_TERM_COLOR_YELLOW,
+						" Already Eliminated Or Null"
+						PATATA_TERM_RESET);
 				#endif
 			}
 		}

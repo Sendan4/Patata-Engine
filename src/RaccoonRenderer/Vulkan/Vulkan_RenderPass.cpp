@@ -1,7 +1,9 @@
-#include "PatataEngine/Graphics/VulkanRenderer.hpp"
+#include <fast_io.h>
+
+#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
 #include "Log.hpp"
 
-void Patata::Graphics::VulkanRenderer::CreateRenderPass(void) {
+void Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateRenderPass(void) {
 	// Color
 	vk::AttachmentDescription CreateColorAttachmentDescription {};
 	CreateColorAttachmentDescription.format = ColorFormat;

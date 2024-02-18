@@ -4,6 +4,13 @@
 #include <imgui_impl_sdl2.h>
 #endif
 
+#ifndef YAML_CPP_API
+#define YAML_CPP_API
+#endif
+#include <yaml-cpp/yaml.h>
+#include <SDL.h>
+#include <vulkan/vulkan.hpp>
+
 // Patata Engine
 #include "PatataEngine/PatataEngine.hpp"
 
@@ -12,7 +19,7 @@ void Patata::Engine::HandleEvent(SDL_Event & Event) {
 	static bool PatataFullScreen = false;
 		
 	#if defined(DEBUG)
-	if (bGraphicsAPI == Patata::GraphicsAPI::OpenGL)
+	if (*RaccoonRenderer->Backend == Patata::Graphics::Backend::OpenGL)
 		ImGui_ImplSDL2_ProcessEvent(&Event);
 	#endif
 
