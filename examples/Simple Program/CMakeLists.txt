@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
-
-project("MyFurryGame" LANGUAGES CXX)
-
-option(LIBS_SHARED_BUILD "Build and link Shared dependencies" OFF)
+project("Example" LANGUAGES CXX)
 
 add_subdirectory(subprojects/patata-engine/)
 
