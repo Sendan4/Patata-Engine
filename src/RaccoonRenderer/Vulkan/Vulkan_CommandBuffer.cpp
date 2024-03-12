@@ -1,7 +1,4 @@
-#include <fast_io.h>
-
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-#include "Log.hpp"
+#include "Vulkan_CommandBuffer.hpp"
 
 void Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateCommandBuffer(uint32_t &GraphicsQueueFamilyIndex) {
 	vk::CommandPoolCreateInfo CreateCommandPoolInfo {};

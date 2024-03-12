@@ -14,7 +14,6 @@
 #endif
 
 // Patata Engine
-#include "PatataEngine/PatataEngine.hpp"
 #include "Log.hpp"
 
 #if defined(PATATA_GAME_NAME)
@@ -23,7 +22,27 @@
 	#define GAME_CONFIG_FILE_NAME "patata.yaml"
 #endif
 
-Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowWidth, const uint32_t & WindowHeight) {
+#include "PatataEngineImpl.hpp"
+
+// Public API
+Patata::Engine::Engine(const std::string & WindowTitle, const uint64_t & Width, const uint64_t & Height)
+	: pPatataEngine(new EngineImpl(WindowTitle, Width, Height)) {}
+
+Patata::Engine::~Engine() {
+	delete pPatataEngine;
+	pPatataEngine = nullptr;
+}
+
+void Patata::Engine::HandleEvent(SDL_Event & Event) {
+	pPatataEngine->HandleEvent(Event);
+}
+
+void Patata::Engine::Render(void) {
+	pPatataEngine->Render();
+}
+
+// Private API
+Patata::Engine::EngineImpl::EngineImpl(const std::string & WindowTitle, const uint32_t & WindowWidth, const uint32_t & WindowHeight) {
 	Patata::Log::StartMapache();
 	Patata::Log::StartPatataLogInfo();
 	
@@ -56,6 +75,7 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
 			Patata::Log::ErrorMessage("Cannot set enviroment varible VK_LAYER_PATH");
 	#endif
 
+	// SDL Subsystems
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		Patata::Log::FatalErrorMessage("SDL2", "Cannot init the video subsystem", Config);
 		throw Patata::RunTimeError("SDL Cannot init the video subsystem");
@@ -66,6 +86,12 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
 		throw Patata::RunTimeError("SDL Cannot init the events subsystem");
 	}
 
+	if (SDL_Init(SDL_INIT_GAMECONTROLLER) != 0) {
+		Patata::Log::FatalErrorMessage("SDL2", "Cannot init the gamecontroller subsystem", Config);
+		throw Patata::RunTimeError("SDL Cannot init the GameController subsystem");
+	}
+
+	// OpenGL Attributes
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -73,6 +99,7 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
 
+	// load certain configurations
 	std::string GraphicsAPI = Config["patata-engine"]["raccoon-renderer"]["graphics-backend"].as<std::string>();
 	std::transform(GraphicsAPI.begin(), GraphicsAPI.end(), GraphicsAPI.begin(), ::toupper);
 
@@ -94,10 +121,10 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
 	#endif
 }
 
+// ExitLog.hpp Dependencies
 #if defined(__GNUC__) || defined(__MINGW64__)
 #include <cxxabi.h>
 #endif
-
 #if defined(_WIN64)
 #include <Windows.h>
 #endif
@@ -105,7 +132,7 @@ Patata::Engine::Engine(const std::string & WindowTitle, const uint32_t & WindowW
 #include "TerminalColors.hpp"
 #include "ExitLog.hpp"
 
-Patata::Engine::~Engine(void) {
+Patata::Engine::EngineImpl::~EngineImpl(void) {
 	Patata::Log::DeleteAndLogPtr("Raccoon Renderer", RaccoonRenderer);
 
 	SDL_DestroyWindow(GameWindow);

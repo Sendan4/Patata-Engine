@@ -10,8 +10,7 @@
 #include <fast_io.h>
 
 // Patata Engine
-#include "PatataEngine/PatataEngine.hpp"
-#include "Log.hpp"
+#include "PatataEngineImpl.hpp"
 #include "TerminalColors.hpp"
 
 void Patata::Graphics::RaccoonRenderer::RaccoonBackendInit(YAML::Node & Config, SDL_Window *& Window) {

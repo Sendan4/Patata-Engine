@@ -2,19 +2,17 @@
 #include <SDL.h>
 #include <PatataEngine/PatataEngine.hpp>
 
-int main(int argc, char ** argv) {
+int main(int argv, char ** args) {
 	Patata::Engine Patata("", 1280, 720);
 
-	bool run = true;
-	while(run) {
+	while(true) {
 		SDL_Event event;
 		while(SDL_PollEvent(&event)) {
 			// Patata Events
 			Patata.HandleEvent(event);
 			// Your Events
 			if (event.type == SDL_QUIT) {
-				run = false;
-				break;
+				goto FINISHLOOP;
 			}
 		}
 
@@ -22,6 +20,7 @@ int main(int argc, char ** argv) {
 
 		Patata.Render();
 	}
+FINISHLOOP:
 
 	return 0;
 }

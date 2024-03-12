@@ -1,25 +1,15 @@
-#if defined(__GNUC__) || defined(__MINGW64__)
-#include <cxxabi.h>
-#endif
-#include <tuple>
-
-#include <fast_io.h>
-#include <SDL_vulkan.h>
-
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-#include "TerminalColors.hpp"
-#include "Log.hpp"
+#include "Setup_Vulkan_Renderer.hpp"
 
 Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanBackend(SDL_Window *& WINDOW, YAML::Node & CONFIG) {
 	fast_io::io::println(
 	#if defined(_WIN64)
 		fast_io::out(),
 	#endif
-		PATATA_TERM_COLOR_RED,
 	#if !defined(_WIN64)
 		PATATA_TERM_BOLD,
 	#endif
-		"Vulkan",
+		PATATA_TERM_COLOR_PATATA,
+		PATATA_ENGINE_NAME,
 	#if defined(_WIN64)
 		PATATA_TERM_COLOR_WHITE,
 	#else
@@ -28,8 +18,20 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanBackend(SDL_Window *& WI
 	#if !defined(_WIN64)
 		PATATA_TERM_BOLD,
 	#endif
-		" SETUP",
+		" INFO : ",
+	#if defined(_WIN64)
+		PATATA_TERM_COLOR_WHITE,
+	#else
+		PATATA_TERM_RESET,
+	#endif
+		"Configuring ",
+		PATATA_TERM_COLOR_RED,
+		"Vulkan",
+	#if defined(_WIN64)
+		PATATA_TERM_COLOR_WHITE);
+	#else
 		PATATA_TERM_RESET);
+	#endif
 
 	if (!CreateInstance(WINDOW, CONFIG)) return;
 

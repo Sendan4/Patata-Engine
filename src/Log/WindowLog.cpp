@@ -1,20 +1,4 @@
-#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-#include <cxxabi.h>
-#endif
-#include <cstdlib>
-
-#include <SDL_syswm.h>
-#include <fast_io.h>
-
-// Patata Engine
-#ifndef YAML_CPP_API
-#define YAML_CPP_API
-#endif
-#include <yaml-cpp/yaml.h>
-#include <SDL.h>
-#include <vulkan/vulkan.hpp>
-#include "Log.hpp"
-#include "TerminalColors.hpp"
+#include "WindowLog.hpp"
 
 void Patata::Log::WindowLog(SDL_Window * Window) {
 	fast_io::io::println(PATATA_TERM_DIM,

@@ -1,9 +1,9 @@
 source = files([
-  'Core/Start_And_End.cpp',
+  'Core/PatataEngine.cpp',
   'Core/Input.cpp',
   'Core/Render.cpp',
   'Window/Window.cpp',
-  'RaccoonRenderer/RaccoonRendererInit.cpp',
+  'RaccoonRenderer/RaccoonRenderer.cpp',
   'RaccoonRenderer/Opengl/OpenGL_Set_ViewPort_And_Resize.cpp',
   'RaccoonRenderer/Opengl/OpenGL_Renderer.cpp',
   'RaccoonRenderer/Vulkan/Setup_Vulkan_Renderer.cpp',
@@ -16,7 +16,7 @@ source = files([
   'RaccoonRenderer/Vulkan/Vulkan_RenderPass.cpp',
   'Log/Mapache.cpp',
   'Log/YamlErrors.cpp',
-  'Log/ErrorMessages.cpp'])
+  'Log/Messages.cpp'])
 
 if target_machine.system() == 'windows'
   source += files([
@@ -43,7 +43,15 @@ endif
 
 lib = library(meson.project_name(),
   source,
-  include_directories : [include, include_directories('Log'), include_directories('.')],
+  include_directories : [
+    include,
+    include_directories('Log'),
+    include_directories('Core'),
+    include_directories('RaccoonRenderer'),
+    include_directories('RaccoonRenderer/Vulkan'),
+    include_directories('RaccoonRenderer/Opengl'),
+    include_directories('ImGUI'),
+    include_directories('Window')],
   d_import_dirs : include,
   dependencies : dependencies,
   soversion : meson.project_version(),

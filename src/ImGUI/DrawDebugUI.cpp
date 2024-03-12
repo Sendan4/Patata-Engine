@@ -1,12 +1,6 @@
-#include <imgui.h>
-#include <glad/gl.h>
-#include <yaml-cpp/yaml.h>
-#include <vulkan/vulkan.hpp>
-#include <SDL.h>
+#include "DrawDebugUI.hpp"
 
-#include "PatataEngine/PatataEngine.hpp"
-
-void Patata::Engine::DrawDebugUI(void) {
+void Patata::Engine::EngineImpl::DrawDebugUI(void) {
 	static ImVec4 color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 	static bool firstpass = true;
 

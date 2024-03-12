@@ -46,6 +46,7 @@ if (cpp.has_link_argument('-ffast-math'))
   cpp_arguments += ['-ffast-math']
 endif
 
+cpp.check_header('string', required : true)
 cpp.check_header('cstdint', required : true)
 
 uint16_t = cpp.has_type('uint16_t', prefix : '#include <cstdint>')
@@ -425,7 +426,8 @@ subdir('src')
 
 info = {
   'Game Name' : get_option('game_name'),
-  'Git Branch' : branchCOutput,
+  'Branch' : branchCOutput,
+  'Commit Hash' : git_commit_long_hash,
   'Build Type' : get_option('buildtype'),
   'Library Type' : get_option('default_library')
 }
@@ -439,18 +441,13 @@ features = {
 }
 
 summary({
-  'Git Branch' : info['Git Branch'],
+  'Branch' : info['Branch'],
+  'Commit Hash' : info['Commit Hash'],
   'Game Name' : info['Game Name'],
   'Icon' : features['Icon'],
   'Custom Icon' : features['Custom Icon'],
   'Configuration' : features['Yaml CPP']},
   bool_yn : true)
-
-summary({
-  'Vulkan Backend' : features['Vulkan'],
-  'OpenGL Backend' : features['OpenGL']},
-  bool_yn : true,
-  section : 'Raccoon Renderer')
 
 summary({
   'Build Type' : info['Build Type'],

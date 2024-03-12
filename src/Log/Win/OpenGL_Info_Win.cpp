@@ -1,15 +1,4 @@
-#if defined(__GNUC__) || defined(__MINGW64__)
-#include <cxxabi.h>
-#endif
-
-#include <windows.h>
-#include <fast_io.h>
-#include <glad/gl.h>
-
-// Patata Engine
-#include "PatataEngine/PatataEngine.hpp"
-#include "Log.hpp"
-#include "TerminalColors.hpp"
+#include "OpenGL_Info.hpp"
 
 void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);

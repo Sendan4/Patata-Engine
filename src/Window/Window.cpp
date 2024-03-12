@@ -1,13 +1,4 @@
-#include <SDL.h>
-#ifndef YAML_CPP_API
-#define YAML_CPP_API
-#endif
-#include <yaml-cpp/yaml.h>
-#include <vulkan/vulkan.hpp>
-
-#include "PatataEngine/PatataEngine.hpp"
-#include "Log.hpp"
-#include "TerminalColors.hpp"
+#include "Window.hpp"
 
 #if defined(USE_ICON)
 	#if defined(PATATA_GAME_NAME)
@@ -21,7 +12,7 @@
 	#endif
 #endif
 
-void Patata::Engine::CreateGameWindow(const std::string & Title, const uint32_t & WindowWidth, const uint32_t & WindowHeight, const bool & backend) {
+void Patata::Engine::EngineImpl::CreateGameWindow(const std::string & Title, const uint32_t & WindowWidth, const uint32_t & WindowHeight, const bool & backend) {
 	std::string PatataWindowTitle;
 
 	if (!Title.empty())
@@ -71,7 +62,7 @@ void Patata::Engine::CreateGameWindow(const std::string & Title, const uint32_t 
 #if defined(USE_ICON)
 #include <SDL_syswm.h>
 
-void Patata::Engine::SetWindowIcon(void) {
+void Patata::Engine::EngineImpl::SetWindowIcon(void) {
 	#if defined(_WIN64)
 		SDL_Surface * Icon = SDL_LoadBMP(PATATA_GAME_ICON_FILE);
 

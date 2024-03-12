@@ -1,15 +1,6 @@
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_opengl3.h>
+#include "ImGUIFrame.hpp"
 
-#ifndef YAML_CPP_API
-#define YAML_CPP_API
-#endif
-#include <yaml-cpp/yaml.h>
-#include <vulkan/vulkan.hpp>
-#include <SDL.h>
-#include "PatataEngine/PatataEngine.hpp"
-
-void Patata::Engine::ImGuiStartFrame(void) {
+void Patata::Engine::EngineImpl::ImGuiStartFrame(void) {
 	if (*RaccoonRenderer->Backend == Patata::Graphics::Backend::Vulkan) {
 	}
 	else {
@@ -20,7 +11,7 @@ void Patata::Engine::ImGuiStartFrame(void) {
 	}
 }
 
-void Patata::Engine::ImGuiEndFrame(void) {
+void Patata::Engine::EngineImpl::ImGuiEndFrame(void) {
 	if (*RaccoonRenderer->Backend == Patata::Graphics::Backend::Vulkan) {
 	}
 	else {

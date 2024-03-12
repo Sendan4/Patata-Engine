@@ -1,42 +1,27 @@
-#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-#include <cxxabi.h>
-#endif
+#include "Setup_Vulkan_Log.hpp"
 
-#include <fast_io.h>
-#ifndef YAML_CPP_API
-#define YAML_CPP_API
-#endif
-#include <yaml-cpp/yaml.h>
-#include <SDL.h>
-#include <vulkan/vulkan.hpp>
+void Patata::Log::VulkanList(const char *List[], const std::size_t & ListSize, const std::string & MESSAGE) {
+	fast_io::io::println(PATATA_TERM_BOLD,
+		PATATA_TERM_DIM,
+		PATATA_TERM_COLOR_GRAY0,
+		#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
+		"[", std::string_view{ abi::__cxa_demangle(typeid(*List).name(), nullptr, nullptr, nullptr) }, "] ",
+		#else
+		"[", std::string_view{ typeid(*List).name() }, "] ",
+		#endif
+		PATATA_TERM_RESET,
+		PATATA_TERM_BOLD,
+		MESSAGE, " : ",
+		PATATA_TERM_RESET,
+		ListSize + 1);
 
-#include "Log.hpp"
-#include "TerminalColors.hpp"
-
-void Patata::Log::VulkanList(const char *List[], const size_t & ListSize, const bool & FOUND_EXTENSIONS, const std::string & MESSAGE) {
-	if (FOUND_EXTENSIONS) {
-		fast_io::io::println(PATATA_TERM_BOLD,
-			PATATA_TERM_DIM,
-			PATATA_TERM_COLOR_GRAY0,
-			#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-			"[", std::string_view{ abi::__cxa_demangle(typeid(*List).name(), nullptr, nullptr, nullptr) }, "] ",
-			#else
-			"[", std::string_view{ typeid(*List).name() }, "] ",
-			#endif
-			PATATA_TERM_RESET,
-			PATATA_TERM_BOLD,
-			MESSAGE, " : ",
-			PATATA_TERM_RESET,
-			ListSize + 1);
-
-		for (unsigned int i = 0; i <= ListSize; i++) {
-			if (List[i] != nullptr)
-				fast_io::io::println("  ", PATATA_TERM_DIM, std::string_view{ List[i] }, PATATA_TERM_RESET);
-			else break;
-		}
-		fast_io::io::println("");
+	for (std::size_t i = 0; i <= ListSize; i++) {
+		if (List[i] != nullptr)
+			fast_io::io::println("  ", PATATA_TERM_DIM, std::string_view{ List[i] }, PATATA_TERM_RESET);
+		else break;
 	}
-	else ErrorMessage(SDL_GetError());
+
+	fast_io::io::println("");
 }
 
 void Patata::Log::VulkanCheck(const std::string & Message, const vk::Result & Result) {

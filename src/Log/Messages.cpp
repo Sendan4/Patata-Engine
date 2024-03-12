@@ -1,11 +1,4 @@
-#include <fast_io.h>
-
-#if defined(_WIN64)
-	#include <windows.h>
-#endif
-
-#include "Log.hpp"
-#include "TerminalColors.hpp"
+#include "Messages.hpp"
 
 void Patata::Log::FatalErrorMessage(const std::string & Title, const std::string & Message, const YAML::Node & Config) {
 	std::string PatataErrorTitle = "Patata Engine - ";

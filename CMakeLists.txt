@@ -88,63 +88,11 @@ endif()
 
 CHECK_INCLUDE_FILE_CXX("tuple" HAVE_TUPLE LANGUAGE CXX)
 CHECK_INCLUDE_FILE_CXX("cstdlib" HAVE_CSTDLIB LANGUAGE CXX)
+CHECK_INCLUDE_FILE_CXX("string" HAVE_STRING LANGUAGE CXX)
+CHECK_INCLUDE_FILE_CXX("cstdint" HAVE_CSTDINT LANGUAGE CXX)
 
-if (NOT HAVE_TUPLE OR NOT HAVE_CSTDLIB)
+if (NOT HAVE_TUPLE OR NOT HAVE_CSTDLIB OR NOT HAVE_STRING OR NOT HAVE_CSTDINT)
 	message(FATAL_ERROR "include files missing")
-endif()
-
-check_type_size("uint16_t" SUPPORT_UINT16_T LANGUAGE CXX)
-
-if (NOT SUPPORT_UINT16_T)
-	message(FATAL_ERROR "Not Support uint16_t")
-endif()
-
-check_type_size("uint32_t" SUPPORT_UINT32_T LANGUAGE CXX)
-
-if (NOT SUPPORT_UINT32_T)
-	message(FATAL_ERROR "Not Support uint32_t")
-endif()
-
-check_type_size("uint64_t" SUPPORT_UINT64_T LANGUAGE CXX)
-
-if (NOT SUPPORT_UINT64_T)
-	message(FATAL_ERROR "Not Support uint64_t")
-endif()
-
-check_type_size("int16_t" SUPPORT_INT16_T LANGUAGE CXX)
-
-if (NOT SUPPORT_INT16_T)
-	message(FATAL_ERROR "Not Support int16_t")
-endif()
-
-check_type_size("int32_t" SUPPORT_INT32_T LANGUAGE CXX)
-
-if (NOT SUPPORT_INT32_T)
-	message(FATAL_ERROR "Not Support int32_t")
-endif()
-
-check_type_size("int64_t" SUPPORT_INT64_T LANGUAGE CXX)
-
-if (NOT SUPPORT_INT64_T)
-	message(FATAL_ERROR "Not Support int64_t")
-endif()
-
-check_type_size("bool" SUPPORT_BOOL LANGUAGE CXX)
-
-if (NOT SUPPORT_INT64_T)
-	message(FATAL_ERROR "Not Support int64_t")
-endif()
-
-check_type_size("const bool *" SUPPORT_CONST_BOOL_P LANGUAGE CXX)
-
-if (NOT SUPPORT_CONST_BOOL_P)
-	message(FATAL_ERROR "Not Support const bool *")
-endif()
-
-check_type_size("const char *" SUPPORT_CONST_CHAR_P LANGUAGE CXX)
-
-if (NOT SUPPORT_CONST_CHAR_P)
-	message(FATAL_ERROR "Not Support const char *")
 endif()
 
 find_program(GIT NAMES git)

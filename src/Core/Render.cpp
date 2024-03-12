@@ -1,20 +1,7 @@
-#ifndef YAML_CPP_API
-#define YAML_CPP_API
-#endif
-#include <yaml-cpp/yaml.h>
-#include <SDL.h>
-#include <vulkan/vulkan.hpp>
-#include <glad/gl.h>
-
 // Patata Engine
-#include "PatataEngine/PatataEngine.hpp"
+#include "Render.hpp"
 
-#if defined(DEBUG)
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_opengl3.h>
-#endif
-
-void Patata::Engine::Render(void) {
+void Patata::Engine::EngineImpl::Render(void) {
 	if (*RaccoonRenderer->Backend == Patata::Graphics::Backend::Vulkan) {
 	}
 	else {

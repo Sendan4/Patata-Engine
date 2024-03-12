@@ -1,7 +1,4 @@
-#include <fast_io.h>
-
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-#include "Log.hpp"
+#include "Vulkan_Logical_And_Queue.hpp"
 
 uint32_t Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateLogicalDeviceAndCreateQueue(void) {
 	uint32_t GraphicsQueueFamilyIndex = 0;
@@ -34,7 +31,7 @@ uint32_t Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateLogicalDeviceAn
 	DeviceCreateInfo.queueCreateInfoCount = 1;
 	DeviceCreateInfo.pQueueCreateInfos = &DeviceQueueCreateInfo;
 
-	Patata::Log::VulkanList(DeviceExtensions, std::size(DeviceExtensions) - 1, true, "Device Extensions");
+	Patata::Log::VulkanList(DeviceExtensions, std::size(DeviceExtensions) - 1, "Device Extensions");
 
 	vk::Result Result = PhysicalDevice.createDevice(&DeviceCreateInfo, nullptr, &Device);
 

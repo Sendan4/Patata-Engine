@@ -1,14 +1,4 @@
-#include <cstring>
-#include <tuple>
-#if defined(__GNUC__) || defined(__MINGW64__)
-#include <cxxabi.h>
-#endif
-
-#include <fast_io.h>
-#include <windows.h>
-
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-#include "TerminalColors.hpp"
+#include "Vulkan_Info.hpp"
 
 void Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> SWAPCHAIN_INFO) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);

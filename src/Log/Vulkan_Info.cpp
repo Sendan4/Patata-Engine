@@ -1,17 +1,4 @@
-#if defined(__GNUC__) || defined(__MINGW64__) && !defined(__clang__)
-#include <cxxabi.h>
-#endif
-
-#include <fast_io.h>
-#ifndef YAML_CPP_API
-#define YAML_CPP_API
-#endif
-#include <yaml-cpp/yaml.h>
-#include <vulkan/vulkan.hpp>
-#include <SDL.h>
-
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-#include "TerminalColors.hpp"
+#include "Vulkan_Info.hpp"
 
 void Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo(YAML::Node CONFIG, std::tuple <vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> SWAPCHAIN_INFO) {
 	fast_io::io::println("\n",
@@ -20,12 +7,6 @@ void Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo(YAML::Node CON
 		"Raccoon Renderer ",
 		PATATA_TERM_RESET,
 		"INFO");
-
-	fast_io::io::println(PATATA_TERM_BOLD,
-		"  Graphics Backend : ",
-		PATATA_TERM_RESET,
-		PATATA_TERM_COLOR_RED,
-		"Vulkan");
 
 	vk::PhysicalDeviceProperties PhysicalDeviceProperties = PhysicalDevice.getProperties();
 	const uint32_t VulkanVersion = PhysicalDeviceProperties.apiVersion;

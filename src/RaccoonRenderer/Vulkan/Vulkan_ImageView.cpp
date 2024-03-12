@@ -1,12 +1,4 @@
-#include <fast_io.h>
-
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-#if defined(_WIN64)
-	#include <windows.h>
-#else
-	#include "TerminalColors.hpp"
-#endif
-#include "Log.hpp"
+#include "Vulkan_ImageView.hpp"
 
 void Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateImageView(uint32_t &GraphicsQueueFamilyIndex) {
 	vk::ImageCreateInfo CreateImageInfo{};

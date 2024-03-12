@@ -1,20 +1,7 @@
-#include <SDL.h>
-
-#if defined(DEBUG)
-#include <imgui_impl_sdl2.h>
-#endif
-
-#ifndef YAML_CPP_API
-#define YAML_CPP_API
-#endif
-#include <yaml-cpp/yaml.h>
-#include <SDL.h>
-#include <vulkan/vulkan.hpp>
-
 // Patata Engine
-#include "PatataEngine/PatataEngine.hpp"
+#include "Input.hpp"
 
-void Patata::Engine::HandleEvent(SDL_Event & Event) {
+void Patata::Engine::EngineImpl::HandleEvent(SDL_Event & Event) {
 	static bool PatataKeyPress = false;
 	static bool PatataFullScreen = false;
 		

@@ -1,16 +1,4 @@
-#include <cstring>
-#if defined(__GNUC__) || defined(__MINGW64__)
-#include <cxxabi.h>
-#endif
-
-#include <fast_io.h>
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <windows.h>
-
-// Patata Engine
-#include "Log.hpp"
-#include "TerminalColors.hpp"
+#include "WindowLog.hpp"
 
 void Patata::Log::WindowLog(SDL_Window * Window) {
 	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);

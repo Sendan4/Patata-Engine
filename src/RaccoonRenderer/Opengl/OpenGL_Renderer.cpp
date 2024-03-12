@@ -1,6 +1,4 @@
-// Patata Engine
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-#include "Log.hpp"
+#include "OpenGL_Renderer.hpp"
 
 Patata::Graphics::RaccoonRenderer::OpenGLBackend::OpenGLBackend(YAML::Node & Config) {
 	Patata::Log::OpenGLInfo(Config);

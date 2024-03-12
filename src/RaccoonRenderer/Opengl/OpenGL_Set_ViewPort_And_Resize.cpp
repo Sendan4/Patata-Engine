@@ -1,16 +1,7 @@
-#include <glad/gl.h>
+#include "OpenGL_Set_ViewPort_And_Resize.hpp"
 
-#ifndef YAML_CPP_API
-#define YAML_CPP_API
-#endif
-#include <yaml-cpp/yaml.h>
-#include <SDL.h>
-#include <vulkan/vulkan.hpp>
-
-// Patata Engine 
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-
-void Patata::Graphics::RaccoonRenderer::OpenGLBackend::OpenGLSetViewPort(uint32_t WINDOW_INITIAL_WIDTH, uint32_t WINDOW_INITIAL_HEIGHT) {
+void Patata::Graphics::RaccoonRenderer::OpenGLBackend::OpenGLSetViewPort
+(uint32_t WINDOW_INITIAL_WIDTH, uint32_t WINDOW_INITIAL_HEIGHT) {
 	glViewport(0, 0, WINDOW_INITIAL_WIDTH, WINDOW_INITIAL_HEIGHT);
 }
 

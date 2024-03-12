@@ -1,7 +1,4 @@
-#include <fast_io.h>
-
-#include "PatataEngine/Graphics/RaccoonRenderer.hpp"
-#include "Log.hpp"
+#include "Vulkan_RenderPass.hpp"
 
 void Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateRenderPass(void) {
 	// Color

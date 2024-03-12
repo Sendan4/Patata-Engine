@@ -11,11 +11,11 @@ if (DEFINED SHARED_BUILD AND NOT SHARED_BUILD)
 endif()
 
 target_sources (${PROJECT_NAME} PRIVATE
-	"Core/Start_And_End.cpp"
+	"Core/PatataEngine.cpp"
 	"Core/Input.cpp"
 	"Core/Render.cpp"
 	"Window/Window.cpp"
-	"RaccoonRenderer/RaccoonRendererInit.cpp"
+	"RaccoonRenderer/RaccoonRenderer.cpp"
 	"RaccoonRenderer/Opengl/OpenGL_Set_ViewPort_And_Resize.cpp"
 	"RaccoonRenderer/Opengl/OpenGL_Renderer.cpp"
 	"RaccoonRenderer/Vulkan/Setup_Vulkan_Renderer.cpp"
@@ -27,7 +27,7 @@ target_sources (${PROJECT_NAME} PRIVATE
 	"RaccoonRenderer/Vulkan/Vulkan_PipeLine.cpp"
 	"RaccoonRenderer/Vulkan/Vulkan_RenderPass.cpp"
 	"Log/Mapache.cpp"
-	"Log/ErrorMessages.cpp"
+	"Log/Messages.cpp"
 	"Log/YamlErrors.cpp")
 
 if (MSVC)
@@ -63,8 +63,11 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}../include/")
 target_include_directories(${PROJECT_NAME} PRIVATE
-	"${CMAKE_CURRENT_SOURCE_DIR}/"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Log/")
+	"${CMAKE_CURRENT_SOURCE_DIR}/Core/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/ImGUI/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Log/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/RaccoonRenderer/"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Window/")
 
 # Install With CPack
 install(FILES ${Include} DESTINATION "include/PatataEngine/")

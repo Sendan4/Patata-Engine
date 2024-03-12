@@ -1,45 +1,36 @@
-#include <cstddef>
-#if defined(__GNUC__) || defined(__MINGW64__)
-#include <cxxabi.h>
-#endif
+#include "Setup_Vulkan_Log.hpp"
 
-#include <fast_io.h>
-#include <iterator>
-#include <Windows.h>
+void Patata::Log::VulkanList(const char * List[], const std::size_t & ListSize, const std::string & MESSAGE) {
+	HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD mode = 0;
+	GetConsoleMode(Terminal, &mode);
+	SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
 
-// Patata Engine
-#include "Log.hpp"
-#include "TerminalColors.hpp"
+	#if defined(__GNUC__) || defined(__MINGW64__)
+		fast_io::io::print(fast_io::out(),
+			PATATA_TERM_COLOR_GRAY0,
+			"[", std::string_view{ abi::__cxa_demangle(typeid(*List).name(), nullptr, nullptr, nullptr) }, "] ");
+	#else
+		fast_io::io::print(fast_io::out(),
+			PATATA_TERM_COLOR_GRAY0,
+			"[", std::string_view{ typeid(*List).name() }, "] ");
+	#endif
 
-void Patata::Log::VulkanList(const char* List[], const size_t & ListSize, const bool & FOUND_EXTENSIONS, const std::string & MESSAGE) {
-	if (FOUND_EXTENSIONS) {
-		HANDLE Terminal = GetStdHandle(STD_OUTPUT_HANDLE);
-		DWORD mode = 0;
-		GetConsoleMode(Terminal, &mode);
-		SetConsoleMode(Terminal, ENABLE_VIRTUAL_TERMINAL_PROCESSING | mode);
+	fast_io::io::println(fast_io::out(),
+		PATATA_TERM_COLOR_WHITE,
+		MESSAGE,
+		" : ",
+		PATATA_TERM_COLOR_GRAY1,
+		ListSize + 1);
 
-		#if defined(__GNUC__) || defined(__MINGW64__)
-			fast_io::io::print(fast_io::out(),
-				PATATA_TERM_COLOR_GRAY0,
-				"[", std::string_view{ abi::__cxa_demangle(typeid(*List).name(), nullptr, nullptr, nullptr) }, "] ");
-		#else
-			fast_io::io::print(fast_io::out(),
-				PATATA_TERM_COLOR_GRAY0,
-				"[", std::string_view{ typeid(*List).name() }, "] ");
-		#endif
-
-		fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_WHITE, MESSAGE, " : ", PATATA_TERM_COLOR_GRAY1, ListSize + 1);
-
-		for (unsigned int i = 0; i <= ListSize; i++) {
-			if (List[i] != nullptr)
-				fast_io::io::println(fast_io::out(), "  ", std::string_view{ List[i] });
-			else break;
-		}
-
-		fast_io::io::println(fast_io::out(), PATATA_TERM_RESET);
-		SetConsoleMode(Terminal, mode);
+	for (std::size_t i = 0; i <= ListSize; i++) {
+		if (List[i] != nullptr)
+			fast_io::io::println(fast_io::out(), "  ", std::string_view{ List[i] });
+		else break;
 	}
-	else ErrorMessage(SDL_GetError());
+
+	fast_io::io::println(fast_io::out(), PATATA_TERM_RESET);
+	SetConsoleMode(Terminal, mode);
 }
 
 void Patata::Log::VulkanCheck(const std::string& Message, const vk::Result& Result) {
