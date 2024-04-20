@@ -82,7 +82,8 @@ set(SDL_UNUSED_SUBSYSTEMS
 	Render
 	Sensor
 	Timers
-	Atomic)
+	Atomic
+	Audio)
 foreach(_SUB ${SDL_UNUSED_SUBSYSTEMS})
 	string(TOUPPER ${_SUB} _OPT)
 	set(SDL_${_OPT} OFF CACHE INTERNAL "..." FORCE)

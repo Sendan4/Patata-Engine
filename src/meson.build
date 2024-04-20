@@ -58,7 +58,7 @@ lib = library(meson.project_name(),
   build_by_default : true,
   install : true,
   cpp_args : cpp_arguments,
-  install_dir : join_paths(meson.global_build_root(), '../bin'),
+  install_dir : bin_dir,
   install_rpath : '.',
   build_rpath : '.')
 

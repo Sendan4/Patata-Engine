@@ -189,10 +189,6 @@ endif()
 find_package(Msys)
 
 if (USE_EXTERNAL_LIBS)
-	if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR MSVC) 
-		add_dependencies(${PROJECT_NAME} vvl)
-	endif()
-
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
 		target_link_libraries(${PROJECT_NAME} PUBLIC vulkan Vulkan::Headers)
@@ -236,7 +232,8 @@ if (USE_EXTERNAL_LIBS)
 	endif()
 
 	target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../externals/SDL/include")
-	if (SHARED_BUILD AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
+	if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 		target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_VIDEO_DRIVER_WAYLAND)
 		if (XORG_SUPPORT)
 			target_compile_definitions(${PROJECT_NAME} PRIVATE SDL_VIDEO_DRIVER_X11)

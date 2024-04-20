@@ -31,3 +31,9 @@ option('xorg_support',
   value : false,
   yield : true,
   description : 'Disable or enable Xorg suport | Xorg is almost obsolete')
+
+option('use_bin_dir',
+  type : 'boolean',
+  value : false,
+  yield : true,
+  description : 'use the bin directory as output')

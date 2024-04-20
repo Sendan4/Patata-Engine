@@ -191,8 +191,14 @@ void Patata::Log::OpenGLInfo(const YAML::Node & CONFIG) {
 		fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_YELLOW, "No");
 	}
 
-	// ImGui Version
-	fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  ImGui Version : ", PATATA_TERM_COLOR_GRAY1, PATATA_IMGUI_VERSION);
+	// ImGUI Version
+	#if defined(PATATA_IMGUI_VERSION)
+		fast_io::io::println(fast_io::out(),
+			PATATA_TERM_COLOR_WHITE,
+			"  ImGui Version : ",
+			PATATA_TERM_COLOR_GRAY1,
+			PATATA_IMGUI_VERSION);
+	#endif
 
 	fast_io::io::println(fast_io::out(), PATATA_TERM_RESET);
 	SetConsoleMode(Terminal, mode);

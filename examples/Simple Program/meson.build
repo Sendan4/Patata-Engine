@@ -48,10 +48,6 @@ endif
 Patata_Engine_dep = subproject('patata-engine').get_variable('Patata_Engine_dep')
 dependencies = [sdl2_dep, Patata_Engine_dep]
 
-if get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized'
-  add_project_arguments('-DDEBUG=1', language : 'cpp')
-endif
-
 executable(meson.project_name(),
   'Main.cpp',
   dependencies : dependencies,

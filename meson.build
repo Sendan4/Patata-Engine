@@ -40,6 +40,11 @@ if get_option('default_library') == 'static' or get_option('prefer_static') == t
   cpp_arguments += ['-static-libgcc', '-static-libstdc++'] 
 endif
 
+bin_dir = meson.global_build_root()
+if get_option('use_bin_dir')
+  bin_dir = join_paths(meson.global_build_root(), '../bin')
+endif
+
 cpp.has_link_argument('-Wl,-rpath')
 
 if (cpp.has_link_argument('-ffast-math'))

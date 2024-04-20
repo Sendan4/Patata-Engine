@@ -1,16 +1,16 @@
 # Copy Files
 if (MSVC)
 	file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/patata.yaml" "${CMAKE_CURRENT_SOURCE_DIR}/LICENSES"
-		DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
+		DESTINATION ${BIN_DIR}/${CMAKE_BUILD_TYPE})
 
 	if (NOT ${GAME_NAME} STREQUAL "OFF")
-		file(RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/patata.yaml"
-			"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.yaml")
+		file(RENAME "${BIN_DIR}/${CMAKE_BUILD_TYPE}/patata.yaml"
+			"${BIN_DIR}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.yaml")
 
-		install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.yaml"
+		install(FILES "${BIN_DIR}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.yaml"
 			DESTINATION ".")
 		# El Caso especial de Visual Studio. Sin esto, la bibloteca no podra encontrar el archivo YAML cuando se ejecute desde Visual Studio
-		file(COPY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.yaml"
+		file(COPY "${BIN_DIR}/${CMAKE_BUILD_TYPE}/${GAME_NAME}.yaml"
 			DESTINATION "${CMAKE_BINARY_DIR}/")
 	else()
 		install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/patata.yaml"
@@ -21,13 +21,13 @@ if (MSVC)
 	endif()
 else ()
 	file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/patata.yaml" "${CMAKE_CURRENT_SOURCE_DIR}/LICENSES"
-		DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+		DESTINATION ${BIN_DIR})
 
 	if (NOT ${GAME_NAME} STREQUAL "OFF")
-		file(RENAME "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/patata.yaml"
-			"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.yaml")
+		file(RENAME "${BIN_DIR}/patata.yaml"
+			"${BIN_DIR}/${GAME_NAME}.yaml")
 
-		install(FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${GAME_NAME}.yaml"
+		install(FILES "${BIN_DIR}/${GAME_NAME}.yaml"
 			DESTINATION ".")
 	else()
 		install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/patata.yaml"
