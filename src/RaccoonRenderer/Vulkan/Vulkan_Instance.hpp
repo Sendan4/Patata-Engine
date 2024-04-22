@@ -4,8 +4,8 @@
 
 #include <fast_io.h>
 
-#include "RaccoonRenderer.hpp"
 #include "Log.hpp"
+#include "RaccoonRenderer.hpp"
 
 #include <SDL_vulkan.h>
 
@@ -29,5 +29,9 @@
 #define PATATA_GAME_VERSION_PATCH 0
 #endif
 
-#define PATATA_GAME_VERSION VK_MAKE_VERSION(PATATA_GAME_VERSION_MAYOR, PATATA_GAME_VERSION_MINOR, PATATA_GAME_VERSION_PATCH)
-#define PATATA_ENGINE_VERSION_VK VK_MAKE_VERSION(PATATA_ENGINE_VERSION_MAYOR, PATATA_ENGINE_VERSION_MINOR, PATATA_ENGINE_VERSION_PATCH)
+#define PATATA_GAME_VERSION                                                   \
+  VK_MAKE_VERSION (PATATA_GAME_VERSION_MAYOR, PATATA_GAME_VERSION_MINOR,      \
+                   PATATA_GAME_VERSION_PATCH)
+#define PATATA_ENGINE_VERSION_VK                                              \
+  VK_MAKE_VERSION (PATATA_ENGINE_VERSION_MAYOR, PATATA_ENGINE_VERSION_MINOR,  \
+                   PATATA_ENGINE_VERSION_PATCH)

@@ -1,7 +1,7 @@
-#include <imgui.h>
-#include <glad/gl.h>
-#include <yaml-cpp/yaml.h>
-#include <vulkan/vulkan.hpp>
 #include <SDL.h>
+#include <glad/gl.h>
+#include <imgui.h>
+#include <vulkan/vulkan.hpp>
+#include <yaml-cpp/yaml.h>
 
 #include "PatataEngineImpl.hpp"

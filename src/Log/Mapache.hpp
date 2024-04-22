@@ -10,7 +10,7 @@
 #ifndef YAML_CPP_API
 #define YAML_CPP_API
 #endif
-#include <yaml-cpp/yaml.h>
+#include "Log.hpp"
 #include <SDL.h>
 #include <vulkan/vulkan.hpp>
-#include "Log.hpp"
+#include <yaml-cpp/yaml.h>

@@ -3,9 +3,9 @@
 #include <cxxabi.h>
 #endif
 
-#include <fast_io.h>
 #include <SDL.h>
 #include <SDL_syswm.h>
+#include <fast_io.h>
 #if defined(_WIN64)
 #include <windows.h>
 #endif

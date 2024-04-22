@@ -1,2 +1,2 @@
-#include "RaccoonRenderer.hpp"
 #include "Log.hpp"
+#include "RaccoonRenderer.hpp"
