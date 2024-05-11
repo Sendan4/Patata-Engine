@@ -5,6 +5,8 @@
 
 <h1 align = "center">Potato Engine</h1>
 
+_Dumb and simple game engine made in C++._
+
 <p>Potato is a 2D engine, simple and lightweight, focused on game development using C++ directly. This engine abstracts tasks such as window creation, rendering, sound, input, and its configuration into an easy-to-use API.</p>
 
 ⚠️ Not ready for use yet
@@ -33,7 +35,7 @@
 <hr>
 
 
-### [Access to the documentation](#)
+### [Wiki](#)
 
 <hr>
 
