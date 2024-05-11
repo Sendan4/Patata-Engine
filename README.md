@@ -5,7 +5,7 @@
 
 <h1 align = "center">Motor Patata</h1>
 
-_Motor tonto y simple para videojuegos hecho en C++._
+_Motor tonto y simple de videojuegos hecho en C++._
 
 <p>Patata es un motor 2D, sencillo y ligero con el enfoque en el desarrollo de videojuegos utilizando directamente C++. Este motor abstrae tareas como la creacion de la ventana, renderizado, sonido, entradas y su misma configuracion en una API sencilla de utilizar.</p>
 
