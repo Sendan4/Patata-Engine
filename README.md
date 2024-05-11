@@ -5,6 +5,8 @@
 
 <h1 align = "center">Motor Patata</h1>
 
+_Motor tonto y simple para videojuegos hecho en C++._
+
 <p>Patata es un motor 2D, sencillo y ligero con el enfoque en el desarrollo de videojuegos utilizando directamente C++. Este motor abstrae tareas como la creacion de la ventana, renderizado, sonido, entradas y su misma configuracion en una API sencilla de utilizar.</p>
 
 ⚠️ Aun no esta listo para su uso.
@@ -30,7 +32,7 @@
     <li><a href = "https://github.com/ocornut/imgui.git">Imgui</a></li>
 </ul>
 
-## [Acceso a la documentacion](https://448envio.gitbook.io/motor-patata-wiki/)
+## [Wiki](https://448envio.gitbook.io/motor-patata-wiki/)
 
 ## Espejos Oficiales
 - [Github](https://github.com/Sendan4/Patata-Engine.git)
