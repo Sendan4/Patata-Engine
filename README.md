@@ -4,7 +4,6 @@
 <p align = "center"><img draggable = false src = "data/assets/icon/patata_icon.svg?ref_type=heads&inline=false" width=64></p>
 
 <h1 align = "center">Motor Patata</h1>
-<p align = "center">![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)</p>
 
 <p>Patata es un motor 2D, sencillo y ligero con el enfoque en el desarrollo de videojuegos utilizando directamente C++. Este motor abstrae tareas como la creacion de la ventana, renderizado, sonido, entradas y su misma configuracion en una API sencilla de utilizar.</p>
 
@@ -12,7 +11,7 @@
 
 ## Sistemas Operativos Compatibles
 
-| ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) | ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black) |
+| Windows | GNU/Linux |
 | :-----: | :-----: |
 |<b>x86_64</b> | <b>x86_64</b> |
 
