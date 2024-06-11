@@ -3,35 +3,6 @@
 Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanBackend (
     SDL_Window *& WINDOW, YAML::Node & CONFIG)
 {
-  fast_io::io::println (
-#if defined(_WIN64)
-      fast_io::out (),
-#endif
-#if !defined(_WIN64)
-      PATATA_TERM_BOLD,
-#endif
-      PATATA_TERM_COLOR_PATATA, PATATA_ENGINE_NAME,
-#if defined(_WIN64)
-      PATATA_TERM_COLOR_WHITE,
-#else
-      PATATA_TERM_RESET,
-#endif
-#if !defined(_WIN64)
-      PATATA_TERM_BOLD,
-#endif
-      " INFO : ",
-#if defined(_WIN64)
-      PATATA_TERM_COLOR_WHITE,
-#else
-      PATATA_TERM_RESET,
-#endif
-      "Configuring ", PATATA_TERM_COLOR_RED, "Vulkan",
-#if defined(_WIN64)
-      PATATA_TERM_COLOR_WHITE);
-#else
-      PATATA_TERM_RESET);
-#endif
-
   if (!CreateInstance (WINDOW, CONFIG))
     return;
 

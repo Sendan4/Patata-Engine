@@ -45,7 +45,7 @@ if (MSVC OR LINUX)
 	set (UPDATE_DEPS ON CACHE INTERNAL "..." FORCE)
 
 	# Vulkan Validation Layer
-	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo" AND USE_VVL)
 		message("")
 		message("  - Vulkan ValidationLayers -")
 		add_subdirectory(Vulkan-ValidationLayers)

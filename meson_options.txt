@@ -37,3 +37,8 @@ option('use_bin_dir',
   value : true,
   yield : true,
   description : 'use the bin directory as output')
+
+option('use_vvl',
+  type : 'boolean',
+  value : false,
+  description : 'VVL is used to develop and test functions in the raccoon renderer')

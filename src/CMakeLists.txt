@@ -177,6 +177,10 @@ if (DEFINED GAME_VERSION_MAYOR AND DEFINED GAME_VERSION_MINOR AND GAME_VERSION_P
 		PATATA_GAME_VERSION_PATCH=${GAME_VERSION_PATCH})
 endif()
 
+if (USE_VVL)
+	target_compile_definitions(${PROJECT_NAME} PRIVATE PATATA_USE_VVL)
+endif()
+
 if (USE_EXTERNAL_LIBS)
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -188,7 +192,7 @@ if (USE_EXTERNAL_LIBS)
 			LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo" AND USE_VVL)
 			target_compile_definitions(${PROJECT_NAME} PRIVATE PATATA_FIND_VVL_IN_THE_CURRENT_PATH)
 		endif()
 	else()
@@ -209,7 +213,7 @@ if (USE_EXTERNAL_LIBS)
 
 		target_include_directories(${PROJECT_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}")
 
-		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+		if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo" AND USE_VVL)
 			set (VULKANSDK_VVL_PATH "${Vulkan_LIBRARIES}")
 			string(REPLACE "/Lib/vulkan-1.lib" "" VULKANSDK_VVL_PATH ${VULKANSDK_VVL_PATH})
 			string(STRIP VULKANSDK_VVL_PATH ${VULKANSDK_VVL_PATH})
@@ -230,11 +234,14 @@ if (USE_EXTERNAL_LIBS)
 	endif()
 
 	if (LIBS_SHARED_BUILD)
+		# Shared
 		target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
 	else()
 		if (CMAKE_SYSTEM_NAME STREQUAL "Windows")	
+			# Shared on windows
 			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
 		else()
+			# Static
 			target_link_libraries(${PROJECT_NAME} PUBLIC SDL2-static)
 		endif()
 
@@ -246,7 +253,7 @@ if (USE_EXTERNAL_LIBS)
 	endif()
 else()
 	# Package Mananger
-	target_link_libraries(${PROJECT_NAME} PRIVATE
+	target_link_libraries(${PROJECT_NAME} PUBLIC
 		${Vulkan_LIBRARIES}
 		${SDL2_LIBRARIES})
 endif()

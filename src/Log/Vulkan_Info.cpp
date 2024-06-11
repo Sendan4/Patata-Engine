@@ -352,7 +352,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo (
       " Image Color Space : ", PATATA_TERM_RESET,
       vk::to_string (std::get<2> (SWAPCHAIN_INFO)));
 
-#if defined(DEBUG)
+#if defined(DEBUG) && defined(PATATA_USE_VVL)
   fast_io::io::println (PATATA_TERM_BOLD,
                         "  Validation Layer : ", PATATA_TERM_RESET,
                         PATATA_TERM_COLOR_GREEN, "Enabled", PATATA_TERM_RESET);

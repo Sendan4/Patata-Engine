@@ -272,9 +272,13 @@ Vulkan = dependency('Vulkan',
 
 dependencies = [Vulkan, Fast_io_dep, sdl2_dep, yamlcpp]
 
-if (get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized')
-  if build_machine.system() == 'linux'
-    cpp.find_library('VkLayer_khronos_validation', required : true)
+if get_option('use_vvl') == true
+  add_project_arguments('-DPATATA_USE_VVL', language : 'cpp')
+
+  if (get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized')
+    if build_machine.system() == 'linux'
+      cpp.find_library('VkLayer_khronos_validation', required : true)
+    endif
   endif
 endif
 

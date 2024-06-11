@@ -9,7 +9,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateInstance (
       PATATA_ENGINE_VERSION_VK, VK_API_VERSION_1_3);
 
 // Layers
-#if defined(DEBUG)
+#if defined(DEBUG) && defined(PATATA_USE_VVL)
   const char * layer{ "VK_LAYER_KHRONOS_validation" };
   Patata::Log::VulkanList (&layer, 0, "Layers");
 #endif
@@ -45,7 +45,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateInstance (
 
   // Create Instance
   vk::InstanceCreateInfo InstanceInfo ({}, &PatataEngineInfo,
-#if defined(DEBUG)
+#if defined(DEBUG) && defined(PATATA_USE_VVL)
                                        1, &layer,
 #else
                                        0, nullptr,

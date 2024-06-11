@@ -251,7 +251,7 @@ void Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo(YAML::Node CON
 
 	// Vulkan Validation Layer
 	fast_io::io::print(fast_io::out(), PATATA_TERM_COLOR_WHITE, "  Validation Layer : ");
-	#if defined(DEBUG)
+	#if defined(DEBUG) && defined(PATATA_USE_VVL)
 		fast_io::io::println(fast_io::out(), PATATA_TERM_COLOR_GREEN, "Enabled");
 
 		#if defined(PATATA_VULKAN_VALIDATION_LAYERS_VERSION)
