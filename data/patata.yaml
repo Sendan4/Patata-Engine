@@ -6,9 +6,5 @@ patata-engine :
   prefer-wayland : true
 
   raccoon-renderer :
-    graphics-backend : Vulkan
-    # Vulkan or OpenGL
-
     vsync : true
     # true enables the Vertical Sync, false disables the Vertical Sync
-    opengl-adaptative-vsync : true

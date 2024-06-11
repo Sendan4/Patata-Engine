@@ -26,11 +26,6 @@ Copyright: 2020-2023 LunarG, Inc.
 Modifications Copyright: 2020 Advanced Micro Devices, Inc. All rights reserved.
 License: Apache 2.0
 
-Files: ./externals/Glad2/
-Name: Glad 2
-Copyright: 2013-2022, David Herberth
-License: MIT and Apache-2.0
-
 Files: ./externals/yaml-cpp/
 Name: yaml-cpp
 Copyright: 2008-2015, Jesse Beder

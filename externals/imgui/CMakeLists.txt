@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.18)
 
-project("Imgui" LANGUAGES CXX VERSION 1.90)
+project("Imgui" LANGUAGES CXX VERSION 1.90.8)
 
-set(Imgui_VERSION "1.90.2-docking" CACHE INTERNAL "Imgui version")
+set(Imgui_VERSION "1.90.8-docking" CACHE INTERNAL "Imgui version")
 
 message("")
 message("  - Imgui -")
@@ -64,18 +64,13 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"imgui_demo.cpp"
 	"imgui_draw.cpp"
 	"imgui_tables.cpp"
-	"imgui_widgets.cpp")
+	"imgui_widgets.cpp"
+	"backends/imgui_impl_sdl2.cpp")
 
 if ((${Vulkan_FOUND} AND HAVE_VULKAN_H) OR (USE_EXTERNAL_LIBS AND HAVE_VULKAN_H))
-	message(STATUS "Backend: Vulkan")
 	target_sources(${PROJECT_NAME} PRIVATE
 		"backends/imgui_impl_vulkan.cpp")
 endif()
-
-message(STATUS "Backend: SDL2, OpenGL3")
-target_sources(${PROJECT_NAME} PRIVATE
-	"backends/imgui_impl_sdl2.cpp"
-	"backends/imgui_impl_opengl3.cpp")
 
 target_include_directories(${PROJECT_NAME} PRIVATE "../SDL/include")
 

@@ -9,13 +9,7 @@ Patata::Engine::EngineImpl::DrawDebugUI (void)
   if (firstpass)
     {
       firstpass = false;
-      if (*RaccoonRenderer->Backend == Patata::Graphics::Backend::Vulkan)
-        {
-        }
-      else
-        {
-          color = ImVec4 (0.113f, 0.578f, 0.810f, 1.0f);
-        }
+	  // Color
     }
 
   ImGui::SetNextWindowSize (ImVec2 (500, 300));
@@ -34,6 +28,4 @@ Patata::Engine::EngineImpl::DrawDebugUI (void)
 
   ImGui::Begin ("Window Test", nullptr, 0);
   ImGui::End ();
-
-  glClearColor (color.x, color.y, color.z, 1.0f);
 }

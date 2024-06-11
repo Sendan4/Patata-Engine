@@ -4,6 +4,7 @@
 #endif
 #include <vulkan/vulkan.hpp>
 #include <yaml-cpp/yaml.h>
+#include <fast_io.h>
 
 #include "Log.hpp"
 #include "PatataEngineImpl.hpp"

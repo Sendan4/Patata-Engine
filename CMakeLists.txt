@@ -220,14 +220,11 @@ else()
 	message(${CMAKE_BINARY_DIR})
 endif()
 
-include(CheckSymbolExists)
-
 if (NOT USE_EXTERNAL_LIBS)
 	# Package Mananger
 	add_subdirectory(externals/fast_io)
 	find_package(yaml-cpp REQUIRED)
 	find_package(Vulkan REQUIRED)
-	add_subdirectory(externals/Glad2)
 	find_package(SDL2 REQUIRED)
 
 	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
@@ -289,17 +286,6 @@ if (NOT USE_EXTERNAL_LIBS)
 else()
 	# using submodules
 	add_subdirectory(externals)
-endif()
-
-# Glad Check
-find_file(HAVE_GL_H "glad/gl.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/externals/Glad2/include/")
-
-if (NOT HAVE_GL_H)
-	message(FATAL_ERROR "Missing Headers")
-else()
-	if (HAVE_SDL_H)
-		message(STATUS "Looking for glad/gl.h - found")
-	endif()
 endif()
 
 add_subdirectory(data)

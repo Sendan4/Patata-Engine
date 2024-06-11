@@ -14,17 +14,10 @@ namespace Graphics
 class RaccoonRenderer
 {
 public:
-  RaccoonRenderer (YAML::Node &, SDL_Window *&, const bool &);
+  RaccoonRenderer (YAML::Node &, SDL_Window *&);
   ~RaccoonRenderer (void);
 
-  const bool *    Backend       = &backend;
-  SDL_GLContext * GameGLContext = nullptr;
-
 private:
-  bool backend = true;
-
-  void RaccoonBackendInit (YAML::Node &, SDL_Window *&);
-
   class VulkanBackend
   {
   public:
@@ -82,18 +75,6 @@ private:
     vk::PipelineLayout PipeLineLayout;
     vk::PipelineCache  PipeLineCache;
   } * pVulkanBackend = nullptr;
-
-  class OpenGLBackend
-  {
-  public:
-    OpenGLBackend (YAML::Node & Config);
-    ~OpenGLBackend (void);
-
-    void OpenGLResizeViewPort (SDL_Window *);
-    void OpenGLSetViewPort (uint32_t, uint32_t);
-
-  private:
-  } * pOpenGLBackend = nullptr;
 };
 }
 }

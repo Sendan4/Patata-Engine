@@ -184,7 +184,6 @@ elif (get_option('buildtype') == 'minsize')
 endif
 
 Fast_io_dep = subproject('fast_io').get_variable('fast_io_dep')
-Glad2_dep = subproject('Glad2').get_variable('Glad2_dep')
 
 if get_option('use_external_libs') == true and build_machine.system() == 'windows'
   warning('use_external_libs will be ignored in Windows. run meson setup build without this option or set it to false.')
@@ -271,18 +270,12 @@ Vulkan = dependency('Vulkan',
   static : false,
   required : true)
 
-dependencies = [Vulkan, Fast_io_dep, sdl2_dep, yamlcpp, Glad2_dep]
+dependencies = [Vulkan, Fast_io_dep, sdl2_dep, yamlcpp]
 
 if (get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized')
   if build_machine.system() == 'linux'
     cpp.find_library('VkLayer_khronos_validation', required : true)
   endif
-endif
-
-if Glad2_dep.found()
-  cpp.check_header('glad/gl.h', include_directories : include_directories('externals/Glad2/include'), required : true)
-  cpp.has_type('GLADloadfunc', prefix : '#include <glad/gl.h>', include_directories : include_directories('externals/Glad2/include'))
-  cpp.has_header_symbol('glad/gl.h', 'gladLoadGL', include_directories : include_directories('externals/Glad2/include'), required : true)
 endif
 
 if Fast_io_dep.found()
@@ -322,10 +315,6 @@ endif
 if sdl2_dep.found()
   if get_option('use_external_libs') == true and build_machine.system() != 'windows'
     cpp.check_header('SDL.h', include_directories : include_directories('externals/SDL/include'), required : true)
-    cpp.has_header_symbol('SDL.h', 'SDL_GL_CreateContext',
-     include_directories : include_directories('externals/SDL/include'),
-     required : true)
-    cpp.has_type('SDL_GLContext', include_directories : include_directories('externals/SDL/include'), prefix : '#include <SDL.h>')
 
     cpp.check_header('SDL_vulkan.h', include_directories : include_directories('externals/SDL/include'), required : true)
     cpp.has_header_symbol('SDL_vulkan.h', 'SDL_Vulkan_CreateSurface',
@@ -335,8 +324,6 @@ if sdl2_dep.found()
     cpp.check_header('SDL.h', dependencies : sdl2_dep, required : true)
     cpp.check_header('SDL_vulkan.h', dependencies : sdl2_dep, required : true)
     cpp.has_header_symbol('SDL_vulkan.h', 'SDL_Vulkan_CreateSurface', dependencies : sdl2_dep, required : true)
-    cpp.has_header_symbol('SDL.h', 'SDL_GL_CreateContext', dependencies : sdl2_dep, required : true)
-    cpp.has_type('SDL_GLContext', dependencies : sdl2_dep, prefix : '#include <SDL.h>')
   endif
 endif
 
@@ -414,8 +401,6 @@ if (get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptim
 
   cpp.has_header('imgui_impl_vulkan.h', include_directories : include_directories('externals/imgui/backends'), required : true)
   cpp.has_header('imgui_impl_sdl2.h', include_directories : include_directories('externals/imgui/backends'), required : true)
-
-  cpp.has_header('imgui_impl_opengl3.h', include_directories : include_directories('externals/imgui/backends'), required : true)
 endif
 
 #Game name
@@ -439,7 +424,6 @@ info = {
 
 features = {
   'Vulkan' : Vulkan.found(),
-  'OpenGL' : Glad2_dep.found(),
   'Yaml CPP' : yamlcpp.found(),
   'Icon' : get_option('enable_icon'),
   'Custom Icon' : get_option('use_custom_icon'),
@@ -450,8 +434,7 @@ summary({
   'Commit Hash' : info['Commit Hash'],
   'Game Name' : info['Game Name'],
   'Icon' : features['Icon'],
-  'Custom Icon' : features['Custom Icon'],
-  'Configuration' : features['Yaml CPP']},
+  'Custom Icon' : features['Custom Icon']},
   bool_yn : true)
 
 summary({

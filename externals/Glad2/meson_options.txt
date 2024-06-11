@@ -1,5 +1,0 @@
-option('libs_shared_build',
-  type : 'boolean',
-  value : true,
-  yield : true,
-  description : 'true or false to compile and link the libraries in the externals folder as shared or static')

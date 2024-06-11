@@ -1,5 +1,5 @@
 project('imgui', 'cpp',
-  version : '1.90.2-docking',
+  version : '1.90.8-docking',
   meson_version : '>=1.2.0')
 
 dependencies = []
@@ -69,23 +69,19 @@ Sources = ['imgui.cpp',
     'imgui_draw.cpp',
     'imgui_demo.cpp',
     'imgui_tables.cpp',
-    'imgui_widgets.cpp',
-    'backends/imgui_impl_opengl3.cpp']
+    'imgui_widgets.cpp']
 
 Include = include_directories('.')
 
 backends = include_directories('backends/')
-backends_str = 'OpenGL, '
 
 if Vulkan.found() or get_option('use_external_libs') == true
     meson.get_compiler('cpp').check_header('vulkan/vulkan.h', required : true)
     Sources += ['backends/imgui_impl_vulkan.cpp']
-    backends_str += 'Vulkan, '
 endif
 
 if sdl2_dep.found() or get_option('use_external_libs') == true
     Sources += ['backends/imgui_impl_sdl2.cpp']
-    backends_str += 'SDL2'
 endif
 
 librarytype = ''
@@ -131,16 +127,9 @@ set_variable(meson.project_name() + '_dep', project_dep)
 
 # Manualy Set
 Info = {
-  'Backends' : backends_str,
-  'OpenGL Version' : '3',
   'Build Type' : get_option('buildtype'),
   'Library Type' : librarytype
 }
-
-summary({
-  'Backends' : Info['Backends'],
-  'OpenGL Version' : Info['OpenGL Version']},
-  bool_yn : true)
 
 summary({
   'Build Type' : Info['Build Type'],

@@ -55,7 +55,6 @@ Patata::Engine::EngineImpl::EngineImpl (const std::string & WindowTitle,
                                         const uint32_t &    WindowWidth,
                                         const uint32_t &    WindowHeight)
 {
-  Patata::Log::StartMapache ();
   Patata::Log::StartPatataLogInfo ();
 
   try
@@ -114,35 +113,13 @@ Patata::Engine::EngineImpl::EngineImpl (const std::string & WindowTitle,
           "SDL Cannot init the GameController subsystem");
     }
 
-  // OpenGL Attributes
-  SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-  SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 1);
-  SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK,
-                       SDL_GL_CONTEXT_PROFILE_CORE);
-  SDL_GL_SetAttribute (SDL_GL_ACCELERATED_VISUAL, 1);
-  SDL_GL_SetAttribute (SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
-
-  // load certain configurations
-  std::string GraphicsAPI
-      = Config["patata-engine"]["raccoon-renderer"]["graphics-backend"]
-            .as<std::string> ();
-  std::transform (GraphicsAPI.begin (), GraphicsAPI.end (),
-                  GraphicsAPI.begin (), ::toupper);
-
-  bool backend = true;
-  if (GraphicsAPI == "VULKAN")
-    backend = Patata::Graphics::Backend::Vulkan;
-  else if (GraphicsAPI == "OPENGL")
-    backend = Patata::Graphics::Backend::OpenGL;
-
-  CreateGameWindow (WindowTitle, WindowWidth, WindowHeight, backend);
+  CreateGameWindow (WindowTitle, WindowWidth, WindowHeight);
 #if defined(USE_ICON)
   SetWindowIcon ();
 #endif
 
   RaccoonRenderer
-      = new Patata::Graphics::RaccoonRenderer (Config, GameWindow, backend);
+      = new Patata::Graphics::RaccoonRenderer (Config, GameWindow);
 
 #if defined(DEBUG)
   SetupImGUIBackend ();

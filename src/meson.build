@@ -4,8 +4,6 @@ source = files([
   'Core/Render.cpp',
   'Window/Window.cpp',
   'RaccoonRenderer/RaccoonRenderer.cpp',
-  'RaccoonRenderer/Opengl/OpenGL_Set_ViewPort_And_Resize.cpp',
-  'RaccoonRenderer/Opengl/OpenGL_Renderer.cpp',
   'RaccoonRenderer/Vulkan/Setup_Vulkan_Renderer.cpp',
   'RaccoonRenderer/Vulkan/Vulkan_Instance.cpp',
   'RaccoonRenderer/Vulkan/Vulkan_Logical_And_Queue.cpp',
@@ -14,7 +12,6 @@ source = files([
   'RaccoonRenderer/Vulkan/Vulkan_CommandBuffer.cpp',
   'RaccoonRenderer/Vulkan/Vulkan_PipeLine.cpp',
   'RaccoonRenderer/Vulkan/Vulkan_RenderPass.cpp',
-  'Log/Mapache.cpp',
   'Log/YamlErrors.cpp',
   'Log/Messages.cpp'])
 
@@ -23,15 +20,13 @@ if target_machine.system() == 'windows'
     'Log/Win/Start_Patata_Log_Info_Win.cpp',
     'Log/Win/WindowLogWin.cpp',
     'Log/Win/Setup_Vulkan_Log_Win.cpp',
-    'Log/Win/Vulkan_Info_Win.cpp',
-    'Log/Win/OpenGL_Info_Win.cpp'])
+    'Log/Win/Vulkan_Info_Win.cpp'])
 else
   source += files([
     'Log/Start_Patata_Log_Info.cpp',
     'Log/WindowLog.cpp',
     'Log/Setup_Vulkan_Log.cpp',
-    'Log/Vulkan_Info.cpp',
-    'Log/OpenGL_Info.cpp'])
+    'Log/Vulkan_Info.cpp'])
 endif
 
 if get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized'
@@ -49,7 +44,6 @@ lib = library(meson.project_name(),
     include_directories('Core'),
     include_directories('RaccoonRenderer'),
     include_directories('RaccoonRenderer/Vulkan'),
-    include_directories('RaccoonRenderer/Opengl'),
     include_directories('ImGUI'),
     include_directories('Window')],
   d_import_dirs : include,

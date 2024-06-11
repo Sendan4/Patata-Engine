@@ -16,8 +16,6 @@ target_sources (${PROJECT_NAME} PRIVATE
 	"Core/Render.cpp"
 	"Window/Window.cpp"
 	"RaccoonRenderer/RaccoonRenderer.cpp"
-	"RaccoonRenderer/Opengl/OpenGL_Set_ViewPort_And_Resize.cpp"
-	"RaccoonRenderer/Opengl/OpenGL_Renderer.cpp"
 	"RaccoonRenderer/Vulkan/Setup_Vulkan_Renderer.cpp"
 	"RaccoonRenderer/Vulkan/Vulkan_Instance.cpp"
 	"RaccoonRenderer/Vulkan/Vulkan_Logical_And_Queue.cpp"
@@ -26,7 +24,6 @@ target_sources (${PROJECT_NAME} PRIVATE
 	"RaccoonRenderer/Vulkan/Vulkan_CommandBuffer.cpp"
 	"RaccoonRenderer/Vulkan/Vulkan_PipeLine.cpp"
 	"RaccoonRenderer/Vulkan/Vulkan_RenderPass.cpp"
-	"Log/Mapache.cpp"
 	"Log/Messages.cpp"
 	"Log/YamlErrors.cpp")
 
@@ -43,15 +40,13 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows" OR WIN32)
 		"Log/Win/WindowLogWin.cpp"
 		"Log/Win/Setup_Vulkan_Log_Win.cpp"
 		"Log/Win/Vulkan_Info_Win.cpp"
-		"Log/Win/OpenGL_Info_Win.cpp"
 		"PatataEngine.rc")
 else()
 	target_sources (${PROJECT_NAME} PRIVATE
 		"Log/Start_Patata_Log_Info.cpp"
 		"Log/WindowLog.cpp"
 		"Log/Setup_Vulkan_Log.cpp"
-		"Log/Vulkan_Info.cpp"
-		"Log/OpenGL_Info.cpp")
+		"Log/Vulkan_Info.cpp")
 endif()
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
@@ -72,10 +67,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # Install With CPack
 install(FILES ${Include} DESTINATION "include/PatataEngine/")
 install(FILES ${Include_graphics} DESTINATION "include/PatataEngine/Graphics")
-
-install(TARGETS Glad2
-	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 	install(TARGETS Imgui
@@ -186,8 +177,6 @@ if (DEFINED GAME_VERSION_MAYOR AND DEFINED GAME_VERSION_MINOR AND GAME_VERSION_P
 		PATATA_GAME_VERSION_PATCH=${GAME_VERSION_PATCH})
 endif()
 
-find_package(Msys)
-
 if (USE_EXTERNAL_LIBS)
 	# Linux or MSVC
 	if (MSVC OR LINUX OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -262,7 +251,7 @@ else()
 		${SDL2_LIBRARIES})
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Fast_io Glad2 yaml-cpp)
+target_link_libraries(${PROJECT_NAME} PUBLIC Fast_io yaml-cpp)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
 	target_link_libraries(${PROJECT_NAME} PUBLIC Imgui)
@@ -270,7 +259,6 @@ endif()
 
 if (MSVC)
 	set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Engine")
-	set_target_properties(Glad2 PROPERTIES FOLDER "Engine/Dependencies")
 
 	if (USE_EXTERNAL_LIBS)
 		#Yaml-cpp

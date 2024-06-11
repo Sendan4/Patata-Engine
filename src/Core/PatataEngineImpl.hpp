@@ -28,7 +28,7 @@ private:
   Patata::Graphics::RaccoonRenderer * RaccoonRenderer = nullptr;
 
   void CreateGameWindow (const std::string &, const uint32_t &,
-                         const uint32_t &, const bool &);
+                         const uint32_t &);
 #if defined(USE_ICON)
   void SetWindowIcon (void);
 #endif
@@ -40,15 +40,6 @@ private:
   void ImGuiEndFrame (void);
 #endif
 };
-
-namespace Graphics
-{
-enum Backend : bool
-{
-  Vulkan = true,
-  OpenGL = false
-};
-}
 
 class RunTimeError : public std::exception
 {

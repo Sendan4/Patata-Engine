@@ -10,16 +10,16 @@ if get_option('enable_icon')
 
   if get_option('use_custom_icon')
     if get_option('icon_path') != ''
-      run_command('cp',
-        get_option('icon_path'),
-        meson.global_build_root(),
-        check : true)
+        run_command('cp',
+          get_option('icon_path'),
+          meson.global_build_root(),
+          check : true)
 
       if get_option('game_name') != ''
-        run_command('mv',
-          meson.global_build_root() + '/icon.bmp',
-          meson.global_build_root() + '/' + get_option('game_name') + '.bmp',
-          check : true)
+          run_command('mv',
+            meson.global_build_root() + '/icon.bmp',
+            meson.global_build_root() + '/' + get_option('game_name') + '.bmp',
+            check : true)
 
         if get_option('use_bin_dir')
           run_command('cp',
@@ -28,19 +28,9 @@ if get_option('enable_icon')
         endif
       else
         if get_option('buildtype') == 'release' or get_option('buildtype') == 'minsize'
-          run_command('mv',
-            meson.global_build_root() + '/icon.bmp',
-            meson.global_build_root() + '/icon-release.bmp',
-            check : true)
-
           run_command('cp',
             meson.global_build_root() + '/icon-release.bmp', bin_dir, check : true)
         else
-          run_command('mv',
-            meson.global_build_root() + '/icon.bmp',
-            meson.global_build_root() + '/icon-debug.bmp',
-            check : true)
-
           if get_option('use_bin_dir')
             run_command('cp', meson.global_build_root() + '/icon-debug.bmp', bin_dir, check : true)
           endif
