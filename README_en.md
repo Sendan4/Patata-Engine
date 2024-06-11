@@ -27,7 +27,6 @@ _Dumb and simple game engine made in C++._
 		(<a href = "https://github.com/KhronosGroup/Vulkan-Loader.git">Vulkan-Loader</a>)
 	</ul>
 	<li><a href = "https://github.com/cppfastio/fast_io.git">fast_io</a></li>
-	<li><a href = "https://github.com/Dav1dde/glad.git">Glad 2</a></li>
 	<li><a href = "https://github.com/jbeder/yaml-cpp.git">yaml-cpp</a></li>
     <li><a href = "https://github.com/ocornut/imgui.git">Imgui</a></li>
 </ul>
