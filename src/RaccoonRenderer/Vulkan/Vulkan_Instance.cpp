@@ -21,7 +21,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateInstance (
   // como tiene que ser.
   uint32_t extensionInstanceCount[2]{ 0, 1 };
 
-  // SDL por alguna razon develve un numero extra en el conteo de extensiones
+  // SDL devuelve un numero extra (Conteo Humano desde el 1)
   SDL_Vulkan_GetInstanceExtensions (WINDOW, &extensionInstanceCount[0],
                                     nullptr);
 
@@ -66,14 +66,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateInstance (
       return false;
     }
 
-  Patata::Log::DeleteAndLogArrPtr ("Instance Extensions",
-                                   pExtensionInstanceNames);
-
-#if defined(_WIN64)
-  fast_io::io::println (fast_io::out ());
-#else
-  fast_io::io::println ("");
-#endif
+  delete[] pExtensionInstanceNames;
 
   return true;
 }

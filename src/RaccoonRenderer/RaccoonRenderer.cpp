@@ -17,11 +17,11 @@
 Patata::Graphics::RaccoonRenderer::RaccoonRenderer (YAML::Node &  Config,
                                                     SDL_Window *& Window)
 {
-	pVulkanBackend = new Patata::Graphics::RaccoonRenderer::VulkanBackend (
-		Window, Config);
+  pVulkanBackend
+      = new Patata::Graphics::RaccoonRenderer::VulkanBackend (Window, Config);
 }
 
 Patata::Graphics::RaccoonRenderer::~RaccoonRenderer (void)
 {
-	Patata::Log::DeleteAndLogPtr ("Vulkan Backend", pVulkanBackend);
+  Patata::Log::DeleteAndLogPtr ("Vulkan Backend", pVulkanBackend);
 }

@@ -2,9 +2,9 @@
 #ifndef YAML_CPP_API
 #define YAML_CPP_API
 #endif
+#include <fast_io.h>
 #include <vulkan/vulkan.hpp>
 #include <yaml-cpp/yaml.h>
-#include <fast_io.h>
 
 #include "Log.hpp"
 #include "PatataEngineImpl.hpp"

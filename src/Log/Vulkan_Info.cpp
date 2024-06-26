@@ -27,6 +27,12 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo (
       case 4318:
         Vendor = "Nvidia";
         break;
+      case 65541:
+        Vendor = "Mesa";
+        break;
+      default:
+        Vendor = "Unknown";
+        break;
       }
 
     fast_io::io::print (PATATA_TERM_DIM, PATATA_TERM_COLOR_GRAY0,
@@ -58,6 +64,13 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo (
       case 4318:
         fast_io::io::println (PATATA_TERM_COLOR_GREEN, Vendor,
                               PATATA_TERM_RESET);
+        break;
+      case 65541:
+        fast_io::io::println (PATATA_TERM_COLOR_GRAY1, Vendor,
+                              PATATA_TERM_RESET);
+        break;
+      default:
+        fast_io::io::println (Vendor);
         break;
       }
   }
@@ -352,7 +365,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo (
       " Image Color Space : ", PATATA_TERM_RESET,
       vk::to_string (std::get<2> (SWAPCHAIN_INFO)));
 
-#if defined(DEBUG) && defined(PATATA_USE_VVL)
+#if defined(DEBUG)
   fast_io::io::println (PATATA_TERM_BOLD,
                         "  Validation Layer : ", PATATA_TERM_RESET,
                         PATATA_TERM_COLOR_GREEN, "Enabled", PATATA_TERM_RESET);

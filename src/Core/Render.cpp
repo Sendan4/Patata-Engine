@@ -4,5 +4,4 @@
 void
 Patata::Engine::EngineImpl::Render (void)
 {
-
 }

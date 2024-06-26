@@ -31,11 +31,11 @@ Patata::Engine::EngineImpl::CreateGameWindow (const std::string & Title,
 #endif
     }
 
-  GameWindow = SDL_CreateWindow (
-      PatataWindowTitle.c_str (), SDL_WINDOWPOS_CENTERED,
-      SDL_WINDOWPOS_CENTERED, WindowWidth, WindowHeight,
-	  SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_VULKAN
-            | SDL_WINDOW_ALLOW_HIGHDPI);
+  GameWindow
+      = SDL_CreateWindow (PatataWindowTitle.c_str (), SDL_WINDOWPOS_CENTERED,
+                          SDL_WINDOWPOS_CENTERED, WindowWidth, WindowHeight,
+                          SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+                              | SDL_WINDOW_VULKAN | SDL_WINDOW_ALLOW_HIGHDPI);
 
   if (!GameWindow)
     {
@@ -81,7 +81,7 @@ Patata::Engine::EngineImpl::SetWindowIcon (void)
       else
         SDL_SetWindowIcon (GameWindow, Icon);
 
-      fast_io::io::perrln(std::string_view { SDL_GetError() });
+      fast_io::io::perrln (std::string_view{ SDL_GetError () });
       SDL_FreeSurface (Icon);
     }
 #endif

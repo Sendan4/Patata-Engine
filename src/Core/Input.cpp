@@ -8,7 +8,7 @@ Patata::Engine::EngineImpl::HandleEvent (SDL_Event & Event)
   static bool PatataFullScreen = false;
 
 #if defined(DEBUG)
-    //ImGui_ImplSDL2_ProcessEvent (&Event);
+  // ImGui_ImplSDL2_ProcessEvent (&Event);
 #endif
 
   switch (Event.type)

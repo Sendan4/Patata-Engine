@@ -118,8 +118,7 @@ Patata::Engine::EngineImpl::EngineImpl (const std::string & WindowTitle,
   SetWindowIcon ();
 #endif
 
-  RaccoonRenderer
-      = new Patata::Graphics::RaccoonRenderer (Config, GameWindow);
+  RaccoonRenderer = new Patata::Graphics::RaccoonRenderer (Config, GameWindow);
 
 #if defined(DEBUG)
   SetupImGUIBackend ();

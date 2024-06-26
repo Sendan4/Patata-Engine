@@ -186,8 +186,8 @@ DeleteAndLogArrPtr (const std::string & Message, pointer *& ptr)
           "[", std::string_view{ typeid (ptr).name () }, "] ",
 #endif
           PATATA_TERM_RESET, PATATA_TERM_BOLD, Message, PATATA_TERM_RESET,
-          PATATA_TERM_COLOR_YELLOW,
-          " Already Eliminated Or Null" PATATA_TERM_RESET);
+          PATATA_TERM_COLOR_YELLOW, " Already Eliminated Or Null",
+          PATATA_TERM_RESET);
 #endif
     }
 }

@@ -6,7 +6,9 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanBackend (
   if (!CreateInstance (WINDOW, CONFIG))
     return;
 
-  PhysicalDevice = Instance.enumeratePhysicalDevices ().front ();
+  if (!SelectDevice (CONFIG))
+    return;
+
   uint32_t GraphicsQueueFamilyIndex = CreateLogicalDeviceAndCreateQueue ();
 
   if (SDL_Vulkan_CreateSurface (WINDOW, Instance,

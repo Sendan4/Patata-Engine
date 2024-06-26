@@ -6,6 +6,7 @@ source = files([
   'RaccoonRenderer/RaccoonRenderer.cpp',
   'RaccoonRenderer/Vulkan/Setup_Vulkan_Renderer.cpp',
   'RaccoonRenderer/Vulkan/Vulkan_Instance.cpp',
+  'RaccoonRenderer/Vulkan/Vulkan_Select_Device.cpp',
   'RaccoonRenderer/Vulkan/Vulkan_Logical_And_Queue.cpp',
   'RaccoonRenderer/Vulkan/Vulkan_SwapChain.cpp',
   'RaccoonRenderer/Vulkan/Vulkan_ImageView.cpp',

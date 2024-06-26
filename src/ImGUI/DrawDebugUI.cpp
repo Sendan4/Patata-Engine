@@ -9,7 +9,7 @@ Patata::Engine::EngineImpl::DrawDebugUI (void)
   if (firstpass)
     {
       firstpass = false;
-	  // Color
+      // Color
     }
 
   ImGui::SetNextWindowSize (ImVec2 (500, 300));
