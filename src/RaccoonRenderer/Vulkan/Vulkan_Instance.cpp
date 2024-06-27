@@ -11,7 +11,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateInstance (
 // Layers
 #if defined(DEBUG) && defined(PATATA_USE_VVL)
   const char * layer{ "VK_LAYER_KHRONOS_validation" };
-  Patata::Log::VulkanList (&layer, 0, "Layers");
+  std::future<void> ReturnVulkanList0 = std::async(std::launch::async, Patata::Log::VulkanList, &layer, 0, "Layers");
 #endif
 
   // Get Extensions
@@ -35,13 +35,10 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateInstance (
 
   // Desde aqui se deben agregar las otras extensiones, desde el conteo que
   // devuelve SDL en adelante
-  pExtensionInstanceNames[extensionInstanceCount[0]]
-      = "VK_KHR_get_physical_device_properties2";
+  pExtensionInstanceNames[extensionInstanceCount[0]] = "VK_KHR_get_surface_capabilities2";
 
   if (found_extensions)
-    Patata::Log::VulkanList (pExtensionInstanceNames,
-                             extensionInstanceCount[1] - 1,
-                             "Instance Extensions");
+	  std::future<void> ReturnVulkanList1 = std::async(std::launch::async, Patata::Log::VulkanList, pExtensionInstanceNames, extensionInstanceCount[1] - 1, "Instance Extensions");
 
   // Create Instance
   vk::InstanceCreateInfo InstanceInfo ({}, &PatataEngineInfo,
@@ -57,7 +54,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateInstance (
   try
     {
       Result = vk::createInstance (&InstanceInfo, nullptr, &Instance);
-      Patata::Log::VulkanCheck ("Instance", Result);
+	  std::future<void> ReturnVulkanCheck = std::async(std::launch::async, Patata::Log::VulkanCheck, "Instance", Result);
     }
   catch (const vk::Result & Error)
     {

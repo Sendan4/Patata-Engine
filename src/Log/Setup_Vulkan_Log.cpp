@@ -17,7 +17,7 @@ Patata::Log::VulkanList (const char * List[], const std::size_t & ListSize,
       PATATA_TERM_RESET, PATATA_TERM_BOLD, MESSAGE, " : ", PATATA_TERM_RESET,
       ListSize + 1);
 
-  for (std::size_t i = 0; i <= ListSize; i++)
+  for (std::size_t i = 0; i <= ListSize; ++i)
     {
       if (List[i] != nullptr)
         fast_io::io::println ("  ", PATATA_TERM_DIM,

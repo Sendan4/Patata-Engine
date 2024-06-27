@@ -23,7 +23,7 @@ private:
   public:
     bool     CreateInstance (SDL_Window *&, YAML::Node &);
     bool     SelectDevice (YAML::Node &);
-    uint32_t CreateLogicalDeviceAndCreateQueue (void);
+    uint32_t CreateLogicalDeviceAndCreateQueue (YAML::Node &);
     std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR>
          CreateSwapChain (uint32_t &, YAML::Node);
     void CreateImageView (uint32_t &);

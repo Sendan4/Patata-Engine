@@ -9,7 +9,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanBackend (
   if (!SelectDevice (CONFIG))
     return;
 
-  uint32_t GraphicsQueueFamilyIndex = CreateLogicalDeviceAndCreateQueue ();
+  uint32_t GraphicsQueueFamilyIndex = CreateLogicalDeviceAndCreateQueue (CONFIG);
 
   if (SDL_Vulkan_CreateSurface (WINDOW, Instance,
                                 reinterpret_cast<VkSurfaceKHR *> (&Surface)))
