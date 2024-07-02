@@ -10,7 +10,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::SelectDevice (
   // Esta funcion devuelve un numero extra (Conteo Humano desde el 1)
   Result = Instance.enumeratePhysicalDevices (&GpuCount, nullptr);
 
-  std::future<void> ReturnVulkanCheck0 = std::async(std::launch::async, Patata::Log::VulkanCheck, "Enumerate Physical Devices - Obtaining device count ", Result);
+  std::future<void> ReturnVulkanCheck0 = std::async(std::launch::async, Patata::Log::VulkanCheck, "Enumerate Physical Devices - Obtaining the count", Result);
 
   if (GpuCount == 0)
     {
@@ -55,7 +55,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::SelectDevice (
       Result
           = Instance.enumeratePhysicalDevices (&GpuCount, TMPPhysicalDevice);
 
-	  std::future<void> ReturnVulkanCheck1 = std::async(std::launch::async, Patata::Log::VulkanCheck, "Enumerate Physical Devices - Looking for the devices", Result);
+	  std::future<void> ReturnVulkanCheck1 = std::async(std::launch::async, Patata::Log::VulkanCheck, "Enumerate Physical Devices", Result);
     }
  
   fast_io::io::println (

@@ -14,7 +14,7 @@ namespace Graphics
 class RaccoonRenderer
 {
 public:
-  RaccoonRenderer (YAML::Node &, SDL_Window *&);
+  RaccoonRenderer (YAML::Node &, SDL_Window *);
   ~RaccoonRenderer (void);
 
 private:
@@ -25,7 +25,7 @@ private:
     bool     SelectDevice (YAML::Node &);
     uint32_t CreateLogicalDeviceAndCreateQueue (YAML::Node &);
     std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR>
-         CreateSwapChain (uint32_t &, YAML::Node);
+         CreateSwapChain (uint32_t &, YAML::Node, SDL_Window *);
     void CreateImageView (uint32_t &);
     void CreateCommandBuffer (uint32_t &);
     void CreateRenderPass (void);
@@ -34,7 +34,7 @@ private:
     VulkanInfo (YAML::Node CONFIG,
                 std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR>);
 
-    VulkanBackend (SDL_Window *&, YAML::Node &);
+    VulkanBackend (SDL_Window *, YAML::Node &);
     ~VulkanBackend (void);
 
   private:

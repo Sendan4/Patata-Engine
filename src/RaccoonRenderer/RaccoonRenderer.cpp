@@ -15,7 +15,7 @@
 #include "ExitLog.hpp"
 
 Patata::Graphics::RaccoonRenderer::RaccoonRenderer (YAML::Node &  Config,
-                                                    SDL_Window *& Window)
+                                                    SDL_Window * Window)
 {
   pVulkanBackend
       = new Patata::Graphics::RaccoonRenderer::VulkanBackend (Window, Config);

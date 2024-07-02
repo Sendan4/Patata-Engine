@@ -2,26 +2,54 @@
 
 std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR>
 Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateSwapChain (
-    uint32_t & GraphicsQueueFamilyIndex, YAML::Node CONFIG)
+    uint32_t & GraphicsQueueFamilyIndex, YAML::Node CONFIG, SDL_Window * WINDOW)
 {
-  std::vector<vk::PresentModeKHR> PresentModes
-      = PhysicalDevice.getSurfacePresentModesKHR (Surface);
-  std::vector<vk::SurfaceFormatKHR> SurfaceFormats
-      = PhysicalDevice.getSurfaceFormatsKHR (Surface);
+  // Present Modes
+  vk::PresentModeKHR * PresentModes;
+  uint32_t PresentModesCount = 0;
 
-  SwapChainExtent.width  = 1280;
-  SwapChainExtent.height = 720;
+  vk::Result Result;
 
+  Result = PhysicalDevice.getSurfacePresentModesKHR(Surface, &PresentModesCount, nullptr);
+  std::future<void> ReturnVulkanCheck0 = std::async(std::launch::async, Patata::Log::VulkanCheck, "Get Surface Present Modes - Obtaining the count", Result);
+
+  PresentModes = new vk::PresentModeKHR[PresentModesCount];
+
+  Result = PhysicalDevice.getSurfacePresentModesKHR(Surface, &PresentModesCount, PresentModes);
+  std::future<void> ReturnVulkanCheck1 = std::async(std::launch::async, Patata::Log::VulkanCheck, "Get Surface Present Modes", Result);
+
+  // Surface Formats
+  vk::SurfaceFormatKHR * SurfaceFormats;
+  uint32_t SurfaceFormatsCount = 0;
+
+  Result = PhysicalDevice.getSurfaceFormatsKHR(Surface, &SurfaceFormatsCount, nullptr);
+  std::future<void> ReturnVulkanCheck2 = std::async(std::launch::async, Patata::Log::VulkanCheck, "Get Surface Formats - Obtaining the count", Result);
+
+  SurfaceFormats = new vk::SurfaceFormatKHR[SurfaceFormatsCount];
+
+  Result = PhysicalDevice.getSurfaceFormatsKHR(Surface, &SurfaceFormatsCount, SurfaceFormats);
+  std::future<void> ReturnVulkanCheck3 = std::async(std::launch::async, Patata::Log::VulkanCheck, "Get Surface Formats", Result);
+
+  // Extent
+  {
+	  int * w, * h; 
+	  SDL_Vulkan_GetDrawableSize(WINDOW, w, h);
+
+	  SwapChainExtent.width  = *w;
+	  SwapChainExtent.height = *h;
+  }
+
+  // Encontrar un Modo de presentacion
   if (CONFIG["patata-engine"]["raccoon-renderer"]["vsync"].as<bool> ())
     {
-      for (const vk::PresentModeKHR & Mode : PresentModes)
+      for (uint32_t i = 0; i < PresentModesCount; ++i)
         {
-          if (Mode == vk::PresentModeKHR::eMailbox)
+          if (PresentModes[i] == vk::PresentModeKHR::eMailbox)
             {
               PresentMode = vk::PresentModeKHR::eMailbox;
               break;
             }
-          if (Mode == vk::PresentModeKHR::eFifo)
+          if (PresentModes[i] == vk::PresentModeKHR::eFifo)
             {
               PresentMode = vk::PresentModeKHR::eFifo;
               break;
@@ -29,16 +57,31 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateSwapChain (
         }
     }
   else
-    PresentMode = vk::PresentModeKHR::eImmediate;
+	  PresentMode = vk::PresentModeKHR::eImmediate;
 
-  SurfaceFormat = SurfaceFormats[0];
+  // Encontrar un formato de superficie
+  for (uint32_t i = 0; i < SurfaceFormatsCount; ++i) {
+	  if (CONFIG["patata-engine"]["raccoon-renderer"]["10bit-image"].as<bool> ()) {
+		  // 10 Bits
+		  if (SurfaceFormats[i].format == vk::Format::eA2B10G10R10UnormPack32 ||
+				  SurfaceFormats[i].format == vk::Format::eA2B10G10R10UnormPack32) {
+			  SurfaceFormat = SurfaceFormats[i];
+			  break;
+		  }
+	  }
+	  else {
+		  // 8 Bits
+		  if (SurfaceFormats[i].format == vk::Format::eB8G8R8A8Srgb ||
+				  SurfaceFormats[i].format == vk::Format::eR8G8B8A8Unorm ||
+				  SurfaceFormats[i].format == vk::Format::eR8G8B8Srgb) {
+			  SurfaceFormat = SurfaceFormats[i];
+			  break;
+		  }
+	  }
+  }
 
   vk::SurfaceCapabilitiesKHR SurfaceCapabilities
       = PhysicalDevice.getSurfaceCapabilitiesKHR (Surface);
-
-  // vk::Viewport Viewport = vk::Viewport(0.0f, 0.0f,
-  // static_cast<float>(SurfaceCapabilities.currentExtent.width),
-  // static_cast<float>(SurfaceCapabilities.currentExtent.height), 0, 1.0f);
 
   vk::SwapchainCreateInfoKHR SwapChainCreateInfo{};
   SwapChainCreateInfo.surface          = Surface;
@@ -51,14 +94,15 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::CreateSwapChain (
   SwapChainCreateInfo.preTransform = SurfaceCapabilities.currentTransform;
   SwapChainCreateInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
   SwapChainCreateInfo.presentMode    = PresentMode;
-  SwapChainCreateInfo.clipped        = VK_TRUE;
+  SwapChainCreateInfo.clipped        = true;
   SwapChainCreateInfo.queueFamilyIndexCount = GraphicsQueueFamilyIndex;
   SwapChainCreateInfo.oldSwapchain          = nullptr;
 
-  vk::Result Result
-      = Device.createSwapchainKHR (&SwapChainCreateInfo, nullptr, &SwapChain);
+  Result = Device.createSwapchainKHR (&SwapChainCreateInfo, nullptr, &SwapChain);
 
-  Patata::Log::VulkanCheck ("SwapChain", Result);
+  delete[] PresentModes;
 
-  return { PresentMode, vk::Format::eUndefined, SurfaceFormat.colorSpace };
+  std::future<void> ReturnVulkanCheck4 = std::async(std::launch::async, Patata::Log::VulkanCheck, "SwapChain", Result);
+
+  return { PresentMode, SurfaceFormat.format, SurfaceFormat.colorSpace };
 }

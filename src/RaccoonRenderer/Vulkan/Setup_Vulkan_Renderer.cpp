@@ -1,7 +1,7 @@
 #include "Setup_Vulkan_Renderer.hpp"
 
 Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanBackend (
-    SDL_Window *& WINDOW, YAML::Node & CONFIG)
+    SDL_Window * WINDOW, YAML::Node & CONFIG)
 {
   if (!CreateInstance (WINDOW, CONFIG))
     return;
@@ -75,7 +75,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanBackend (
     }
 
   std::tuple<vk::PresentModeKHR, vk::Format, vk::ColorSpaceKHR> swapchaininfo
-      = CreateSwapChain (GraphicsQueueFamilyIndex, CONFIG);
+      = CreateSwapChain (GraphicsQueueFamilyIndex, CONFIG, WINDOW);
   CreateImageView (GraphicsQueueFamilyIndex);
   CreateCommandBuffer (GraphicsQueueFamilyIndex);
   CreateRenderPass ();

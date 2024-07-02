@@ -409,7 +409,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo (
 #endif
       PATATA_TERM_RESET,
 	  PATATA_TERM_BOLD,
-      " Image Color Format : ",
+      " Surface Color Format : ",
 	  PATATA_TERM_RESET,
 	  vk::to_string (std::get<1> (SWAPCHAIN_INFO)));
 
@@ -427,7 +427,7 @@ Patata::Graphics::RaccoonRenderer::VulkanBackend::VulkanInfo (
 #endif
       PATATA_TERM_RESET,
 	  PATATA_TERM_BOLD,
-      " Image Color Space : ",
+      " Surface Color Space : ",
 	  PATATA_TERM_RESET,
       vk::to_string (std::get<2> (SWAPCHAIN_INFO)), "\n");
 
